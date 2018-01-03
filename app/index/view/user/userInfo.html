@@ -1,0 +1,303 @@
+{extend name="public/base" /}
+{block name="ajax-content"}		
+	<div class="page-header">
+		<h1>
+			用户信息
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				信息详情
+			</small>
+		</h1>
+	</div><!-- /.page-header -->										
+	<div class="row">
+		<div class="user-profile">
+			<div class="tabbable">
+				<ul class="nav nav-tabs padding-18">
+					<li class="active">
+						<a data-toggle="tab" href="#user_info">
+							<i class="green ace-icon fa fa-user bigger-120"></i>
+							基本信息
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#member">
+							<i class="orange ace-icon fa fa-rss bigger-120"></i>
+							我的成员
+						</a>
+					</li>
+					<li>
+						<a data-toggle="tab" href="#change_password">
+							<i class="orange ace-icon fa fa-rss bigger-120"></i>
+							修改密码
+						</a>
+					</li>												
+				</ul>
+				<div class="tab-content no-border padding-24">
+					<div id="user_info" class="tab-pane in active">
+						<form class="form-horizontal ajax-form" method="post" action="{:url('admin/User/saveUser',['t'=>'e'])}">
+						<div class="row">
+							<div class="col-xs-12 col-sm-3 center">
+								<span class="profile-picture">
+									<input type="hidden" id="old_head_img" name="old_head_img" value="{$user_info.head_img|default=''}"/>
+									<input type="hidden" name="head_img" id="head_img" value="{$user_info.head_img|default=''}"/>
+							        <img id="head_src" class="col-sm-12 img-responsive crop-img" art='修改头像' data-input-id='head_img' data-src-id='head_src' src="{$user_info.head_img|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+								</span>
+								<div class="space space-4"></div>
+		  												   <!-- <a href="#" class="btn btn-sm btn-block btn-success">
+									<i class="ace-icon fa fa-plus-circle bigger-120"></i>
+									<span class="bigger-110">Add as a friend</span>
+								</a>
+								<a href="#" class="btn btn-sm btn-block btn-primary">
+									<i class="ace-icon fa fa-envelope-o bigger-110"></i>
+									<span class="bigger-110">Send a message</span>
+								</a> -->
+							</div><!-- /.col -->
+							<div class="col-xs-12 col-sm-9">
+								<h4 class="blue">
+									<span class="middle">{$user_info.user_name|default=''}</span>
+									<span class="label label-purple arrowed-in-right">
+										<i class="ace-icon fa fa-circle smaller-80 align-middle"></i>
+										在线
+									</span>
+								</h4>
+								<div class="profile-user-info">
+									<div class="profile-info-row">
+										<div class="profile-info-name">用户名</div>
+										<div class="profile-info-value add-edit">
+											<span class="edit-data" data-id='user_name'>{$user_info.user_name|default=''}</span>
+										</div>							
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">注册时间</div>
+										<div class="profile-info-value">
+											<span>{$user_info.create_time|date="Y-m-d H:i",###}</span>
+										</div>
+									</div>
+		
+									<div class="profile-info-row">
+										<div class="profile-info-name">最近登录时间</div>
+										<div class="profile-info-value">
+											<span>{$user_info.last_login_time|date="Y-m-d H:i",###}</span>
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">登录次数</div>
+										<div class="profile-info-value">
+											<span>{$user_info.login_times}</span>
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">登录IP</div>
+										<div class="profile-info-value">
+											<span>{$user_info.login_ip}</span>
+										</div>
+									</div>																
+									<div class="profile-info-row">
+										<div class="profile-info-name">邮箱</div>
+										<div class="profile-info-value add-edit">
+											<span class="edit-data" data-id='user_email'>{$user_info.user_email}</span>																					
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">联系电话</div>
+										<div class="profile-info-value add-edit">
+											<span class="edit-data" data-id='user_phone'>{$user_info.user_phone}</span>												
+										</div>
+									</div>
+									<div class="profile-info-row">
+										<div class="profile-info-name">账号有效期</div>
+										<div class="profile-info-value">
+											<span>
+											{if condition="$user_info.effective_time !=null"}
+											$user_info.effective_time|date="Y-m-d",###}
+											{else/}
+											无限期
+											{/if}
+											</span>
+										</div>
+									</div>	
+									<div class="profile-info-row" style="display:none" id="save_button">
+										<div class="profile-info-name"></div>
+										<div class="profile-info-value">
+											<button class="btn btn-info" type="submit">
+												<i class="ace-icon fa fa-check bigger-110"></i>
+												保存
+											</button>									
+										</div>
+									</div>																															
+								</div>
+								<!-- <div class="hr hr-8 dotted"></div> -->
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+						</form>
+						<div class="space-20"></div>
+					</div><!-- /#home -->
+					<div id="member" class="tab-pane">
+						<!-- #section:pages/profile.friends -->
+						<div class="profile-users clearfix">
+							<div class="itemdiv memberdiv">
+								<div class="inline pos-rel">
+									<div class="user">
+										<a href="#">
+											<img src="../assets/avatars/avatar4.png" alt="Bob Doe's avatar" />
+										</a>
+									</div>
+									<div class="body">
+										<div class="name">
+											<a href="#">
+												<span class="user-status status-online"></span>
+												Bob Doe
+											</a>
+										</div>
+									</div>
+									<div class="popover">
+										<div class="arrow"></div>
+										<div class="popover-content">
+											<div class="bolder">Content Editor</div>
+											<div class="time">
+												<i class="ace-icon fa fa-clock-o middle bigger-120 orange"></i>
+												<span class="green"> 20 mins ago </span>
+											</div>
+											<div class="hr dotted hr-8"></div>
+									   <!-- <div class="tools action-buttons">
+												<a href="#">
+													<i class="ace-icon fa fa-facebook-square blue bigger-150"></i>
+												</a>
+												<a href="#">
+													<i class="ace-icon fa fa-twitter-square light-blue bigger-150"></i>
+												</a>
+												<a href="#">
+													<i class="ace-icon fa fa-google-plus-square red bigger-150"></i>
+												</a>
+											</div> -->
+										</div>
+									</div>
+								</div>
+							</div>
+						<!--	<div class="hr hr10 hr-double"></div>
+							<ul class="pager pull-right">
+							<li class="previous disabled">
+								<a href="#">&larr; Prev</a>
+							</li>
+		
+							<li class="next">
+								<a href="#">Next &rarr;</a>
+							</li>
+							</ul> -->
+						</div>
+					</div><!-- /#friends -->
+					<div id="change_password" class="tab-pane">
+						<form class="form-horizontal ajax-form-1" method="post" action="{:url('admin/User/saveUser',['t'=>'p'])}">
+						<div class="row">
+							<div class="col-xs-12">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">原密码</label>
+									<div class="col-sm-9">
+										<input type="text" name="password" value="" placeholder="" class="col-xs-8" required/>
+										<span class="help-inline col-xs-4">
+											<span class="middle red">*</span>
+										</span>																																																							
+									</div>
+								</div>	
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">新密码</label>
+									<div class="col-sm-9">
+										<input type="text" name="new_password" value="" placeholder="新密码" class="col-xs-8" required/>
+										<span class="help-inline col-xs-4">
+											<span class="middle red">*</span>
+										</span>																																																							
+									</div>
+								</div>	
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">再次输入新密码</label>
+									<div class="col-sm-9">
+										<input type="text" name="again_password" value="" placeholder="再次输入新密码" class="col-xs-8" required/>
+										<span class="help-inline col-xs-4">
+											<span class="middle red">*</span>
+										</span>																																																							
+									</div>
+								</div>
+								<div class="clearfix form-actions">
+									<div class="col-sm-offset-6 col-sm-5">
+										<button class="btn btn-info" id="save_data" type="submit">
+											<i class="ace-icon fa fa-check bigger-110"></i>
+											保存
+										</button>
+									</div>
+								</div>																										
+							</div>	
+						</div>
+						</form>				
+					</div><!-- /#pictures -->
+				</div>
+			</div>
+		</div>	
+	</div>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	 
+	        </div>   <!-- /.modal-content -->
+	    </div>    <!-- /.modal -->
+	</div>	
+	
+{include file="file_upload/fileModal" /}	
+<style>
+.add-edit{
+	cursor:pointer;
+}	
+</style>
+<script type="text/javascript">
+$(function(){
+	var scripts=['__PUBLIC_PC__/ace/components/template/template.js'];
+	if($.addScript(scripts)=='success'){
+		$("#ajax_content").unbind().delegate('.edit-data','click',function(){
+			var selector=$(this).data('id');
+			$(this).hide();
+			var html = template($('#edit_tpl')[0].innerHTML, {value: selector});			
+			$(this).parent('.add-edit').append(html);
+			is_show();
+		})
+	}
+	$("#user_info").unbind().delegate('.clear-data','click',function(){
+		$(this).parents('.remove-data').remove();
+		var selector=$(this).data('show'); 
+		$("span[data-id='"+selector+"']").show();
+		is_show();
+	})
+	function is_show(){
+		var i=0,
+		old_img=$("#old_head_img").val(),
+		new_img=$("#head_img").val();
+		$(".add-edit").each(function(){  
+			if($(this).children('.edit-data').is(':hidden')){
+				i++;
+			}
+		})
+		if(old_img!=new_img)i++;
+		if(i!=0){
+			$("#save_button").show(100);
+		}
+		else{
+			$("#save_button").hide(100);
+		}
+	}
+	$('body').delegate('.modal','hide.bs.modal', function (data) {
+		is_show()
+	});
+})
+</script>
+<script id="edit_tpl" type="text/html">
+	<div class="editable-input remove-data">
+		<div class="input-group">
+			<input name="<%=value%>" class="input-sm spinbox-input form-control text-center" type="text">
+			<div class="spinbox-buttons input-group-btn">
+				<button class="btn spinbox-down btn-xs clear-data" data-show="<%=value%>" type="button">
+				<i class="icon-only red ace-icon ace-icon fa fa-times-circle bigger-110"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+</script>
+{/block}

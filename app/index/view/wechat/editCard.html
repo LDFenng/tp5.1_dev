@@ -1,0 +1,676 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<style>
+		.hide-all{
+			display:none;
+		} 	
+    </style>
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small class="bigger-105">
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				<b>卡券管理</b>
+			</small>
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				编辑卡券
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+<!-- 	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>-->
+
+	<form class="form-horizontal ajax-form" method="post" action="{:new_url('admin/Wechat/saveCard')}">
+	<input type="hidden" name='id' value="{$card_info.id|default=''}" />
+	<div class="row margintop">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券名称</label>
+				<div class="col-sm-6">
+					<input type="text" name="title" value="{$card_info.title|default=null}" placeholder="卡券名称" class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">商户名称</label>
+				<div class="col-sm-6">
+					<input type="text" name="brand_name" value="{$card_info.brand_name|default=null}" placeholder="商户名称" class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">商户LOGO</label>
+				<div class="col-sm-9">
+					<input type="hidden" name="old_logo_url" value="{$card_info.logo_url|default=''}"/>
+					<input type="hidden" name="logo_url" id="logo_url" value="{$card_info.logo_url|default=''}"/>
+			        <img id="logo_src" class="col-sm-3 img-responsive crop-img" data-input-id='logo_url' data-src-id='logo_src' src="{$card_info.logo_url|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+					<span class="help-inline col-xs-12 col-sm-5">
+						<span class="middle ren">*</span>
+					</span>								
+				</div>
+			</div>						
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">应用公众号</label>
+				<div class="col-sm-6">
+					{volist name="wechat_list" id="wechat_info"}
+					<div class="col-sm-4 help-inline">
+						<label class="block">
+							<input class="ace input-lg" name="wechat_id[]" value='{$wechat_info.id}' type="checkbox">
+							<span class="lbl bigger-120">{$wechat_info.title}</span>
+						</label>
+					</div>
+					{/volist}																																																											
+				</div>
+				<span class="help-inline col-xs-12 col-sm-3">
+					<span class="middle ren">仅适用认证服务号或者订阅号</span>
+				</span>					
+			</div>
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券底色</label>
+				<div class="col-sm-6 help-inline">
+			        <select name="color" id="card_color" class="hide">
+						{volist name="Think.config.wechatExt.wechat_card_color" id="card_color_info"}
+							<option value="{$card_color_info.color}" {if condition="$card_color_info.code eq $card_info.color"}selected{/if}>{$card_color_info.color}</option>
+						{/volist}					
+			        </select> 																																																					
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">库存</label>
+				<div class="col-sm-6">
+					<input type="text" name="quantity" value="{$card_info.quantity|default='100000'}" placeholder="卡券库存" maxlength="9" class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle">默认10万（上限为1亿）</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">有效期时间类型</label>
+				<div class="col-sm-6">
+					<div class="btn-group" data-toggle="buttons">
+						<label class="btn click-type btn-success active">
+							<input type="radio" value='1' checked='checked' name="type">固定日期（到规定日期过期）
+						</label>
+						<label class="btn click-type btn-info">
+							<input type="radio" value='2' name="type">固定时长（多少天后过期）
+						</label>										
+					</div>																																																						
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group" id="absolute_time" >
+				<label class="col-sm-3 control-label no-padding-right">有效时间</label>
+				<div class="col-sm-4">
+					<div class="input-daterange input-group col-xs-12">
+					  <input class="form-control date-plug start-date" name="begin_time" type="text" readonly value="{$card_info.begin_time|default=default_time()}" placeholder="选择起用日期">
+					  <span class="input-group-addon"> <i class="fa fa-exchange"></i> </span>
+					  <input class="form-control date-plug end-date" name="end_time" type="text" readonly value="{$card_info.end_time|default=default_time(30)}" placeholder="选择失效日期">
+					</div> 																																																						
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">默认有效期一个月</span>
+				</span>					
+			</div>	
+			<div id="fixed_time" style="display:none">
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券时长</label>
+				<div class="col-sm-4">
+					<div class="input-group">
+						<input value="{$card_info.fixed_term|default=30}" name="fixed_term" placeholder="卡券时长，（多少天内有效）" class="form-control" type="text">
+						<span class="input-group-addon">天</span>
+					</div>																																																										
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">至少大于等于1天</span>
+				</span>					
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">何时生效</label>
+				<div class="col-sm-4">
+					<input type="text" name="fixed_begin_term" value="{$card_info.fixed_begin_term|default='0'}" placeholder="默认当天生效" maxlength="9" class="form-control input-date-format"/>  																																																							
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">默认当天生效</span>
+				</span>				
+			</div>
+			</div>			
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券类型</label>
+				<div class="col-sm-6">
+			        <select name="card_type" id="card_type" class="select2 col-xs-6" data-placeholder='搜索'>
+						{volist name="Think.config.wechatExt.wechat_card_type" id="card_type_info"}
+							<option value="{$card_type_info.code}" {if condition="$card_type_info.code eq $card_info.card_type"}selected{/if}>{$card_type_info.title}</option>
+						{/volist}					
+			        </select> 																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">核销码类型</label>
+				<div class="col-sm-6">
+			        <select name="code_type" id="code_type" class="select2 col-xs-6" data-placeholder='搜索'>
+						{volist name="Think.config.wechatExt.wechat_code_type" id="code_type_info"}
+							<option value="{$code_type_info.code}" {if condition="$code_type_info.code eq $card_info.code_type"}selected{/if}>{$code_type_info.title}</option>
+						{/volist}					
+			        </select> 																																																							
+				</div>
+			</div>
+			<div class="hide-all groupon-card">						
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">团购券详情</label>
+				<div class="col-sm-6">
+					<textarea name="deal_detail" id="deal_detail" cols="20" rows="3" class="col-xs-8 limited" placeholder="最多300个字符" maxlength="300">{$card_info.deal_detail|default=null}</textarea>
+					<span class="help-inline col-xs-4">
+						（团购券必填！）	
+						还可以输入 <span class="middle red charsLeft"></span> 个字符
+					</span>																																																						
+				</div>
+			</div>
+			</div>
+			<div class="hide-all case-card">
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">起用金额</label>
+				<div class="col-sm-4">
+					<div class="input-group">
+						<input value="{$card_info.least_cost|default=0}" name="least_cost" placeholder="起用金额" class="form-control" type="text">
+						<span class="input-group-addon">分</span>
+					</div>																																																											
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">多少钱以上才可以使用；0表示无门槛（代金券必填！）</span>
+				</span>				
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">减免金额</label>
+				<div class="col-sm-4">
+					<div class="input-group">
+						<input value="{$card_info.reduce_cost|default=0}" name="reduce_cost" placeholder="减免金额" class="form-control" type="text">
+						<span class="input-group-addon">分</span>
+					</div>																																																										
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">代金券必填！</span>
+				</span>					
+			</div>
+			</div>
+			<div class="hide-all discount-card">
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">打折额度</label>
+				<div class="col-sm-4">
+					<div class="input-group">
+						<input value="{$card_info.discount|default=0}" name="discount" placeholder="打折额度" class="form-control" type="text">
+						<span class="input-group-addon">折</span>
+					</div>																																																										
+				</div>
+				<span class="help-inline col-xs-5">
+					<span class="middle">折扣券必填！</span>
+				</span>					
+			</div>	
+			</div>
+			<div class="hide-all general-card">
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">优惠券详情</label>
+				<div class="col-sm-6">
+					<textarea name="default_detail" id="default_detail" cols="20" rows="3" class="col-xs-8 limited-1" placeholder="最多300个字符" maxlength="300">{$card_info.default_detail|default=null}</textarea>
+					<span class="help-inline col-xs-4">
+						（优惠券必填！）还可以输入 <span class="middle red charsLeft-1"></span> 个字符
+					</span>																																																						
+				</div>
+			</div>	
+			</div>
+			<div class="hide-all gift-card">
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">兑换券</label>
+				<div class="col-sm-6">
+					<input type="text" name="gift" value="{$card_info.gift|default=null}" placeholder="兑换物品名称" class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle">兑换券必填</span>
+					</span>																																																							
+				</div>
+			</div> 	
+			</div>	  
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券提醒</label>
+				<div class="col-sm-6">
+					<input type="text" name="notice" value="{$card_info.gift|default=null}" placeholder="兑换物品名称"  placeholder="最多16个字符" maxlength="16" class="col-xs-8 limited-input"/>
+					<span class="help-inline col-xs-4">*
+						还可以输入 <span class="middle red charsLeft-input"></span> 个字符
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券使用说明</label>
+				<div class="col-sm-6">
+					<textarea name="description" id="description" cols="20" rows="3" class="col-xs-8 limited-2" placeholder="最多1024个字符" maxlength="1024">{$card_info.description|default=null}</textarea>
+					<span class="help-inline col-xs-4">*
+						还可以输入 <span class="middle red charsLeft-2"></span> 个字符
+					</span>																																																						
+				</div>
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+				<div class="help-inline col-sm-6">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($card_info.is_enabled eq 1) OR !isset($card_info.is_enabled)"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认启用</span> 
+					</span>							
+				</div>
+			</div>		
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券基础数据 </label>
+				<div class="col-sm-4">
+					<button type='button' data-type="base" class="open-modal btn btn-yellow btn-block">编辑卡券基础数据</button>						
+				</div>
+				<span class="col-xs-5">
+					<span class="middle">填写了卡券内容更风姿多彩（可以不填写）</span> 
+				</span>					
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">卡券高级数据 </label>
+				<div class="col-sm-4">
+					<button type='button' data-type="advanced" class="open-modal btn btn-light btn-block">编辑卡券高级数据</button>						
+				</div>
+				<span class="col-xs-5">
+					<span class="middle">高级数据是更进一步展示详情与介绍（可以不填写）</span> 
+				</span>					
+			</div>
+			<div class="clearfix form-actions">
+				<div class="col-sm-offset-6 col-sm-5">
+					<button class="btn btn-info" id="save_data" type="submit">
+						<i class="ace-icon fa fa-check bigger-110"></i>
+						保存
+					</button>
+				</div>
+			</div>																																																									
+		</div>
+	</div>
+		
+	<!-- 项目模态框 基础数据-->
+	<div class="modal fade" id="base_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">编辑卡券基础数据</h4>
+				</div>
+				<div class="modal-body">	
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">是否使用自定义核销码</label>
+								<div class="help-inline col-sm-6">
+									<label class="col-sm-2">
+										<input class="ace ace-switch ace-switch-4 btn-rotate" name="use_custom_code" type="checkbox" value="1" {if condition="$card_info.use_custom_code eq 1"}checked="checked"{/if}>
+										<span class="lbl"></span>
+									</label>
+									<span class="col-xs-6">
+										<span class="middle">默认不使用（自定义需要先上传核销码；适用于自身有一套成型的核销码系统）</span> 
+									</span>							
+								</div>
+							</div>
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">是否预存核销码</label>
+								<div class="help-inline col-sm-6">
+									<label class="col-sm-2">
+										<input class="ace ace-switch ace-switch-4 btn-rotate" name="get_custom_code_mode" type="checkbox" value="1" {if condition="$card_info.get_custom_code_mode eq 1"}checked="checked"{/if}>
+										<span class="lbl"></span>
+									</label>
+									<span class="col-xs-6">
+										<span class="middle">启用预存时，上传的核销码数量必须大于所填写的库存</span> 
+									</span>							
+								</div>
+							</div>	
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">服务电话 </label>
+								<div class="col-sm-6">
+									<input type="tel" name="service_phone" id="service_phone" value="{$card_info.service_phone|default=''}" placeholder="服务电话" class="col-xs-11" onkeyup="value=value.replace(/[^\d]/g,'')"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>	
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">核销名称 </label>
+								<div class="col-sm-6">
+									<input type="text" name="center_title" id="center_title" value="{$card_info.center_title|default='立即使用'}" placeholder="核销名称" class="col-xs-11"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>	
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">核销子名称 </label>
+								<div class="col-sm-6">
+									<input type="text" name="center_sub_title" id="center_sub_title" value="{$card_info.center_sub_title|default='立即享受优惠'}" placeholder="核销子名称 " class="col-xs-11"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>		
+							<div class="space-4"></div>
+<!-- 							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">是否启用小程序</label>
+								<div class="help-inline col-sm-6">
+									<label class="col-sm-2">
+										<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_mini_app" type="checkbox" value="1">
+										<span class="lbl"></span>
+									</label>
+									<span class="col-xs-6">
+										<span class="middle">仅启用勾选相对应公众号且存在的小程序</span> 
+									</span>							
+								</div>
+							</div>	 -->	
+<!-- 							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-4 control-label no-padding-right">名称 </label>
+								<div class="col-sm-6">
+									<input type="text" name="center_sub_title" id="center_sub_title" value="" placeholder="核销子名称 " class="col-xs-11"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>	 -->																																						
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">每人可领取卡券数量</label>
+								<div class="col-sm-6">
+									<input type="text" name="get_limit" id="get_limit" value="{$card_info.get_limit|default='5'}" placeholder="每人可领取卡券数量" class="col-xs-11" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>	
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">每人可核销卡券数量</label>
+								<div class="col-sm-6">
+									<input type="text" name="use_limit" id="use_limit" value="{$card_info.use_limit|default='5'}" placeholder="每人可核销卡券数量" class="col-xs-11" onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+									<span class="help-inline col-xs-1">
+										<span class="middle"></span>
+									</span>
+								</div>
+							</div>												
+							<div class="space-4"></div>												
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">领取页面是否分享 </label>
+								<div class="col-sm-6" style="margin-top:0.78rem">
+									<label class="col-sm-2">
+										<input class="ace ace-switch ace-switch-4 btn-rotate" name="can_share" type="checkbox" value="1" {if condition="$card_info.can_share eq 1"}checked="checked"{/if}>
+										<span class="lbl"></span>
+									</label>
+									<span class="help-inline col-xs-6">
+										<span class="middle">默认不分享</span>
+									</span>							
+								</div>
+							</div>					
+						</div>														
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" class="btn btn-success">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>	
+			</div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+	
+	<!-- 项目模态框 高级数据-->
+	<div class="modal fade" id="advanced_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">编辑卡券高级数据</h4>
+				</div>
+				<div class="modal-body">	
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="hide-all case-card">
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">指定可用商品类目</label>
+								<div class="col-sm-7">
+									<textarea name="accept_category" id="accept_category" cols="20" rows="3" class="col-xs-8 limited-3" placeholder="最多170个字符" maxlength="170">{$card_info.accept_category|default=null}</textarea>
+									<span class="help-inline col-xs-4">
+										（仅用于代金券类型）	
+										还可以输入 <span class="middle red charsLeft-3"></span> 个字符
+									</span>																																																						
+								</div>
+							</div>	
+							<div class="space-4"></div>						
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">指定不可用商品类目</label>
+								<div class="col-sm-7">
+									<textarea name="reject_category" id="reject_category" cols="20" rows="3" class="col-xs-8 limited-4" placeholder="最多170个字符" maxlength="170">{$card_info.reject_category|default=null}</textarea>
+									<span class="help-inline col-xs-4">
+										（仅用于代金券类型）	
+										还可以输入 <span class="middle red charsLeft-4"></span> 个字符
+									</span>																																																						
+								</div>
+							</div>							
+							</div>
+							<div class="space-4"></div>						
+							<div class="form-group hide-all gift-card">
+								<label class="col-sm-3 control-label no-padding-right">指定可用商品类目</label>
+								<div class="col-sm-7">
+									<textarea name="object_use_for" id="object_use_for" cols="20" rows="3" class="col-xs-8 limited-5" placeholder="最多170个字符" maxlength="170">{$card_info.object_use_for|default=null}</textarea>
+									<span class="help-inline col-xs-4">
+										（仅用于兑换券类型）	
+										还可以输入 <span class="middle red charsLeft-5"></span> 个字符
+									</span>																																																						
+								</div>
+							</div>																					
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">是否可以与其他优惠共享</label>
+								<div class="help-inline col-sm-6">
+									<label class="col-sm-2">
+										<input class="ace ace-switch ace-switch-4 btn-rotate" name="can_use_with_other_discount" type="checkbox" value="1" {if condition="$card_info.can_use_with_other_discount eq 1"}checked="checked"{/if}>
+										<span class="lbl"></span>
+									</label>
+									<span class="col-xs-6">
+										<span class="middle">默认不共享（叠加使用）</span> 
+									</span>							
+								</div>
+							</div>
+							<div class="space-4"></div>						
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">商品封面简介</label>
+								<div class="col-sm-7">
+									<input class="col-xs-8" name="abstract" id="abstract" value="" placeholder="最多70个字符" maxlength="70" type="text">
+									<span class="help-inline col-xs-4">
+										还可以输入 <span class="middle red charsLeft-6"></span> 个字符
+									</span>																																																						
+								</div>
+							</div>								
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">封面图</label>
+								<div class="col-sm-6">
+									<input type="hidden" name="icon_url_list" id="img_id" value="{$card_info.icon_url_list|default=''}"/>
+							        <img id="img_id_url" class="col-sm-5 img-responsive select-file"  data-input-id='img_id' data-src-id='img_id_url' src="{$card_info.img_url|default=default_img()}" data-rel="tooltip" title="点击选择图片">
+								</div>
+							</div>	
+							<div class="space-4"></div>
+							<div id="text_img">
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">图文介绍（优惠券需要填写）
+									<button class="btn btn-white btn-pink btn-sm" id="add_text_img" type="button">添加</button>
+									</label>
+									<div class="col-sm-6">
+										<input type="hidden" name="text_image_list[image_url][0]" id="img_id_0" value="{$card_info.icon_url_list|default=''}"/>
+								        <img id="img_id_0_url" class="col-sm-5 img-responsive select-file"  data-input-id='img_id_0' data-src-id='img_id_0_url' src="{$card_info.img_url|default=default_img()}" data-rel="tooltip" title="点击选择图片">
+										<input class="col-xs-8" nname="text_image_list[text][0]" id="text" value="" placeholder="最多70个字对图片的描述" maxlength="70" type="text">
+										<span class="help-inline col-xs-4">
+											还可以输入 <span class="middle red charsLeft-7"></span> 个字符
+										</span>																																																						
+									</div>
+								</div>								
+							</div>				
+							<div class="space-4"></div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label no-padding-right">包含服务 </label>
+								<div class="col-sm-6">
+									<div class="col-sm-12 help-inline">
+										<div class="col-sm-6">
+										<label class="block">
+											<input class="ace input-lg" name="business_service[]" value='1' type="checkbox">
+											<span class="lbl bigger-120">外卖服务</span>
+										</label>
+										</div>
+										<div class="col-sm-6">
+										<label class="block">
+											<input class="ace input-lg" name="business_service[]" value='2' type="checkbox">
+											<span class="lbl bigger-120">停车位</span>
+										</label>	
+										</div>
+										<div class="col-sm-6">
+										<label class="block">
+											<input class="ace input-lg" name="business_service[]" value='3' type="checkbox">
+											<span class="lbl bigger-120">可带宠物</span>
+										</label>
+										</div>
+										<div class="col-sm-6">	
+										<label class="block">
+											<input class="ace input-lg" name="business_service[]" value='4' type="checkbox">
+											<span class="lbl bigger-120">免费wifi</span>
+										</label>
+										</div>																												
+									</div>
+								</div>
+							</div>					
+						</div>														
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal" class="btn btn-success">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>		
+			</div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>
+				
+	</form>
+	{include file="file_upload/fileModal"/}	
+	<script type="text/javascript">
+	$(function(){
+		var scripts=['__PUBLIC_PC__/ace/components/mjolnic-bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js',
+            '__PUBLIC_PC__/ace/assets/js/src/elements.colorpicker.js',
+            '__PUBLIC_PC__/ace/components/template/template.js',
+            '__PUBLIC_PC__/ace/components/phpjs/functions/misc/uniqid.js'];
+		if($.addScript(scripts)=='success'){
+			$('#card_color').ace_colorpicker();
+			$("#ajax_content").delegate('#card_type','change',function(){
+				var card_type=$("#card_type").val();
+				$('.hide-all').hide();  
+				if(card_type==1)$('.groupon-card').show(100);
+					else if(card_type==2)$('.case-card').show(100);
+						else if(card_type==3)$('.discount-card').show(100);
+							else if(card_type==4)$('.gift-card').show(100);
+								else if(card_type==5)$('.general-card').show(100);
+								else $('.hide-all').hide(); 
+			})
+			$("#ajax_content").delegate('.click-type','click',function(){
+				$(".click-type").addClass('btn-info').removeClass('btn-success');
+				$(this).addClass('btn-success').removeClass('btn-info');
+				$(".click-type").children("input[type='radio']").attr("checked",false);
+				$(this).children("input[type='radio']").attr("checked",true);
+				var click_type=$(this).children("input[type='radio']").val();
+				if(click_type==1){
+					$('#absolute_time').show(100);
+					$('#fixed_time').hide();
+				}	
+				else if(click_type==2){
+					$('#fixed_time').show(100);
+					$('#absolute_time').hide();
+				}
+			})
+			$('textarea.limited-4').maxlength({
+				'feedback': '.charsLeft-4'
+			});
+			$('textarea.limited-5').maxlength({
+				'feedback': '.charsLeft-5'
+			});
+			$('textarea.limited-6').maxlength({
+				'feedback': '.charsLeft-6'
+			});
+			$('textarea.limited-7').maxlength({
+				'feedback': '.charsLeft-7'
+			});    
+			$("#ajax_content").delegate('.open-modal','click',function(){
+				var type=$(this).data('type');
+				if(type=='base'){
+					$("#base_data").modal('show');
+				}
+				else if(type=='advanced'){
+					$("#advanced_data").modal('show');
+				}
+			})	
+			
+			$("#advanced_data").unbind().delegate("#add_text_img",'click',function(){
+				var current_num=$("#text_img").find('.form-group').size(), 
+				uniq_id=uniqid(current_num);
+			    if(current_num>5){
+			    	layer.msg('最多只能添加5张图文');
+			    	return false;
+			    }
+				var html = template($('#text_img_tpl')[0].innerHTML, {index: uniq_id});			
+			    $("#text_img").append(html);
+			    //document.getElementById('text_img').innerHTML = html;	
+			})
+		}
+	})
+	</script>
+	<script id="text_img_tpl" type="text/html">
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right"></label>
+			<div class="col-sm-6">
+				<input type="hidden" name="text_image_list[image_url][<%=index%>]" id="img_id_<%=index%>" value=""/>
+				<img id="img_id_<%=index%>_url" class="col-sm-5 img-responsive crop-img" data-input-id='img_id_<%=index%>' data-src-id='img_id_<%=index%>_url' src="{:default_img()}" data-rel="tooltip" title="点击上传图片">		        																																																				
+				<input class="col-xs-8" nname="text_image_list[text][<%=index%>]" id="text_<%=index%>" value="" placeholder="最多70个字对图片的描述" maxlength="70" type="text">
+				<span class="help-inline col-xs-4">
+					可以输入 <span class="middle red">70</span> 个字符
+				</span>																																																						
+			</div>
+		</div>	
+	</script>
+{/block}

@@ -1,0 +1,128 @@
+<!-- #section:basics/sidebar -->
+<div id="sidebar" class="sidebar responsive ace-save-state sidebar-fixed sidebar-scroll compact">
+	<script type="text/javascript">
+		try{ace.settings.loadState('sidebar')}catch(e){}
+	</script>
+
+	<div class="sidebar-shortcuts" id="sidebar-shortcuts">
+		<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+			<button class="btn btn-success">
+				<i class="ace-icon fa fa-signal"></i>
+			</button>
+			<button class="btn btn-info reload-btn" type='button'>
+				<i class="ace-icon fa fa-refresh "></i>
+			</button>
+			<!-- #section:basics/sidebar.layout.shortcuts -->
+			<button class="btn btn-warning">
+				<i class="ace-icon fa fa-users"></i>
+			</button>
+			<button class="btn btn-danger">
+				<i class="ace-icon fa fa-cogs"></i>
+			</button>
+			<!-- /section:basics/sidebar.layout.shortcuts -->
+		</div>
+		<div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+			<span class="btn btn-success"></span>
+			<span class="btn btn-info"></span>
+			<span class="btn btn-warning"></span>
+			<span class="btn btn-danger"></span>
+		</div>
+	</div><!-- /.sidebar-shortcuts -->
+
+	<ul class="nav nav-list">
+		{notempty name="menu_list"}
+		{foreach name="menu_list" item="menu_info"}
+		{if condition="empty($menu_info.child)"}
+		<li id='menu_{$menu_info.id}' class="hover {if condition='$menu_info.is_selected eq true'} active{/if}">
+			<a data-ajax-page='true' href="{:url($menu_info.url,['md'=>$menu_info.id])}">
+				<i class="menu-icon fa {$menu_info.icon|default='fa-desktop'}"></i>
+				<span class="menu-text"> {$menu_info.title|default='【非法菜单】'} </span>
+			</a>
+			<b class="arrow"></b>
+		</li>		
+		{else/}
+		<li id='menu_{$menu_info.id}' class="hover {if condition='$menu_info.is_selected eq true'}active{/if}">
+			<a data-ajax-page=false href="#" class="dropdown-toggle">
+				<i class="menu-icon fa {$menu_info.icon|default='fa-desktop'}"></i>
+				<span class="menu-text">
+					{$menu_info.title|default='【非法菜单】'}
+				</span>
+				<b class="arrow fa fa-angle-down"></b>
+			</a>
+			<b class="arrow"></b>
+			<ul class="submenu">
+			{foreach name="menu_info['child']" item="two_info"}
+			{if condition="empty($two_info.child)"}
+				<li id='menu_{$menu_info.id}_{$two_info.id}' class="hover {if condition='$two_info.is_selected eq true'}active{/if}">
+					<a data-ajax-page='true' href="{:url($two_info.url,['md'=>$two_info.id])}">
+						<i class="menu-icon fa {$two_info.icon|default='fa-desktop'}"></i>
+						<span class="menu-text">
+						{$two_info.title|default='【非法菜单】'}
+						</span>
+					</a>
+					<b class="arrow"></b>
+				</li>		
+			{else/}
+				<li id='menu_{$menu_info.id}_{$two_info.id}' class="{if condition='$two_info.is_selected eq true'}open active{/if}">
+					<a data-ajax-page='false' href="#" class="dropdown-toggle">
+						<i class="menu-icon fa {$two_info.css|default='fa-desktop'}"></i>
+						<span class="menu-text" style="padding-left:10px">
+						{$two_info.title|default='【非法菜单】'}
+						</span>
+						<b class="arrow fa fa-angle-down"></b>
+					</a>
+					<b class="arrow"></b>
+					<ul class="submenu">
+					{foreach name="two_info['child']" item="three_info"}
+					{if condition="empty($three_info.child)"}
+						<li id='menu_{$menu_info.id}_{$two_info.id}_{$three_info.id}' class="hover {if condition='$three_info.is_selected eq true'}active{/if}">
+							<a data-ajax-page='true' href="{:url($three_info.url,['md'=>$three_info.id])}">
+								<i class="menu-icon fa {$three_info.icon|default='fa-desktop'}"></i>
+								<span class="menu-text">
+								{$three_info.title|default='【非法菜单】'}
+								</span>
+							</a>
+							<b class="arrow"></b>
+						</li>					
+					{else/}
+						<li id='menu_{$menu_info.id}_{$two_info.id}_{$three_info.id}' class="hover {if condition='$three_info.is_selected eq true'}active{/if}">
+							<a data-ajax-page=false href="#" class="dropdown-toggle">
+								<i class="menu-icon fa {$three_info.icon|default='fa-desktop'}"></i>
+								<span class="menu-text">
+								{$three_info.title|default='【非法菜单】'}
+								</span>
+								<b class="arrow fa fa-angle-down"></b>
+							</a>
+							<b class="arrow"></b>
+							<ul class="submenu">
+							{foreach name="three_info['child']" item="four_info"}
+								<li id='menu_{$menu_info.id}_{$two_info.id}_{$three_info.id}_{$four_info.id}' class="hover {if condition='$four_info.is_selected eq true'}active{/if}">
+									<a data-ajax-page='true' href="{:url($four_info.url,['md'=>$four_info.id])}">
+										<i class="menu-icon fa {$four_info.icon|default='fa-desktop'} purple"></i>
+										<span class="menu-text">
+										{$four_info.title|default='【非法菜单】'}
+										</span>
+									</a>
+									<b class="arrow"></b>
+								</li>							
+							{/foreach}							
+							</ul>
+						</li>					
+					{/if}
+					{/foreach}					
+					</ul>
+				</li>				
+			{/if}
+			{/foreach}
+			</ul>
+		</li>		
+		{/if}
+		{/foreach}
+		{/notempty}
+	</ul><!-- /.nav-list -->
+	<!-- #section:basics/sidebar.layout.minimize -->
+	<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+		<i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+	</div>
+	<!-- /section:basics/sidebar.layout.minimize -->
+</div>

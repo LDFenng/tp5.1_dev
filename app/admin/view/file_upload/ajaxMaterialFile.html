@@ -1,0 +1,39 @@
+{volist name="data_list" id="data_info"}
+<div class="pricing-span remove-data">
+	<div class="widget-box pricing-box-small widget-color-grey">
+		<div class="widget-header">
+		<h5 class="widget-title bigger lighter" title='{$data_info.name}'>{$data_info.name|subtext=15}</h5>
+		</div>	
+		<div class="widget-body">
+			<div class="widget-main no-padding">
+				<img src="{$data_info.path_url|default=default_img(3)}" width="100%" height="100px" class="img-rounded"/>
+			</div>
+			<div>
+				<button type='button' class="btn btn-block btn-xs btn-primary select-material" data-url="{$data_info.path_url}" data-type="{$Request.param.z}" data-input-id="{$Request.param.a}" data-id='{$data_info.id}'>
+				<span>选择（{:format_bytes($data_info.size)}）</span>
+				</button>
+				{notempty name="data_info.data_type"}
+				<a href="{:url('admin/FileUpload/delImg',['scr'=>$data_info.path_url])}" class="btn btn-block btn-xs btn-danger del-img-btn">
+				<span>删除</span>
+				</a>	
+				{/notempty}			
+			</div>									
+		</div>
+	</div>								
+</div>	
+{/volist}
+<div class="col-xs-12 center remove-data">
+{$page}
+</div>
+<script type="text/javascript">
+$(".remove-data").delegate('.del-img-btn','click',function(e){
+	e.preventDefault();
+	var url=this.href;
+	layer.confirm($info, {icon: 3}, function (index) {
+	    $.get(url, function (data) {
+			$(this).parents('.remove-data').remove();
+	    }, "json");
+	})
+    return false;
+})
+</script>

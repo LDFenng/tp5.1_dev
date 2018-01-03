@@ -1,0 +1,74 @@
+{notempty name="category_list"}
+{volist name="category_list" id="category_info"}
+<tr id="{$selector}_{$category_info.id}">
+	<td class="center">
+		<i class="fa ace-icon blue fa-plus bigger-150 open-tr" data-pid='{$category_info.id}' data-selector='{$selector}_{$category_info.id}' style='cursor: pointer'/></i>																								
+</td>
+<td class="hidden-sm hidden-xs">{$category_info.id}</td>
+<td class="hidden-sm hidden-xs col-xs-2 left">{:levle_name($category_info.name,$category_info.levle)}</td>
+<td class="center hidden-sm hidden-xs">{$category_info.levle}</td>
+<td>
+{if condition="$category_info['is_enabled'] eq 1"}
+	<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Goods/changeCategoryStatus')}" data-id="{$category_info.id}" title="已启用">
+		启用
+	</a>
+	{else/}
+	<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Goods/changeCategoryStatus')}" data-id="{$category_info.id}" title="已禁用">
+		禁用
+	</a>
+{/if}						
+</td>
+<td class="hidden-sm hidden-xs col-xs-1">
+	<input class='form-control input-sm width-80 list-order' name="{$category_info.id}" value='{$category_info.sort}'>						
+</td>
+<td class="hidden-sm hidden-xs">{$category_info.create_time|date='Y-m-d',###}</td>
+<td style="border-right:#CCC solid 1px;">
+		<div class="hidden-sm hidden-xs btn-group action-buttons"> 
+			<a class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" data-toggle="modal" data-target="#edit_data" href="{:url('admin/Goods/editCategory',['id'=>$category_info['id']])}" title="编辑">
+			<i class="ace-icon fa fa-pencil bigger-160"></i>
+			</a>	
+			{if condition="$category_info.levle<4"}						
+			<a class="btn btn-xs  btn-primary" data-rel="tooltip" data-placement="bottom" data-toggle="modal" data-target="#edit_data" href="{:url('admin/Goods/editCategory',['pid'=>$category_info['id']])}" title="添加子分类">
+			<i class="ace-icon fa fa-plus-circle bigger-160"></i>
+			</a>
+			{/if}
+			<a class="btn btn-xs btn-default confirm-btn" data-info='确定删除吗？{if condition="$category_info.levle<4"}（其子分类会一同删除）{/if}' data-rel="tooltip" data-placement="bottom" href="{:url('admin/Goods/delCategory',['ids'=>$category_info['id']])}" title="删除">
+			<i class="ace-icon fa fa-trash-o bigger-160"></i>
+			</a>
+		</div>		
+		<div class="hidden-md hidden-lg">
+			<div class="inline position-relative">
+				<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+				</button>
+				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+					<li>
+						<a class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" data-toggle="modal" data-target="#edit_data" href="{:url('admin/Goods/editCategory',['id'=>$category_info['id']])}" title="编辑">
+							<span class="green">
+								<i class="ace-icon fa fa-pencil bigger-120"></i>
+							</span>
+						</a>
+					</li>
+					{if condition="$category_info.levle<4"}
+					<li>
+						<a class="btn btn-xs btn-primary" data-rel="tooltip" data-placement="bottom" data-toggle="modal" data-target="#edit_data" href="{:url('admin/Goods/editCategory',['pid'=>$category_info['id']])}" title="添加子分类">
+							<span class="green">
+								<i class="ace-icon fa fa-plus-circle bigger-120"></i>
+							</span>
+						</a>
+					</li>
+					{/if}
+					<li>
+						<a class="btn btn-xs btn-default confirm-btn" data-info='确定删除吗？{if condition="$category_info.levle<4"}（其子分类会一同删除）{/if}' data-rel="tooltip" data-placement="bottom" href="{:url('admin/Goods/delCategory',['ids'=>$category_info['id']])}" title="删除">
+							<span class="green">
+								<i class="ace-icon fa fa-trash-o bigger-120"></i>
+							</span>
+						</a>
+					</li>																				
+				</ul>
+			</div>
+		</div>						
+	</td>
+</tr>
+{/volist}	
+{/notempty}	

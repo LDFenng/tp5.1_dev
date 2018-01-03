@@ -1,0 +1,101 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<style>
+
+		#show-time{margin:20px;margin-bottom: 20px;text-align: center;}
+		#record{margin-top:20px;}
+		#record div{width:400px;height:30px;border-bottom:1px dotted #666;}
+		#record span{font-size:20px;}
+		.left{float:left;}
+		.right{float:right;}
+	</style>
+    <div class="page-header">
+        <h1>Bootstrap File Input Example
+            <small><a href="https://github.com/kartik-v/bootstrap-fileinput-samples"><i
+                    class="glyphicon glyphicon-download"></i> Download Sample Files</a></small>
+        </h1>
+    </div>
+    <div class="row">
+    	<div class="col-xs-6">
+    	</div>
+    	<div class="col-xs-6">
+			<div id="bbbb"></div> 	
+    	</div>
+    	<div class="col-xs-6">
+			<div id="qwer">
+			
+			</div>   	
+    	</div>
+    	<div class="col-xs-6">
+			<div id="asd">
+			
+			</div>	
+    	</div>  
+    	<div class="col-xs-6">
+			<div id="zxcv">
+			
+			</div>	
+    	</div> 
+    	 	    	    	
+    </div>
+
+	<div class="form-group">
+			<div class="col-xs-12">
+				<!-- #section:custom/file-input -->
+				<input type="file" id="id-input-file-2" />
+			</div>
+		</div>
+<link rel="stylesheet" href="__PUBLIC_PC__/admin/css/times-handle-1.0.css" />
+<script src="__PUBLIC_PC__/ace/assets/js/src/elements.fileinput.js"></script>
+<script src="__PUBLIC_PC__/admin/js/count-down-1.0.js"></script>
+	<script type="text/javascript">
+
+	$(function(){
+
+		
+		if($.addScript(['__PUBLIC_PC__/admin/js/count-down-1.0.js'])=='success'){
+			$("#aaaa").timesHandle({
+				type:'countDown',
+				startTime:"{:date('Y/m/d 23:40:00')}",
+				apart:100,
+				timeEnd:function(){
+					console.log(1111);
+				}
+			}); 
+			$("#bbbb").timesHandle({
+				type:'countDown',
+				startTime:"{:date('Y/m/d',strtotime('+20 days'))}",
+				apart:10
+			}); 
+			$("#qwer").timesHandle({
+				type:'clockTime'
+			}); 
+			$("#asd").timesHandle({
+				type:'clockTime',
+				isScale:true
+			}); 
+			$("#zxcv").timesHandle({
+				type:'timer'
+			});			
+		}
+		
+		$('#id-input-file-2').ace_file_input({
+			no_file:'No File ...',
+			btn_choose:'Choose',
+			btn_change:'Change',
+			droppable:false,
+			onchange:null,
+			thumbnail:false //| true | large
+			//whitelist:'gif|png|jpg|jpeg'
+			//blacklist:'exe|php'
+			//onchange:''
+			//
+		});
+	})
+
+
+
+
+    
+</script>
+{/block}

@@ -1,0 +1,135 @@
+{extend name="public/base"/}
+{block name="ajax-content"} 
+	<div class="page-header">
+		<h1>首页<small></small></h1>
+	</div><!-- /.page-header -->
+	<div class="row">
+		<div class="col-xs-12">
+			<!-- 提示 -->
+			<div class="alert alert-block alert-success">
+				<button type="button" class="close" data-dismiss="alert">
+					<i class="ace-icon fa fa-times"></i>
+				</button>
+				<i class="ace-icon fa fa-check green"></i>
+				为了您更好的体验管理后台系统，建议屏幕分辨率1280*768以上，并且安装chrome谷歌浏览器或者火狐浏览器 （剔除万恶IE）
+				<a href="http://sw.bos.baidu.com/sw-search-sp/software/2150022a0c020/ChromeStandalone_58.0.3029.81_Setup.exe">下载谷歌</a>&nbsp;或者
+				<a href="http://download.firefox.com.cn/releases-sha2/stub/official/zh-CN/Firefox-latest.exe">下载火狐</a> 
+			</div>
+		</div>  
+		<div class="col-xs-12">
+			{notempty name="slide_list"}
+		    <div class="swiper-container" style="width:100%;height:350px">
+		        <div class="swiper-wrapper">
+		            {volist name="slide_list" id="slide_info"}
+		            <!-- 动画 -->
+		            {if condition="$slide_info.is_animate eq 1"}
+		            <div class="swiper-slide">
+		            <!-- 加载背景图 -->
+		            {notempty name="slide_info.url"}<a href="{$slide_info.url}">{/notempty}
+					<img src="{$slide_info.img_url}" style="width:100%;" title='{$slide_info.title}'/>
+					{notempty name="slide_info.url"}</a>{/notempty}
+					{volist name="slide_info['animate_data']" id="animate_info"}
+					{notempty name="animate_info.url"}<a href="{$animate_info.url}">{/notempty}
+					<img src="{$animate_info.animate_img_url}" class="ani" {$animate_info.style}  swiper-animate-effect="{$animate_info.effect|default='fadeInUp'}" swiper-animate-duration="{$animate_info.duration|default='0'}s" swiper-animate-delay="{$animate_info.delay|default='0'}s">
+					{notempty name="animate_info.url"}</a>{/notempty}
+					{/volist}
+					</div>
+					{else /}
+					<!-- 无动画 -->
+		            <div class="swiper-slide">
+		            {notempty name="slide_info.url"}<a href="{$slide_info.url}">{/notempty}
+		            <img src="{$slide_info.img_url}" style="width:100%;" title='{$slide_info.title}'/>
+		            {notempty name="slide_info.url"}</a>{/notempty}
+		            </div>
+		            {/if}
+		            {/volist}
+		        </div>
+			    <div class="swiper-pagination"></div>
+			    <!-- 如果需要导航按钮 -->
+			    <div class="swiper-button-prev"></div>
+			    <div class="swiper-button-next"></div>
+		    </div>		
+		    {/notempty}	
+		</div>  
+	</div>
+	<div class="row margintop">	    			
+		<div class="col-sm-6">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="space-6"></div>
+				</div>
+			</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<i class="ace-icon fa fa-bolt"></i>
+						<span class="icon-dashboard"></span>通知
+					</div>
+					<div class="panel-body">
+						{$web_info.notic|default="暂无通知"}
+					</div>
+				</div>																	
+			</div>
+			<div class="col-sm-6">
+				<div class="widget-box widget-color-dark">
+					<div class="widget-header">
+						<h5 class="widget-title" style="color:#ffff">今日</h5>	
+				</div>	
+				<div  class="widget-body panel-collapse collapse in">
+				<!-- #section:custom/scrollbar --> 
+					<div class="widget-main padding-4 scrollable" data-size="250">
+						{notempty name="personal_data_list"}
+						{foreach name="personal_data_list" item="personal_data_info"}
+						<div class="profile-activity clearfix">
+							<div>
+								{$personal_data_info.text}
+								<div class="time">
+								<i class="ace-icon fa fa-clock-o bigger-110"></i>
+								{$personal_data_info.update_time}
+								</div>
+							</div>
+							<div class="tools action-buttons">
+<!-- 											<a class="red" href="#">
+											<i class="ace-icon fa fa-times bigger-125"></i>
+											</a> -->
+							</div>	
+						</div>										
+						{/foreach}								
+						{/notempty}
+						{empty name="personal_data_list"}
+						<p style="text-align:center">暂无数据</p>
+						{/empty}
+					</div>
+				</div>
+			</div>																	
+		</div>
+		<div class="vspace-12-sm"></div>
+	</div><!-- /.row -->
+	<div class="col-md-12">
+	{notempty name="counselor_count_datas"}
+	<div id="booking_man" style="height:400px;"></div>
+	{/notempty}
+	{notempty name="school_statistics_info.y_statistics_count"}
+	<div id="school_booking_count" style="height:400px;"></div>
+	{/notempty}
+	{notempty name="project_statistics_info.y_statistics_count"}
+	<div id="project_booking_count" style="height:400px;"></div>
+	{/notempty}
+	{notempty name="booking_statistics_info.y_booking_count"}
+	<div id="booking_count" style="height:400px;"></div>
+	{/notempty}
+	</div>
+
+<link rel="stylesheet" href="__PUBLIC_PC__/ace/components/Swiper-3.4.1/css/swiper.min.css" />
+<link rel="stylesheet" href="__PUBLIC_PC__/ace/components/Swiper-3.4.1/css/animate.min.css" />
+<script type="text/javascript">
+$(function(){
+	var scripts=[
+		"__PUBLIC_PC__/ace/components/Swiper-3.4.1/js/swiper.min.js",
+		"__PUBLIC_PC__/ace/components/Swiper-3.4.1/js/swiper.animate1.0.2.min.js",
+		"__PUBLIC_PC__/ace/components/chart/echarts-all.js",
+		"__PUBLIC_PC__/admin/js/index/index.js"
+	];
+	$.addScript(scripts);
+})
+</script>
+{/block}

@@ -1,0 +1,143 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			素材管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				视频列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Material/videoList')}">
+		<div class="row margintop" id="table_bar">
+			<div class="col-xs-12 col-lg-5">
+				{customTag:pageNum  width='35%' select_num='$Request.param.page_num'/}	
+		        <select name="type" class="ajax-change select2" style="width:63%" data-placeholder='点击选择'>
+					{volist name="Think.config.extarray.video_type" id="type_info"}
+						<option value="{$type_info.code}" {if condition="$type_info.code eq $Request.param.type"}selected{/if}>{$type_info.title}</option>
+					{/volist}
+		        </select>    		        				
+			</div>
+			<div class="col-xs-12 col-lg-4">
+				<div class="input-group"> <span class="input-group-addon"> <i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="名称" />
+				</div>       
+			</div>			
+			<div class="col-xs-12 col-lg-3 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Material/videoList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe bigger-130"></i> 显示全部 </a>	
+				<a href="{:new_url('admin/Material/editVideo')}" class="btn btn-sm btn-info" data-rel="tooltip" data-placement="bottom" title="添加" data-toggle="modal" data-target="#edit_data"><i class="ace-icon fa fa-plus bigger-130"></i>添加视频</a>
+				{notempty name="video_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}
+			</div>
+		</div>  	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-seacrh='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Material/delVideo')}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-sortable="true" class="center">名称</th>
+							<th data-sortable="true" class="center">艺术家</th>
+						    <th data-sortable="true" class="center">类型</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">大小</th>
+							<th data-sortable="true" class="center">分辨率</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">时长</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">是否审核</th>
+							<th data-sortable="true" class="center">排序</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">添加时间</th>
+							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="video_list" item="video_info"}
+							<tr class="center" id="data_{$video_info.id}">
+								<td class="hidden-xs center">
+									<label class="pos-rel">
+										<input class="ace input-lg check-data" type='checkbox' value='{$video_info.id}'>
+										<span class="lbl"></span>
+									</label>
+								</td>	
+								<td class="hidden-sm hidden-xs">{$video_info.id}</td>
+								<td>{$video_info.name}</td>
+								<td>{$video_info.artist}</td>
+								<td>
+								{volist name="Think.config.extarray.video_type" id="type_info"}
+									{if condition="$type_info.code eq $video_info.type"}
+									<span class="label label-info">{$type_info.title}</span>
+									{/if}
+								{/volist}
+								</td>
+								<td class="hidden-sm hidden-xs">{:format_bytes($video_info.size)}</td>
+								<td class="hidden-sm hidden-xs">{$video_info.resolution}</td> 
+								<td class="hidden-sm hidden-xs">{$video_info.play_time|default='【未知】'}</td>
+								<td>
+									{if condition="$video_info['is_enabled'] eq 1"}
+										<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Material/changeVideoStatus')}" data-id="{$video_info.id}" title="已通过">
+											通过
+										</a>
+										{else/}
+										<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Material/changeVideoStatus')}" data-id="{$video_info.id}" title="未审核">
+											未审核
+										</a>
+									{/if}
+								</td>	
+								<td class='hidden-sm hidden-xs col-xs-1'><input class='form-control input-sm list-order' name="{$video_info.id}" value='{$video_info.sort}'></td>					
+								<td class="hidden-sm hidden-xs">{$video_info.create_time|date="Y-m-d",###}</td>
+								<td>
+									<div class="hidden-sm hidden-xs btn-group action-buttons">
+										<a class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Material/editVideo',['id'=>$video_info['id']])}" data-toggle="modal" data-target="#edit_data" title="编辑">
+										<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+										</a>
+									</div>		
+									<div class="hidden-md hidden-lg">
+										<div class="inline position-relative">
+											<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+												<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+											</button>
+											<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+												<li>
+													<a href="{:new_url('admin/Material/editVideo',['id'=>$video_info['id']])}" data-placement="bottom" data-rel="tooltip" data-toggle="modal" data-target="#edit_data" title="编辑">
+														<span class="green">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+	<div class="row">
+		<div class="col-xs-1 btn-corner">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:new_url('admin/Material/orderVideo')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>	 
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+	{include file="file_upload/fileModal" /} 	
+{/block}	    	

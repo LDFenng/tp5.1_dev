@@ -1,0 +1,224 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				用户列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+<!-- 	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>-->	 
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Wechat/fansList')}">
+		<div class="row margintop">
+			<div class="col-xs-12 col-lg-9">
+				{customTag:pageNum  width='25%' select_num='$Request.param.page_num'/}	
+				{customTag:screen width="39%" table_name='wechat_info' field_name='wechat_id' select_val='$Request.param.wechat_id'/}	  		        				
+				{customTag:screen width="34%" table_name='wechat_user_group' field_name='group_id' table_field='name' select_val='$Request.param.group_id'/}
+			</div>
+		</div> 
+		<div class="row margintop" id="table_bar">	
+			<div class="col-xs-12 col-lg-4">
+				<div class="input-group"><span class="input-group-addon"><i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="昵称、地名" />
+				</div>       
+			</div>					
+			<div class="col-xs-12 col-lg-5 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Wechat/fansList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe fa-spin bigger-130"></i> 显示全部 </a>	
+				<a href="#" class="btn btn-sm btn-primary handle-data" data-rel="tooltip" data-placement="bottom" title="分组"><i class="ace-icon fa fa-arrows bigger-130"></i>移动用户到组</a>
+				<a class="btn btn-sm btn-warning mass-msg" href="{:url('admin/Wechat/editMassMsg')}" data-rel="tooltip" data-placement="bottom" title="群发"><i class="ace-icon fa fa-paper-plane-o bigger-130"></i>群发信息</a>				 
+			</div>
+		</div>  	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th>
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-field="nickname" data-sortable="true" class="hidden-sm hidden-xs">昵称</th>
+							<th data-field="sex" data-sortable="true">性别</th>
+							<th data-field="city" data-sortable="true" class="hidden-sm hidden-xs">地区</th>
+							<th>公众号</th>
+							<th data-field="group_id" data-sortable="true" class="hidden-sm hidden-xs">组别</th>
+							<th data-field="subscribe" data-sortable="true">是否关注</th>
+							<th data-field="subscribe_time" data-sortable="true">关注时间</th>
+							<th data-field="is_pull_black" data-sortable="true" class="hidden-sm hidden-xs">是否拉黑</th>
+ 							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="fans_list" item="fans_info"}
+							<tr id="data_{$fans_info.id}">
+								<td>
+									<label class="pos-rel">
+										<input type="checkbox" class="ace input-lg check-data" value="{$fans_info.id}"/>
+										<span class="lbl"></span>															
+									</label>											
+								</td>
+								<td data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">{$fans_info.id}</td>
+								<td class="hidden-sm hidden-xs">{$fans_info.nickname|default="【未设置】"}</td>
+								<td data-field="sex" data-sortable="true">
+								{if condition='$fans_info.sex==1'}
+								<span class="label label-lg label-primary">男</span>
+								{elseif condition='$fans_info.sex==2' /}
+								<span class="label label-lg label-pink">女</span>
+								{/else}
+								<span class="label label-lg label-purple ">未知</span>
+								{/if}
+								</td>
+								<td data-field="city" data-sortable="true" class="hidden-sm hidden-xs">{$fans_info.country|default="中国"}-{$fans_info.province|default="【未设置】"}-{$fans_info.city|default="【未设置】"}</td>
+								<td>{$fans_info.wechat_title|default="【未设置】"}</td>
+								<td data-field="group_id" data-sortable="true" class="hidden-sm hidden-xs">{$fans_info.group_name|default="未分组"}</td>
+								<td data-field="subscribe" data-sortable="true">
+								{if condition='$fans_info.subscribe==1'}
+								<span class="label label-lg label-success">已关注</span>
+								{else/}
+								<span class="label label-lg label-inverse">已取消关注</span>
+								{/if}
+								</td>
+								<td data-field="subscribe_time" data-sortable="true">{$fans_info.subscribe_time|date='Y-m-d',###}</td>								
+								<td data-field="is_pull_black" data-sortable="true" class="hidden-sm hidden-xs">
+								{if condition="$fans_info.is_pull_black == 1"}
+									<a class="btn btn-minier btn-inverse status-btn" href="{:url('admin/Wechat/pullBlack',['w'=>$fans_info.wechat_id])}" data-id="{$fans_info.id}" title="已拉黑">
+										已拉黑
+									</a>
+									{else/}
+									<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Wechat/pullBlack',['w'=>$fans_info.wechat_id])}" data-id="{$fans_info.id}" title="正常">
+										正常
+									</a>
+								{/if}								
+								</td>
+								<td>
+									<div class="hidden-sm hidden-xs btn-group action-buttons">
+										<a class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" data-toggle="modal" data-target="#edit_data" href="{:url('admin/Wechat/editFans',['id'=>$fans_info['id'],'w'=>$fans_info['wechat_id']])}" title="编辑">
+										<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+										</a>
+									</div>		
+									<div class="hidden-md hidden-lg">
+										<div class="inline position-relative">
+											<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+												<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+											</button>
+											<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+												<li>
+													<a href="{:url('admin/Wechat/editFans',['id'=>$fans_info['id'],'w'=>$fans_info['wechat_id']])}" data-placement="bottom" data-rel="tooltip" data-toggle="modal" data-target="#edit_data" title="编辑">
+														<span class="green">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>								
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div>
+		<div class="row">
+			<div class="col-xs-1 btn-corner"></div>
+			<div class="col-xs-10 center">{$page}</div>
+			<div class="col-xs-1"></div>	
+		</div>		 
+	</form> 
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	      </div>
+	    </div>
+	</div>      	
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="group_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+			<!-- 项目状态模态框 -->
+			<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('fansGrouping')}">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">用户分组（不支持未认证订阅号）</h4>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" value="" name="user_ids" id="user_ids"/>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">分组</label>
+						<div class="col-sm-9">
+							<div class="btn-group" data-toggle="buttons">
+								{volist name="wechat_group" id="group_info"}
+								<label class="btn click-type btn-info">
+									<input type="radio" value='{$group_info.id}' name="group_id">{$group_info.name}
+								</label>
+								{/volist}				
+							</div>																																															
+						</div>
+					</div>										
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success">提交</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>		
+			</form>			
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+	<script type="text/javascript">
+		$("#group_data").delegate('.click-type','click',function(){
+			$(".click-type").addClass('btn-info').removeClass('btn-success');
+			$(this).addClass('btn-success').removeClass('btn-info');
+			$(".click-type").children("input[type='radio']").attr("checked",false);
+			$(this).children("input[type='radio']").attr("checked",true);
+		})
+		$("#table_bar").delegate('.handle-data','click',function(e){
+			var user_ids=[];
+			$(".check-data").each(function(i){
+				if($(this).is(':checked')){
+					user_ids.push($(this).val());
+				}
+			})
+			if(empty(user_ids)){
+				layer.msg('请选择要分组的用户');
+				return false;
+			}
+			$("#user_ids").val(user_ids);
+			$("#group_data").modal('show');
+		})
+		$("#ajax_content").unbind().delegate('.mass-msg','click',function(e){
+			e.preventDefault(); 
+			var url=this.href,
+			group_id=$("#group_id").val(),
+			wechat_id=$("#wechat_id").val(),
+			user_ids=[];
+			$(".check-data").each(function(i){
+				if($(this).is(':checked')){
+					user_ids.push($(this).val());
+				}
+			})
+			layer.open({
+				  title:'群发信息',
+				  content: '可筛选不同<b>用户组</b>或者筛选不同<b>用户</b>进行群发；群发所有人不进行任何筛选；只针对某一个公众号群发时，请筛选要群发的公众号。<font color=red>未认证的服务号和订阅号群发功能不可用</font>',
+				  yes: function(index, layero){
+					  $.phpAjax(url,{'user_ids':user_ids,'group_id':group_id,'wechat_id':wechat_id});
+				      layer.close(index); //如果设定了yes回调，需进行手工关闭
+				  }
+			});        
+		})
+	</script>	 
+{/block}	    	

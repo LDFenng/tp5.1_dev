@@ -1,0 +1,11 @@
+/**
+ * 
+ */
+$("#geetest_on").on('click',function(){
+	if($("#geetest_on").is(':checked')){
+		$("#geetest").show(500);
+	}
+	else{
+		$("#geetest").hide(500);
+	}
+})

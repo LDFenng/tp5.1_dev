@@ -1,0 +1,51 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Wechat/saveFans',['w'=>$Request.param.w])}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$user_info.nickname|default=''}</h4>
+	</div>
+	<div class="modal-body">
+		<input type="hidden" name="id" value="{$Request.param.id}" />	
+		<div class="row">
+			<div class="col-sm-4">
+				<span class="profile-picture">
+				<img class="editable img-responsive col-sm-12" src="{$user_info.headimgurl|default=default_img()}"></img>
+				</span>
+			</div>
+			<div class="col-sm-8 left">
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-right">昵称</label>
+					<div class="col-sm-9 bigger-130" style="margin-top:3px">
+						{$user_info.nickname|default=''}																																																									
+					</div>
+				</div>		
+				<div class="space-4"></div>			
+<!-- 				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-right">拥有标签</label>
+					<div class="col-sm-9">
+						<span class="label label-xlg label-yellow arrowed-in-right arrowed-in">Grey</span>
+						<span class="label label-xlg label-yellow arrowed-in-right arrowed-in">Grey</span>
+						<span class="label label-xlg label-yellow arrowed-in-right arrowed-in">Grey</span>
+						<span class="label label-xlg label-yellow arrowed-in-right arrowed-in">Grey</span>																																																						
+					</div>
+				</div>	 -->			
+				<div class="form-group">
+					<label class="col-sm-2 control-label no-padding-right">备注 </label>
+					<div class="col-sm-9">
+						<textarea name="remark" id="remark" cols="20" rows="3" class="col-xs-11 limited" placeholder="最多200个字符" maxlength="200">{$user_info.remark|default=''}</textarea>
+						<span class="help-inline col-xs-7">
+							还可以输入 <span class="middle red charsLeft"></span> 个字符
+						</span>
+					</div>
+				</div>							
+			</div>										
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

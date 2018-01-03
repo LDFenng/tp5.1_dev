@@ -1,0 +1,77 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Pay/saveCmb')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">添加、编辑一网通配置</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" name="id" value='{$cmb_info.id|default=null}'>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-9">
+						<input type="text" name="title" id="title" value="{$cmb_info.title|default=null}" class="col-xs-7" required/>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>				
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">商户分行号 </label>
+					<div class="col-sm-9">
+						<input type="text" name="branch_no" id="branch_no" value="{$cmb_info.branch_no|default=null}" class="col-xs-7" required/>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">商户号 </label>
+					<div class="col-sm-9">
+						<input type="text" name="merchant_no" id="merchant_no" value="{$cmb_info.merchant_no|default=null}" class="col-xs-7"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>									
+					</div>							
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">密钥： </label>
+					<div class="col-sm-9">
+						<textarea name="mer_key" cols="20" rows="4" class="col-xs-7">{$cmb_info.mer_key}</textarea>
+						<span class="help-inline col-xs-5"> 
+							<span class="middle"><a href="http://121.15.180.72/OpenAPI2/API/APIdefault.aspx" target="_blank">开放平台获取</a></span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">操作员密码： </label>
+					<div class="col-sm-9">
+						<input type="text" name="op_pwd" id="op_pwd" value="{$cmb_info.op_pwd|default=null}" class="col-xs-7"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否能使用信用卡： </label>
+					<div class="col-sm-3" style="padding-top:5px;">
+						<input name='limit_pay' id='limit_pay' {if condition="($cmb_info.limit_pay eq 1) OR !isset($cmb_info.limit_pay)"}checked{/if} value='1' class='ace ace-switch ace-switch-4 btn-flat' type='checkbox' />
+						<span class="lbl">&nbsp;&nbsp;默认启用</span>
+					</div>
+				</div>					
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

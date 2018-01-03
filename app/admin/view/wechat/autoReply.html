@@ -1,0 +1,129 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				自动回复
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>	
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Wechat/autoReply')}">
+		<div class="row margintop" id="table_bar">
+			<div class="col-xs-12 col-lg-5">
+				{customTag:pageNum  width='35%' select_num='$Request.param.page_num'/}	
+				{customTag:screen width="64%" table_name='wechat_info' field_name='wechat_id' select_val='$Request.param.wechat_id'/}	  		        				
+			</div>
+			<div class="col-xs-12 col-lg-3">
+				<div class="input-group"><span class="input-group-addon"><i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="标题" />
+				</div>       
+			</div>			
+			<div class="col-xs-12 col-lg-4 input-group-btn"> 
+				<a data-ajax-page='true' class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Wechat/autoReply')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe bigger-130"></i> 显示全部 </a>	
+				<a data-ajax-page='true' href="{:url('admin/Wechat/editAutoReply')}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加"><i class="ace-icon fa fa-plus bigger-130"></i>添加自动回复</a>
+				{notempty name="msg_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}
+			</div>
+		</div>  	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Wechat/delAutoReply')}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th class="center hidden-sm hidden-xs">标题</th>
+							<th class="center">是否启用</th>
+							<th class="center">公众号</th>
+							<th class="center">信息类型</th>
+							<th data-field="sort" data-sortable="true" class="center hidden-sm hidden-xs">排序</th>
+							<th data-field="create_time" data-sortable="true" class="center hidden-sm hidden-xs">添加时间</th>
+							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="msg_list" item="msg_info"}
+							<tr class="center" id="data_{$msg_info.id}">
+								<td class="hidden-xs center">
+									<label class="pos-rel">
+										<input class="ace input-lg check-data" type='checkbox' value='{$msg_info.id}'>
+										<span class="lbl"></span>
+									</label>
+								</td>	
+								<td class="hidden-sm hidden-xs">{$msg_info.id}</td>
+								<td class="hidden-sm hidden-xs">{$msg_info.title}</td>
+								<td>
+									{if condition="$msg_info['is_enabled'] eq 1"}
+										<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Wechat/changeAutoReply',['w'=>$msg_info.wechat_id])}" data-id="{$msg_info.id}" title="已开启">
+											开启
+										</a>
+										{else/}
+										<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Wechat/changeAutoReply',['w'=>$msg_info.wechat_id])}" data-id="{$msg_info.id}" title="已禁用">
+											禁用
+										</a>
+									{/if}
+								</td>
+								<td>{$msg_info.wechat_title}</td>
+								<td>
+								{volist name="Think.config.wechatExt.wechat_msg_type" id="msg_type_info"}
+									{if condition="$msg_type_info['code']==$msg_info.msg_type"}
+									<span class="label label-lg label-primary">{$msg_type_info.title}</span>
+									{/if}
+								{/volist}								
+								</td>		
+								<td class='hidden-sm hidden-xs col-xs-1'><input class='form-control input-sm list-order' name="{$msg_info.id}" value='{$msg_info.sort}'></td>					
+								<td class="hidden-sm hidden-xs">{$msg_info.create_time|date="Y-m-d",###}</td>
+								<td>
+									<div class="hidden-sm hidden-xs btn-group action-buttons">
+										<a class="btn btn-xs btn-success" data-ajax-page='true' data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/editAutoReply',['id'=>$msg_info['id']])}" title="编辑">
+										<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+										</a>
+									</div>		
+									<div class="hidden-md hidden-lg">
+										<div class="inline position-relative">
+											<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+												<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+											</button>
+											<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+												<li>
+													<a data-ajax-page='true' href="{:url('admin/Wechat/editAutoReply',['id'=>$msg_info['id']])}" data-placement="bottom" data-rel="tooltip" title="编辑">
+														<span class="green">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+ 	<div class="row">
+		<div class="col-xs-1 btn-corner">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Wechat/orderAutoReply')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>	 
+{/block}	    	

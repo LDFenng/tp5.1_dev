@@ -1,0 +1,144 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			素材管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				文章列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Material/articleList')}">
+		<div class="row margintop">
+			<div class="col-xs-12 col-lg-9">
+				{customTag:pageNum width='20%' select_num='$Request.param.page_num'/}				
+				{customTag:screen width='39%' table_name='news_block' field_name='block_id' select_val='$Request.param.block_id' selector='block_id_list'/}
+				{customTag:screen width='39%' table_name='news_category' field_name='category_id' select_val='$Request.param.category_id' selector='category_id_list'/}			
+			</div>
+			<div class="col-xs-12 col-lg-3">	
+				<div class="input-group"> <span class="input-group-addon"> <i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="标题、副标题、作者" />
+				</div>       
+			</div>				
+		</div>
+		<div class="row margintop" id="table_bar">	
+			<div class="col-xs-12 col-lg-6">
+			  <div class="input-daterange input-group col-xs-12"> <span class="input-group-addon">记录时间 </span>
+			    <input class="form-control date-plug start-date" name="start_time" type="text" value="{$_GET['start_time']|default=default_time(-30)}" placeholder="选择日期范围">
+			    <span class="input-group-addon"> <i class="fa fa-exchange"></i> </span>
+			    <input class="form-control date-plug end-date" name="end_time" type="text" value="{$_GET['end_time']|default=default_time()}" placeholder="选择日期范围">
+			  </div>       
+			</div>								
+			<div class="col-xs-12 col-lg-6 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Material/articleList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe bigger-130"></i> 显示全部 </a>			
+				<a data-ajax-page='true' href="{:url('admin/Material/editArticle')}" class="btn btn-sm btn-info" data-rel="tooltip" data-placement="bottom" title="添加"><i class="ace-icon fa fa-plus bigger-130"></i>添加文章</a>
+				{notempty name="article_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}
+			</div>
+		</div>   
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Material/delArticle')}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-sortable="true" class="center">标题</th>
+							<th data-sortable="true" class="center">副标题</th>
+							<th data-sortable="true" class="center">作者</th>
+							<th data-sortable="true" class="center">模块</th>
+							<th data-sortable="true" class="center">分类</th>
+							<th data-sortable="true" class="center">点击量</th>
+							<th data-sortable="true" class="center">是否显示</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">是否顶置</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">排序</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">推送时间</th>
+							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="article_list" item="article_info"}
+							<tr class="center" id="data_{$article_info.id}">
+								<td class="hidden-xs center">
+									<label class="pos-rel">
+										<input class="ace input-lg check-data" type='checkbox' value='{$article_info.id}'>
+										<span class="lbl"></span>
+									</label>
+								</td>	
+								<td class="hidden-sm hidden-xs">{$article_info.id}</td>
+								<td>{$article_info.title|subtext=25}</td>
+								<td>{$article_info.sub_title|subtext=25}</td>
+								<td>{$article_info.author|subtext=25}</td>
+								<td>{$article_info.block_title|subtext=20}</td>
+								<td>{$article_info.category_title|subtext=20}</td>
+								<td>{$article_info.hits|default=0}</td>
+								<td>
+									{if condition="$article_info['is_display'] eq 1"}
+										<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Material/changeArticleStatus',['type'=>'a'])}" data-id="{$article_info.id}" title="已显示">
+											显示
+										</a>
+										{else/}
+										<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Material/changeArticleStatus',['type'=>'a'])}" data-id="{$article_info.id}" title="已隐藏">
+											隐藏
+										</a>
+									{/if}
+								</td>	
+								<td>
+									{if condition="$article_info['is_set_top'] eq 1"}
+										<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Material/changeArticleStatus',['type'=>'b'])}" data-id="{$article_info.id}" title="顶置">
+											顶置
+										</a>
+										{else/}
+										<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Material/changeArticleStatus',['type'=>'b'])}" data-id="{$article_info.id}" title="未顶置">
+											未顶置
+										</a>
+									{/if}
+								</td>								
+								<td class='hidden-sm hidden-xs col-xs-1'><input class='form-control input-sm list-order' name="{$article_info.id}" value='{$article_info.sort}'></td>					
+								<td class="hidden-sm hidden-xs">{$article_info.push_time|date="Y-m-d",###}</td>
+								<td>
+									<div class="hidden-sm hidden-xs btn-group action-buttons">
+										<a class="btn btn-xs btn-success" data-ajax-page='true' data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Material/editArticle',['id'=>$article_info['id']])}" title="编辑">
+										<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+										</a>
+									</div>		
+									<div class="hidden-md hidden-lg">
+										<div class="inline position-relative">
+											<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+												<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+											</button>
+											<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+												<li>
+													<a data-ajax-page='true' href="{:new_url('admin/Material/editArticle',['id'=>$article_info['id']])}" data-placement="bottom" data-rel="tooltip" title="编辑">
+														<span class="green">
+															<i class="ace-icon fa fa-pencil bigger-120"></i>
+														</span>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+	<div class="row">
+		<div class="col-xs-1 btn-corner">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Material/orderArticle')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>
+{/block}	    	

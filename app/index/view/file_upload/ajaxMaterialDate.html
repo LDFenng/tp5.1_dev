@@ -1,0 +1,16 @@
+{volist name="data_date" id="data_item"}
+<div class="panel-heading">
+	<h4 class="panel-title">
+	<a class="accordion-toggle collapsed panel-date" data-index-id='{$data_item.index_id}' data-date="{$data_item.upload_date}" data-toggle="collapse" data-parent="#accordion" href="#collapse_{$data_item.index_id}" aria-expanded="false">
+	<i class="bigger-110 ace-icon fa fa-angle-right" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+	 {$data_item.upload_date}
+	</a>
+	</h4>
+</div>	
+<div id="collapse_{$data_item.index_id}" class="panel-collapse collapse" aria-expanded="false">
+	<div class="panel-body update-date" id="file_data_{$data_item.upload_date}" data-date="{$data_item.upload_date}">
+
+	</div>
+</div>									
+{/volist}
+<div class="text-right">{$date_page}</div>	

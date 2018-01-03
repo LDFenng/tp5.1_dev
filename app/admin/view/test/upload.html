@@ -1,0 +1,13 @@
+<div class="form-group">
+	<label class="col-sm-3 control-label no-padding-right">图片：</label>
+	<div class="col-sm-9">
+		<input type="hidden" name="old_pic_url" value="{$slide_info.pic_url|default=''}"/>
+		<input type="hidden" name="pic_url" id="pic_url" value="{$slide_info.pic_url|default=''}"/>
+        <img class="col-sm-6 crop-img" id="img_src" data-input-id='pic_url' data-src-id='img_src' data-src="{$slide_info.pic_url|default=null}" src="{:default_img()}" data-rel="tooltip" title="点击上传图片" style="cursor:pointer">
+		<span class="help-inline col-xs-12 col-sm-4"> 
+			<span class="middle red" id="restwo"></span>
+		</span>
+	</div>
+</div>
+{include file="file_upload/fileUpload"/}
+

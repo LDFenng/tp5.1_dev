@@ -1,0 +1,55 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajaxForm4" name="form0" method="post" action="{:url('saveDispatchData')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$dispatch_info.group_title|default='分配管理'}</h4>
+	</div>
+	<div class="modal-body">	 
+		<input type="hidden" value="{$Request.param.id}" name="id"/> 
+		<div class="space-4"></div>
+		<div class="form-group">	
+			<div class="col-sm-12" id="member_data">
+				{volist name="member_list" id="member_info"}
+				<div class="radio col-sm-3">
+					<label>
+						<input class="ace input-lg" name="officer_id" value="{$member_info.id}" {if condition="$member_info.is_enabled eq true"}disabled{/if} {if condition="$member_info.is_selected eq true"}checked{/if} type="radio">
+						<span class="lbl bigger-120">{$member_info.name}</span>
+					</label>
+				</div>					
+				{/volist}		
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i>保存</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>
+</form>
+
+<script type="text/javascript">
+
+	$(function () {
+		openload();
+	    $('.ajaxForm4').ajaxForm({
+	        success: complete4, // 这是提交后的方法
+	        dataType: 'json'
+	    });
+	    colseload();
+	});
+	//成功失败均不跳转
+	function complete4(data) {
+	    if (data.code == 1) {
+	        layer.alert(data.msg, {icon: 6}, function (index) {
+	            layer.close(index);
+	            $(".ajax-display-all").click();
+				$("#edit_data").modal('hide');
+	        });
+	    } else {
+	        layer.alert(data.msg, {icon: 5}, function (index) {
+	            layer.close(index);
+	        });
+	        return false;
+	    }
+	}
+</script>
+

@@ -1,0 +1,107 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				群发记录
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+<!-- 	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>-->	 
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Wechat/massMsgList')}">
+		<div class="row margintop">
+			<div class="col-xs-12 col-lg-6">
+				{customTag:pageNum  width='25%' select_num='$Request.param.page_num'/}	
+				{customTag:screen width="48%" table_name='wechat_info' field_name='wechat_id' select_val='$Request.param.wechat_id'/}	  		        				
+		        <select name="msg_type" id="type_code" class="selectpicker ajax-change" data-width='25%' data-style='btn btn-primary btn-white' data-live-search="true" data-live-search-placeholder='搜索'>
+					{volist name="Think.config.wechatExt.wechat_msg_type" id="msg_type_info"}
+						{in name="msg_type_info['code']" value='0,1,2,3,4,5,8'}
+						<option value="{$msg_type_info.code}" {if condition="$msg_type_info.code eq $Request.param.msg_type"}selected{/if}>{$msg_type_info.title}</option>
+						{/in}
+					{/volist}					
+		        </select> 			
+			</div>
+			<div class="col-xs-12 col-lg-6">
+			  <div class="input-daterange input-group col-xs-12"> <span class="input-group-addon">记录时间 </span>
+			    <input class="form-control date-plug start-date" name="start_time" type="text" value="{$_GET['start_time']|default=default_time(-30)}" placeholder="选择日期范围">
+			    <span class="input-group-addon"> <i class="fa fa-exchange"></i> </span>
+			    <input class="form-control date-plug end-date" name="end_time" type="text" value="{$_GET['end_time']|default=default_time()}" placeholder="选择日期范围">
+			  </div>       
+			</div>				
+		</div> 
+		<div class="row margintop" id="table_bar">	
+			<div class="col-xs-12 col-lg-5 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm btn-success" href="{:url('admin/Wechat/massMsgList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe fa-spin bigger-130"></i> 显示全部 </a>				 
+			</div>					
+		</div> 	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th>
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-sortable="true" class="hidden-sm hidden-xs">信息类型</th>
+							<th data-sortable="true">公众号</th>
+							<th data-sortable="true" class="hidden-sm hidden-xs">群发时间</th>
+							<th data-sortable="true" class="hidden-sm hidden-xs">群发对象</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="mass_list" item="mass_info"}
+							<tr id="data_{$mass_info.id}">
+								<td>
+									<label class="pos-rel">
+										<input type="checkbox" class="ace input-lg check-data" value="{$mass_info.id}"/>
+										<span class="lbl"></span>															
+									</label>											
+								</td>
+								<td class="center hidden-sm hidden-xs">{$mass_info.id}</td>
+								<td class="hidden-sm hidden-xs">
+									{volist name="Think.config.wechatExt.wechat_msg_type" id="msg_type_info"}
+										{in name="msg_type_info['code']" value='0,1,2,3,4,5,8'}
+										{if condition="$msg_type_info.code eq $mass_info['msg_type']"}{$msg_type_info.title}{/if}
+										{/in}
+									{/volist}								
+								</td>
+								<td>{$mass_info.wechat_title}</td>
+								<td>{$mass_info.mass_time|date='Y-m-d',###}</td>																
+								<td class="hidden-sm hidden-xs">{$mass_info.mass_obj|default=""}</td>
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+ 	<div class="row">
+		<div class="col-xs-1 btn-corner"></div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>	
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	      </div>
+	    </div>
+	</div>      	
+
+	<script type="text/javascript">
+
+	</script>	 
+{/block}	    	

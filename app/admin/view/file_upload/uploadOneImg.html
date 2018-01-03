@@ -1,0 +1,171 @@
+<link rel="stylesheet" href="__PUBLIC_PC__/ace/components/cropper/css/cropper.min.css">
+<link rel="stylesheet" href="__PUBLIC_PC__/ace/components/cropper/css/main.css"> 
+    <!-- Cropping modal -->       
+<form class="avatar-form" action="{:url('admin/FileUpload/saveUpload')}" enctype="multipart/form-data" method="post">
+  <input type="hidden" class="avatar-data" id="avatar_data" name="avatar_data">
+  <input type="hidden" class="avatar-src" id="avatar_src" {if condition="$img_info.img_src neq default_img()"}value="{$img_info.img_src}"{/if} name="avatar_src">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title" id="avatar-modal-label">裁剪图片</h4>  
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="img-container">
+          <img id="base_image" src="{$img_info.img_src|default=default_img()}">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="docs-preview clearfix">
+          <div class="img-preview preview-lg"></div>
+          <div class="img-preview preview-md"></div>
+        </div>
+		<div class="docs-toggles">
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn radio-btn btn-primary active col-xs-3" data-toggle="tooltip" title="宽高比：16/9">
+					<input type="radio" checked class="sr-only" id="aspectRatio0" name="aspectRatio" value="1.7777777777777777">
+					16:9
+				</label>
+				<label class="btn radio-btn btn-primary col-xs-3" data-toggle="tooltip" title="宽高比：4/3">
+				  <input type="radio" class="sr-only" id="aspectRatio1" name="aspectRatio" value="1.3333333333333333">
+				    4:3
+				</label>	
+			    <label class="btn radio-btn btn-primary col-xs-3" data-toggle="tooltip" title="宽高比：1/1">
+			      <input type="radio" class="sr-only" id="aspectRatio2" name="aspectRatio" value="1">
+			        1:1
+			    </label>
+			    <label class="btn radio-btn btn-primary col-xs-3" data-toggle="tooltip" title="宽高比：2/3">
+			      <input type="radio" class="sr-only" id="aspectRatio3" name="aspectRatio" value="0.6666666666666666">
+			        2:3
+			    </label>
+			    <label class="btn radio-btn btn-primary col-xs-6" data-toggle="tooltip" title="自定义">
+			      <input type="radio" class="sr-only" id="aspectRatio4" name="aspectRatio" value="NaN">
+			                      自定义
+			    </label>			    			    										
+			</div>			    
+		</div><!-- /.docs-toggles -->        
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-9 docs-buttons">
+        <div class="btn-group">
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="setDragMode" data-option="move" title="移动">
+            <span class="docs-tooltip" title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+              <span class="fa fa-arrows"></span>
+            </span>
+          </button>
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="setDragMode" data-option="crop" title="裁剪">
+            <span class="docs-tooltip" title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+              <span class="fa fa-crop"></span>
+            </span>
+          </button>
+        </div>
+        <div class="btn-group">
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="zoom" data-option="0.1" title="放大">
+            <span class="docs-tooltip" title="$().cropper(&quot;zoom&quot;, 0.1)">
+              <span class="fa fa-search-plus"></span>
+            </span>
+          </button>
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="zoom" data-option="-0.1" title="缩小">
+            <span class="docs-tooltip" title="$().cropper(&quot;zoom&quot;, -0.1)">
+              <span class="fa fa-search-minus"></span>
+            </span>
+          </button>
+        </div>
+        <div class="btn-group">
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="rotate" data-option="-15" title="左转15°">
+            <span class="docs-tooltip" title="$().cropper(&quot;rotate&quot;, -15)">
+              <span class="fa fa-rotate-left"></span>
+            </span>
+          </button>
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="rotate" data-option="45" title="右转45°">
+            <span class="docs-tooltip" title="$().cropper(&quot;rotate&quot;, 45)">
+              <span class="fa fa-rotate-right"></span>
+            </span>
+          </button>
+        </div>
+        <div class="btn-group">
+          <button type="button" data-toggle="tooltip" class="btn btn-primary" data-method="reset" title="重置">
+            <span class="docs-tooltip" title="$().cropper(&quot;reset&quot;)">
+              <span class="fa fa-refresh"></span>
+            </span>
+          </button>
+          <label data-toggle="tooltip" class="btn btn-primary btn-upload" for="avatarInput" title="上传图片">
+            <input type="file" class="sr-only check-img" id="avatarInput" name="avatar_file" accept="image/gif,image/jpeg,image/jpg,image/png">
+            <span class="docs-tooltip">
+              <span class="fa fa-upload">&nbsp;&nbsp;选择文件</span>
+            </span>
+          </label>
+        </div>
+      </div><!-- /.docs-buttons -->
+      <div class="col-md-3 docs-buttons"> 
+      	<button type="submit" id="avatar_save" class="btn btn-primary btn-block">
+      	<span class="ace-icon fa fa-floppy-o"></span>保存</button>
+      </div>
+	 </div>
+  </div>
+</form>
+        
+<script src="__PUBLIC_PC__/ace/components/cropper/js/cropper.min.js"></script>  
+<script src="__PUBLIC_PC__/ace/components/cropper/js/main.js"></script> 
+<script src="__PUBLIC_PC__/ace/components/jquery-form/jquery.form.js"></script>
+
+<script>
+$(function(){
+	var old_input_id = '',
+	input_id = '{$img_info.input_id}',
+	src_id = '{$img_info.src_id}';
+	$("#ajax_content").delegate('#avatar_save','click',function(e){
+		$.openload();
+		$('.avatar-form').ajaxForm({
+			dataType: 'json',
+		    success: function complete(data) {
+			    if (data.code == 1) {
+			    	$("#avatarInput").val('');
+			    	if(old_input_id==input_id){
+			    		$("#avatar_src").val(data.img_url);
+			    	}
+			    	else{
+			    		$("#avatar_src").val('');
+			    	}
+					$('#'+src_id).attr('src',data.img_url);
+					$('#'+input_id).val(data.img_url);
+					$('#'+input_id+'_thumb').val(data.thumb_url);
+					$("#file_modal").modal('hide');
+					old_input_id = input_id;
+			    } 
+			    else {
+			    	layer.alert(data.msg, {icon: 5});
+			    	$.closeload();
+			        return false;
+			    }
+			    $.closeload();
+		    } // 这是提交后的方法
+		});
+	})
+
+	$('.avatar-form').unbind().delegate('#avatarInput','change',function(){
+		var file;
+		if ((file = this.files[0])) {
+		    var imageType = /^image\//;
+		    if (!imageType.test(file.type)) {
+	    		layer.alert('图片限于png,gif,jpeg,jpg格式', {icon: 5});
+	    		return false;
+		    }
+	    	var file_size=(file.size/1048576).toFixed(2),
+	    	check_size="{:config('img_config.size')}",
+	    	format_size=(check_size/1048576).toFixed(2);
+	    	if(file_size>format_size){
+	    		layer.alert('图片大小不得超过'+format_size+'MB', {icon: 5});
+	    		return false;
+	    	}
+	        //callback && callback({"width": this.width, "height": this.height, "filesize": file.size});
+	        //img.src = _URL.createObjectURL(file);img = new Image();
+	    }
+	})
+
+	$("#file_modal").on("hidden.bs.modal", function() {  
+		$("#file_modal").removeData("bs.modal");  
+	});
+})
+</script>

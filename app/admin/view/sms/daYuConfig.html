@@ -1,0 +1,212 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			系统管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				短信配置
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<div class="row" id="form_data">
+		<div class="tabbable">
+			<ul id="myTab" class="nav nav-tabs">
+				<li class="active">
+				<a data-toggle="tab" href="#sms_config" aria-expanded="false">
+					短信配置
+				</a>
+				</li>
+				<li class="">
+				<a data-toggle="tab" href="#appliy_sms" aria-expanded="true">
+					助学金短信通知
+				</a>
+				</li>	
+			</ul>
+			<div class="tab-content">
+				<div id="sms_config" class="tab-pane fade active in">
+					<div class="row">
+						<div class="col-xs-12">
+							<div class="col-xs-12 col-lg-3 input-group-btn"> 
+								<a href="{:new_url('admin/Sms/editDaYu')}" class="btn btn-sm btn-info" data-rel="tooltip" data-placement="bottom" title="添加" data-toggle="modal" data-target="#edit_data"><i class="ace-icon fa fa-plus bigger-130"></i>添加短信模板</a>
+							</div>
+						</div>
+						<div class="col-xs-12" id="sms_data">
+							{volist name="sms_list" id="sms_info"}
+							<div class="col-xs-6 col-sm-3 pricing-box">
+								<div class="widget-box widget-color-dark">
+									<div class="widget-header">
+										<h5 class="widget-title bigger lighter">{$sms_info.title}</h5>
+									</div>
+									<div class="widget-body">
+										<div class="widget-main">
+											<ul class="list-unstyled list-striped pricing-table">
+												<li class="edit-data">
+													<div id="sign_name_{$sms_info.id}" data-id="{$sms_info.id}" data-name='sign_name' data-val='{$sms_info.sign_name}' class='get-data-{$sms_info.id} is-hide cursor'>短信签名：{$sms_info.sign_name}</div>															
+												</li>							
+												<li class="edit-data">
+													<div id="sms_code_{$sms_info.id}" data-id="{$sms_info.id}" data-name='sms_code' data-val='{$sms_info.sms_code}' class='get-data-{$sms_info.id} is-hide cursor'>短信模板CODE：{$sms_info.sms_code}</div>															
+												</li>
+												<li class="edit-data">
+													<div id="sms_key_{$sms_info.id}" data-id="{$sms_info.id}" data-name='sms_key' data-val='{$sms_info.sms_key}' class='get-data-{$sms_info.id} is-hide cursor'>短信KEY：{$sms_info.sms_key}</div>				
+												</li>
+												<li class="edit-data">
+													<div id="sms_secret_{$sms_info.id}" data-id="{$sms_info.id}" data-name='sms_secret' data-val='{$sms_info.sms_secret}' class='get-data-{$sms_info.id} is-hide cursor'>短信Secret：{$sms_info.sms_secret}</div>	
+												</li>
+											</ul>
+											<p>{$sms_info.sms_template}</p>
+											<div class="price">
+												{if condition="$sms_info['is_enabled'] eq 1"}
+													<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Sms/changeDaYuStatus')}" data-id="{$sms_info.id}" title="启用">
+														启用
+													</a>
+													{else/}
+													<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Sms/changeDaYuStatus')}" data-id="{$sms_info.id}" title="禁用">
+														禁用
+													</a>
+												{/if}
+												<button class="btn btn-sm btn-primary submit-data" type="button" data-id='{$sms_info.id}' style="display:none" id="save_button_{$sms_info.id}">保存</button>
+											</div>
+										</div>
+										<div>
+											<a class="btn btn-block confirm-btn btn-inverse" data-info='确定删除？' href="{:url('admin/Sms/delDaYu',['ids'=>$sms_info.id])}">
+											删除
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+							{/volist}
+						</div>					
+					</div>					
+				</div>	
+				<div id="appliy_sms" class="tab-pane fade">										
+					<div class="row">
+						<div class="col-xs-12">
+							<form class="form-horizontal ajax-form" method="post" action="{:new_url('admin/Sms/changeAppliySms')}">
+								<input type='hidden' value="{$appliy_info.id|default=null}" name='id' />
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">选择短信模板</label>
+									<div class="col-sm-9">
+										<select name="sms_id" class="select2">
+											{volist name="sms_list" id="sms_info"}
+											<option value='{$sms_info.id}' {if condition="$sms_info.id == $appliy_info.sms_id"}selected{/if}>{$sms_info.title}</option>
+											{/volist}
+										</select>						
+									</div>
+								</div>					  
+								<div class="space-4"></div>												
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+									<div class="col-sm-9" style="margin-top:0.78rem">
+										<label class="col-sm-2">
+											<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="$appliy_info.is_enabled==1"}checked="checked"{/if}>
+											<span class="lbl"></span>
+										</label>
+										<span class="help-inline col-xs-6">
+											<span class="middle">默认启用</span>
+										</span>							
+									</div>
+								</div>	
+								<div class="space-4"></div>	
+								<div class="clearfix form-actions">
+									<div class="col-sm-offset-6 col-sm-5">
+										<button class="btn btn-info" type="submit">
+											<i class="ace-icon fa fa-check bigger-110"></i>
+											保存
+										</button>
+									</div>
+								</div>							
+							</form>							
+						</div>
+					</div>
+				</div>						
+			</div>
+		</div>
+	</div>
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	 
+	        </div>   <!-- /.modal-content -->
+	    </div>    <!-- /.modal -->
+	</div>		
+	<script type="text/javascript">
+	$(function(){
+		var scripts=['__PUBLIC_PC__/ace/components/template/template.js'];
+		if($.addScript(scripts)=='success'){
+			$("#ajax_content").unbind().delegate('.is-hide','click',function(){
+				var name=$(this).data('name'),
+				id=$(this).data('id'),
+				val=$(this).data('val');
+				$("#"+name+"_"+id).hide();
+				var html = template($('#edit_tpl')[0].innerHTML, {'name': name,'val':val,'id':id});			
+				$(this).parent('li').append(html);
+				is_show(id);
+			})
+		}
+		$("#sms_data").unbind().delegate('.clear-data','click',function(){
+			var id=$(this).data('id'),
+			name=$(this).data('name')
+			$("div[data-remove='"+name+"_"+id+"']").remove();
+			$("#"+name+"_"+id).show();
+			$(this).parents
+			is_show(id);
+		})
+		function is_show(id){
+			var i=0;
+			$(".edit-data").each(function(){  
+				if($(this).find('.get-data-'+id).is(':hidden')){
+					i++;
+				}
+			})
+			if(i!=0){
+				$("#save_button_"+id).show(100);
+			}
+			else{
+				$("#save_button_"+id).hide(100);
+			}
+		}
+		
+		$("#form_data").delegate('.submit-data','click',function(){
+			var id=$(this).data('id'),
+			param_data={};
+			param_data['id']=id;
+			param_data['t']='u';
+			if(!empty($("#input_sign_name_"+id).val()))param_data['sign_name']=$("#input_sign_name_"+id).val();
+			if(!empty($("#input_sms_code_"+id).val()))param_data['sms_code']=$("#input_sms_code_"+id).val();
+			if(!empty($("#input_sms_key"+id).val()))param_data['sms_key']=$("#input_sms_key_"+id).val();
+			if(!empty($("#input_sms_secret_"+id).val()))param_data['sms_secret']=$("#input_sms_secret_"+id).val();
+			$.ajax({
+				url:"{:new_url('admin/Sms/saveDaYu')}",
+				type:'POST',
+				data:param_data,
+				dataType:'json',
+				success:function(data){
+					if(data.code==1){
+		                layer.alert(data.msg, {icon: 6}, function (index) {
+		                    layer.close(index);
+		                    if(!empty(data.url))$.phpAjax(data.url);
+		                });
+					}
+					else{
+		                layer.alert(data.msg, {icon: 5}, function (index) {
+		                    layer.close(index);
+		                    if(!empty(data.url))$.phpAjax(data.url);
+		                });
+					}
+				}
+			})
+		})
+	})
+	</script>
+	<script type="text/html" id="edit_tpl">
+		<div class="input-group" data-remove="<%=name%>_<%=id%>">
+			<input class="form-control" id="input_<%=name%>_<%=id%>" name="<%=name%>" value="<%=val%>" type="text">
+			<span class="input-group-addon cursor clear-data" data-name="<%=name%>" data-id="<%=id%>">
+			<i class="ace-icon red fa fa-times-circle bigger-110"></i>
+			</span>
+		</div>	
+	</script>
+{/block}	

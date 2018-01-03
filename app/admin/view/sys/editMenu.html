@@ -1,0 +1,95 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sys/saveMenu')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title s_name"></h4>
+	</div>
+	<div class="modal-body">	
+		<input type="hidden" value="{$Request.param.id}" name="id" id="id" /> 
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-9">
+						<input type="text" name="title" id="title" value="{$menu_info.title|default=''}" placeholder="名称" class="col-xs-10 col-sm-7" />
+						<span class="help-inline col-xs-12 col-sm-5"> 
+						<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">所属菜单 </label>
+					<div class="col-sm-9">
+						<select name="pid" id="pid" required class="select2 col-xs-7" data-size="8" data-style='btn btn-primary btn-white' data-live-search="true" data-live-search-placeholder='搜索'> 
+						<option value='0' {if condition="$Request.param.pid eq 0"}selected{/if}>顶级菜单</option>
+						{volist name="menu_list" id="menu_item"}
+							<option value="{$menu_item.id}" {if condition="$menu_item.id eq $Request.param.pid"}selected{/if}>{$menu_item.title}</option> 
+						{/volist}
+						</select>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">图标</label>
+					<div class="col-sm-9">
+						<input type="text" name="icon" id="icon" value="{$menu_info.icon|default='fa-desktop'}" placeholder="图标" class="col-xs-10 col-sm-7" />		
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">方法名</label>
+					<div class="col-sm-9">
+						<input type="text" value="{$menu_info.action_name|default=''}" name="action_name" placeholder="控制器/方法名 或 控制器" class="col-xs-10 col-sm-7" />
+						<span class="help-inline col-xs-12 col-sm-5"> 
+						<span class="middle red">*</span>
+						</span>		
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group" id="sundry_display">
+					<label class="col-sm-3 control-label no-padding-right">排序</label>
+					<div class="col-sm-9">
+						<input type="text" value="{$menu_info.sort|default='100'}" name="sort" placeholder="值越小越靠前" class="col-xs-10 col-sm-7" />
+						<span class="help-inline col-xs-12 col-sm-5"> 
+						<span class="middle red">*</span>
+						</span>		
+					</div>																					
+				</div>			
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right" for="form-field-1">是否启用</label>
+					<div class="col-sm-1" style="margin-top:0.78rem">
+						<label>
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($menu_info.is_enabled eq '1') OR !isset($menu_info.is_enabled)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle" id="resone"></span>
+						</span>							
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right" for="form-field-1">是否显示菜单</label>
+					<div class="col-sm-1" style="margin-top:0.78rem">
+						<label>
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_display" type="checkbox" value="1" {if condition="($menu_info.is_display eq '1') OR !isset($menu_info.is_display)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle" id="resone"></span>
+						</span>							
+					</div>
+				</div>			
+			</div>
+		</div>		
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i>保存</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>
+</form>
+
+<script src="__PUBLIC_PC__/admin/js/sys/menuList.js"></script>
+

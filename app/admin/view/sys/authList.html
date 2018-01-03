@@ -1,0 +1,177 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" id="save_data" method="post" action="{:new_url('admin/Sys/saveAuth')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$group_info.title|default=''}授权</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-2"></div>
+			<div class="col-sm-8">
+				<div class="dd" id="nestable">
+					<ol class="dd-list">
+						{notempty name="auth_list"}
+					    {foreach name="auth_list" item="auth_info"}
+					    {if condition="empty($auth_info.child)" }
+						<li class="dd-item" data-id="{$auth_info.id}">
+							<div class="dd2-content">
+								{$auth_info.title}
+								<div data-rel="tooltip" id="tooltip_{$auth_info.id}" {in name='auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+									<i data-id="{$auth_info.id}" class="check-{$auth_info.id} ace-icon fa off-on {in name='auth_info.id' value='$group_ids'} fa-toggle-on red{else/}fa-toggle-off bule{/in} bigger-250"></i>
+								</div>	
+							</div>
+						</li>	
+						{else/}
+						<li class="dd-item" data-id="{$auth_info.id}">
+							<div class="dd2-content">
+								{$auth_info.title}
+								<div data-rel="tooltip" id="tooltip_{$auth_info.id}" {in name='auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+									<i data-id="{$auth_info.id}" class="check-{$auth_info.id} ace-icon fa off-on {in name='auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+								</div>								
+							</div>
+							<ol class="dd-list">
+								{foreach name="auth_info['child']" item="two_auth_info"}
+								{if condition="empty($two_auth_info.child)"}	
+								<li class="dd-item" data-id="{$two_auth_info.id}">
+									<div class="dd2-content">
+									    {$two_auth_info.title}
+										<div data-rel="tooltip" id="tooltip_{$two_auth_info.id}" {in name='two_auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+											<i data-id="{$two_auth_info.id}" class="check-{$auth_info.id} check-two-{$two_auth_info.id} ace-icon fa off-on {in name='two_auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+										</div>	
+									</div>
+								</li>
+								{else/}
+								<li class="dd-item" data-id="{$two_auth_info.id}">
+									<div class="dd2-content">
+									    {$two_auth_info.title}
+										<div data-rel="tooltip" id="tooltip_{$two_auth_info.id}" {in name='two_auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+											<i data-id="{$two_auth_info.id}" class="check-{$auth_info.id} check-two-{$two_auth_info.id} ace-icon fa off-on {in name='two_auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+										</div>
+									</div>
+									<ol class="dd-list">
+										{foreach name="two_auth_info['child']" item="three_auth_info"}
+										{if condition="empty($three_auth_info.child)"}	
+										<li class="dd-item" data-id="{$three_auth_info.id}">
+											<div class="dd2-content">
+											    {$three_auth_info.title}
+												<div data-rel="tooltip" id="tooltip_{$three_auth_info.id}" {in name='three_auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+													<i data-id="{$three_auth_info.id}" class="check-{$auth_info.id} check-two-{$two_auth_info.id} check-three-{$three_auth_info.id} ace-icon fa off-on {in name='three_auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+												</div>	
+											</div>
+										</li>
+										{else/}
+										<li class="dd-item" data-id="{$three_auth_info.id}">
+											<div class="dd2-content">
+											    {$three_auth_info.title}
+												<div data-rel="tooltip" id="tooltip_{$three_auth_info.id}" {in name='three_auth_info.id' value='$group_ids'}ttitle="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+													<i data-id="{$three_auth_info.id}" class="check-{$auth_info.id} check-two-{$two_auth_info.id} check-three-{$three_auth_info.id} ace-icon fa off-on {in name='three_auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+												</div>
+											</div>
+											<ol class="dd-list">
+												{foreach name="three_auth_info['child']" item="four_auth_info"}
+												{if condition="empty($four_auth_info.child)"}	
+												<li class="dd-item" data-id="{$four_auth_info.id}">
+													<div class="dd2-content">
+													    {$four_auth_info.title}
+														<div data-rel="tooltip" id="tooltip_{$four_auth_info.id}" {in name='four_auth_info.id' value='$group_ids'}title="开启"{else/}title="关闭"{/in} class="pull-right" style="margin-top:-5px;cursor:pointer">
+															<i data-id="{$four_auth_info.id}" class="check-{$auth_info.id} check-two-{$two_auth_info.id} check-three-{$three_auth_info.id} check-four-{$four_auth_info.id} ace-icon fa off-on {in name='four_auth_info.id' value='$group_ids'} fa-toggle-on red{else/} fa-toggle-off bule{/in} bigger-250"></i>
+														</div>	
+													</div>
+												</li>												
+												{/if}
+												{/foreach}											
+											</ol>
+										</li>																					
+										{/if}
+										{/foreach}								
+									</ol>
+								</li>																	
+								{/if}
+								{/foreach}						
+							</ol>							
+						</li>				    
+					    {/if}
+					    {/foreach}						
+						{/notempty}
+					</ol>
+				</div>
+			</div>	
+			<div class="col-sm-2"><button class="btn btn-white btn-primary is-check" type="button">全选/反选</button></div>													
+		</div>
+	</div>
+	<div class="modal-footer">
+		<input type="hidden" id="id_str" name="id_str" />
+		<input type="hidden" name="id" value="{$Request.param.id}"/>
+		<button class="btn btn-info" type="submit" id="submit_data"><i class="ace-icon fa fa-check bigger-110"></i>保存</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>
+</form>
+<script type="text/javascript">
+$(function(){
+	$(".modal-footer").delegate('#submit_data','click',function(){
+		var ids = [];
+		$(".off-on").each(function(){
+			if($(this).hasClass('fa-toggle-on')){
+				ids.push($(this).data('id'));
+			}
+		});
+		$("#id_str").val(ids);
+	})
+	$('.dd').nestable();
+	$('.dd').nestable('collapseAll'); 
+	$('.dd2-content a').on('mousedown', function(e){
+		e.stopPropagation();
+	});	
+	$('[data-rel="tooltip"]').tooltip();
+	$("#nestable").delegate('.off-on','click',function(){
+		var _this = $(this);
+		var on_off = true;
+		var auth_id = _this.data('id');
+		if(_this.hasClass('fa-toggle-on')){
+			on_off = false;
+			_this.removeClass('fa-toggle-on red').addClass('fa-toggle-off bule');
+			$("#tooltip_"+auth_id).attr('data-original-title','关闭');
+		}
+		else{
+			on_off = true;
+			_this.removeClass('fa-toggle-off bule').addClass('fa-toggle-on red');
+			$("#tooltip_"+auth_id).attr('data-original-title','开启');
+		}
+		if(_this.hasClass('check-'+auth_id) && !_this.hasClass('check-two-'+auth_id)
+				&& !_this.hasClass('check-three-'+auth_id) && !_this.hasClass('check-four-'+auth_id)){
+				(on_off) ? on_class(auth_id) :off_class(auth_id);
+		}
+		else if(_this.hasClass('check-two-'+auth_id)
+			&& !_this.hasClass('check-three-'+auth_id) && !_this.hasClass('check-four-'+auth_id)){
+			(on_off) ? on_class('two-'+auth_id) :off_class('two-'+auth_id);
+		}
+		else if(_this.hasClass('check-three-'+auth_id) && !_this.hasClass('check-four-'+auth_id)){
+			(on_off) ? on_class('three-'+auth_id) :off_class('three-'+auth_id);
+		}
+		else if(_this.hasClass('check-four-'+auth_id)){
+			(on_off) ? on_class('four-'+auth_id) :off_class('four-'+auth_id);
+		}
+	})	
+	function off_class(auth_id){
+		$('.check-'+auth_id).removeClass('fa-toggle-on red').addClass('fa-toggle-off bule');
+		$('.check-'+auth_id).attr('data-original-title','关闭');
+	}
+	function on_class(auth_id){
+		$('.check-'+auth_id).removeClass('fa-toggle-off bule').addClass('fa-toggle-on red');
+		$('.check-'+auth_id).attr('data-original-title','开启');
+	}
+	
+	$(".is-check").click(function(){
+		$(".off-on").each(function(){
+			if($(this).hasClass('fa-toggle-on')){
+				$(this).removeClass('fa-toggle-on red').addClass('fa-toggle-off bule');
+				$(this).attr('data-original-title','关闭');
+			}
+			else{
+				$(this).removeClass('fa-toggle-off bule').addClass('fa-toggle-on red');
+				$(this).attr('data-original-title','开启');
+			}
+		})
+	})
+})
+</script>

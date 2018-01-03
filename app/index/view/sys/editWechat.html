@@ -1,0 +1,121 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sys/saveWechat')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$wechat_info.title|default=null}微信公众号接入配置</h4>
+	</div>
+	<div class="modal-body">	
+		<input type="hidden" name="id" id="id" value="{$wechat_info.id|default=''}" />
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">公众号名称</label>
+			<div class="col-sm-9">
+				<input type="text" name="title" id="title" value="{$wechat_info.title|default=null}" placeholder="微信公众名称" class="col-sm-8" required/>
+	            <span class="help-inline col-sm-4">
+					<span class="middle red">*</span>
+				</span>
+			</div>
+		</div>			
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">公众号APPID</label>
+			<div class="col-sm-9">
+				<input type="text" name="app_id" id="app_id" value="{$wechat_info.app_id|default=null}" placeholder="微信公众APPID" class="col-sm-8" required onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\_\.]/g,'')"/>
+	            <span class="help-inline col-sm-4">
+					<span class="middle red">*</span>
+				</span>
+			</div>
+		</div>		
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">公众号app_secret</label>
+			<div class="col-sm-9">
+				<input type="text" name="app_secret" id="app_secret" value="{$wechat_info.app_secret|default=null}" placeholder="微信公众app_secret" class="col-sm-8" required onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\_\.]/g,'')"/>
+	            <span class="help-inline col-sm-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>	
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">Token</label>  
+			<div class="col-sm-9">
+				<input type="text" name="token" id="token" value="{$wechat_info.token|default=get_rand()}" placeholder="Token" class="col-sm-8" required onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\_\.]/g,'')"/>
+	            <span class="help-inline col-sm-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>	
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">商户ID</label>
+			<div class="col-sm-9">
+				<input type="text" name="merchant_id" id="merchant_id" value="{$wechat_info.merchant_id|default=null}" placeholder="merchant_id" class="col-sm-8" onkeyup="value=value.replace(/[^\a-\z\A-\Z0-9\_]/g,'')"/>
+	            <span class="help-inline col-sm-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>		
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">支付秘钥</label>
+			<div class="col-sm-9">
+				<input type="text" name="key" id="key" value="{$wechat_info.key|default=null}" placeholder="key" class="col-sm-8" />
+	            <span class="help-inline col-sm-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>	
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">上传证书</label>
+			<div class="col-sm-9">
+				<input type="file" name="cert_path" value="{$wechat_info.cert_path|default=null}" class="btn btn-sm btn-warning"/>						
+			</div>
+		</div>	
+		<div class="space-4"></div>	
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">上传秘钥</label>
+			<div class="col-sm-9">			
+				<input type='file' name="key_path" id="key_path" value="{$wechat_info.key_path|default=null}" class="btn btn-sm btn-warning">
+			</div>
+		</div>						
+		<div class="space-4"></div>									
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">微信号类型</label>
+			<div class="col-sm-9">
+				<select name="wechat_type" class="hidden-sm select2 col-sm-5"  data-placeholder='搜索'>
+					{volist name="Think.config.wechatExt.wechat_type" id="type_info"}
+						<option value="{$type_info.code}" {if condition="$type_info.code eq $wechat_info.wechat_type"}selected{/if}>{$type_info.title}</option>
+					{/volist}
+				</select>
+			</div>
+		</div>	
+		<div class="space-4"></div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+			<div class="col-sm-3" style="padding-top:5px;">
+				<input name='is_enabled' id='is_enabled' {if condition="($wechat_info.is_enabled eq 1) OR !isset($wechat_info.is_enabled)"}checked{/if} value='1' class='ace ace-switch ace-switch-4 btn-flat' type='checkbox' />
+				<span class="lbl">&nbsp;&nbsp;默认启用</span>
+			</div>
+			<div class="col-sm-6" style="padding-top:5px;">
+				<a href="https://mp.weixin.qq.com/" target="_blank">点击此处</a>获取微信公众APPID及APP KEY
+			</div>			
+		</div>									
+		<div class="space-4"></div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">排序（从小到大） </label>
+			<div class="col-sm-9">
+				<input type="text" name="sort" value="{$wechat_info.sort|default=100}" class="col-xs-10 col-sm-8" onkeyup="this.value=this.value.replace(/\D/g,'')"/>
+			</div>
+		</div>		
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i>提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>
+</form>
+<script type="text/javascript">
+
+
+</script>

@@ -1,0 +1,109 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" id="attr_form" method="post" action="{:new_url('admin/Goods/saveProductAttr')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">商品属性</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<input type="hidden" name="type" value="{$Request.param.type}" />
+				<input type="hidden" id="product_id" name="product_id" value="{$Request.param.product_id}" />	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-9">
+						<input type="text" name="name" id="name" value="{$attr_info.name|default=''}" placeholder="商品名称" class="col-xs-8"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">编码 </label>
+					<div class="col-sm-9">
+						<input type="text" name="product_code" id="product_code" value="{$attr_info.product_code|default=''}" placeholder="商品编码" class="col-xs-8"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">销售价</label>
+					<div class="col-sm-9">
+						<input type="text" name="sale_price" id="sale_price" value="{$attr_info.sale_price|default=''}" placeholder="商品销售价" pattern="^\d+(\.\d+)?$" title="只能数字" class="col-xs-8"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">库存</label>
+					<div class="col-sm-9">
+						<input type="text" name="stock" id="stock" value="{$attr_info.stock|default=''}" placeholder="商品库存" pattern="[0-9]{1,8}$" title="只能数字;最多8位" class="col-xs-8"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>				
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">开启活动 </label>
+					<div class="help-inline col-sm-6">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" id="is_active" name="is_active" type="checkbox" value="1" {if condition="$attr_info.is_active eq 1"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="col-xs-6">
+							<span class="middle">默认不启用</span>
+						</span>							
+					</div>
+				</div>	
+				<div id="active_data" {if condition="$attr_info.is_active eq null"}style="display:none"{/if}>
+					<div class="space-4"></div>												
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">活动销售价 </label>
+						<div class="col-sm-9">
+							<input type="text" name="active_price" id="active_price" value="{$attr_info.active_price|default=''}" placeholder="活动销售价" pattern="^\d+(\.\d+)?$" title="只能数字" class="col-xs-8"/>
+							<span class="help-inline col-xs-2">
+								<span class="middle">启用时此价钱优先</span>
+							</span>
+						</div>						
+					</div>	
+					<div class="space-4"></div>												
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">活动时间 </label>
+						<div class="col-sm-9">
+							<div class="input-group col-xs-8">
+							<input class="date-plug time start-date form-control" readonly name="start_active_time" type="text">
+							<span class="input-group-addon">
+							<i class="fa fa-exchange"></i>
+							</span>
+							<input class="date-plug time end-date form-control" readonly name="end_active_time" type="text">
+							</div>
+						</div>						
+					</div>										
+				</div>																		
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" id="save_attr_data" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+		{if condition="$Request.param.type !='all'"}
+		<a type="button" class="btn btn-danger confirm-btn" data-info='确认删除吗？' href="{:new_url('Goods/delProductAttr',['ids'=>$Request.param.id])}">删除</a>
+		{/if}
+	</div>	
+</form>
+<script type="text/javascript">
+$(function(){	
+	$("#ajax_content").delegate('#is_active','click',function(){
+		if($("#is_active").is(':checked')){
+			$("#active_data").show(100);
+		}
+		else{
+			$("#active_data").hide(100);
+		}
+	})
+})
+</script>

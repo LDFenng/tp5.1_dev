@@ -1,0 +1,67 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			{$head_info.parent_title|default='首页'}
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				{$head_info.sub_title|default='操作'}
+			</small>
+		</h1>
+	</div><!-- /.page-header --> 
+	<form class="form-horizontal ajax-form" method="post" action="{:url('saveBooking')}">
+		<div class="row">
+			<div class="col-xs-6">
+			{customTag:input table_name='123'/}	
+			</div>	
+			<div class="col-xs-6" id="aaaa">
+				<input type="file" id="compress_upload" capture="camera" />
+			
+
+			</div>																																									
+		</div>
+		<div class="clearfix form-actions">
+			<div class="col-md-offset-3 col-md-9">
+				<button class="btn btn-info" id="save_project" type="submit">
+					<i class="ace-icon fa fa-check bigger-110"></i>
+					保存
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn" type="reset">
+					<i class="ace-icon fa fa-undo bigger-110"></i>
+					重置
+				</button>
+			</div>
+		</div>											
+	</form>		
+
+
+	<script src="__PUBLIC_PC__/ace/components/img-compress/exif.js"></script>
+	<script src="__PUBLIC_PC__/ace/components/img-compress/lrz.js"></script>
+	<script src="__PUBLIC_PC__/ace/components/img-compress/mobileFix.mini.js"></script>
+	
+	<script type="text/javascript">
+	$(function () {
+	    var input = document.querySelector('#compress_upload'),
+	    img_width = {:config('pc_img_width')};
+	    $("#ajax_content").delegate('#compress_upload','change',function(){
+	        lrz(this.files[0], {width: img_width}, function (results) {
+	            // 你需要的数据都在这里，可以以字符串的形式传送base64给服务端转存为图片。
+	            if(!empty(results.base64)){
+	            	$.post("{:url('FileUpload/imgCompress')}",{'img_data':results.base64,'size':results.base64.length},function(data){
+	            		 if(data.code==1){
+	         	            var tp = "<img src='"+data.img_url+"' />";
+	        	            $("#aaaa").empty().append(tp);
+	            		 }
+	            		 else{
+	            			 console.log(data);
+	            		 }
+	            	},'json');
+	            }
+	        })	    	
+	    })	    
+	});
+</script>
+
+{/block}
+

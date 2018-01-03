@@ -1,0 +1,456 @@
+@CHARSET "UTF-8";  
+.clock-domai{/*--------底盘-------------*/  
+ position:absolute;z-index:100;  
+ width:401px;  
+ height:401px;  
+ background:#333;  
+ border-radius:100%;  
+ box-shadow:0 0 15px #000;  
+ -webkit-transform:scale(0.6);  
+ }  
+.clock-domai:before{--------底盘--边框外阴影-----------  
+ content:" ";  
+ position:absolute;  
+ width:442px;left:-21px;  
+ height:442px;top:-21px;  
+ border-radius:100%;  
+ box-shadow:0 0 30px #000;*/  
+ }   
+.clock-domai:after{/*--------底盘--边框-----------*/  
+ content:" ";  
+ position:absolute;  
+ width:440px;left:-20px;  
+ height:440px;top:-20px;  
+ border-radius:100%;  
+ box-shadow:0 0 0px 20px #c7bbbb inset;  
+ }
+ /*--------底盘--纵横定位线(调试用）-----------*/  
+ /*#clockDial:before{  
+ content:" ";  
+ position:absolute;  
+ width:3px;left:202px;  
+ height:351px;top:26px;  
+ background:#0000ff;  
+ }  
+.clock-domai:after{  
+ content:" ";  
+ position:absolute;  
+ width:3px;left:202px;  
+ height:351px;top:26px;  
+ background:#0000ff;  
+ transform:rotate(90deg);  
+ }*/  
+
+ .Numerals{display:inline-block;z-index:3;}  
+ .Numerals{/*--------10个刻度线 * 两端----主标签-------*/  
+ position:absolute;  
+ width:3px;height:371px;  
+ top:16px;left:199px;  
+ border-top:15px solid #fff;  
+ border-bottom:15px solid #fff;  
+ box-shadow:0 0 10px 1px #0000ff;  
+ transform-origin:50% 50%;   
+ -webkit-transform-origin:50% 50%;   
+ }  
+ .Numerals:before{/*--------10个刻度线 * 两端----副标签-------*/  
+ content:" ";   
+ position:absolute;  
+ width:3px;height:371px;  
+ top:-15px;  
+ border-top:15px solid #fff;  
+ border-bottom:15px solid #fff;  
+ transform:rotate(60deg);  
+ -webkit-transform:rotate(60deg);  
+ box-shadow:0 0 10px 1px #0000ff;  
+ transform-origin:50% 50%;   
+ -webkit-transform-origin:50% 50%;   
+ }  
+ .Numerals:after{/*--------10个刻度线 * 两端-----副标签------*/  
+ content:" ";   
+ position:absolute;  
+ width:3px;height:371px;  
+ top:-15px;left:0px;  
+ border-top:15px solid #fff;  
+ border-bottom:15px solid #fff;  
+ border-left:0px;  
+ border-right:0px;  
+ transform:rotate(120deg);  
+ -webkit-transform:rotate(120deg);  
+ box-shadow:0 0 10px 1px #0000ff;  
+ transform-origin:50% 50%;   
+ -webkit-transform-origin:50% 50%;   
+ }  
+ /*--------10个刻度线 * 3线 * 两端 ---方位-----------*/  
+ .Numerals:nth-child(2){  
+ transform:rotate(6deg);-webkit-transform:rotate(6deg);    
+ }  
+ .Numerals:nth-child(3){  
+ transform:rotate(12deg);-webkit-transform:rotate(12deg);   
+ }  
+ .Numerals:nth-child(4){transform:rotate(18deg);-webkit-transform:rotate(18deg); }  
+ .Numerals:nth-child(5){transform:rotate(24deg);-webkit-transform:rotate(24deg); }  
+ .Numerals:nth-child(6){transform:rotate(30deg);-webkit-transform:rotate(30deg); }  
+ .Numerals:nth-child(7){transform:rotate(36deg);-webkit-transform:rotate(36deg); }  
+ .Numerals:nth-child(8){transform:rotate(42deg); -webkit-transform:rotate(42deg); }  
+ .Numerals:nth-child(9){transform:rotate(48deg); -webkit-transform:rotate(48deg); }  
+ .Numerals:nth-child(10){transform:rotate(54deg);-webkit-transform:rotate(54deg); }  
+ .Num{z-index:10;}  
+ .clock-face{z-index:5;}  
+ .pivot{z-index:11;}  
+ .clock-face{/*--------表盘-----------*/  
+ display:block;position:absolute;opacity:0.9;  
+ top:30px;left:32px;  
+ width:343px;height:343px;  
+ background:#333;  
+ border-radius:100%;  
+ }  
+ .clock-face:before{/*--------12/6刻度-----------*/  
+ content:" ";  
+ display:block;position:absolute;  
+ width:7px;height:290px;left:50%;top:50%;  
+ margin:-147px 0 0 -3px;  
+ border-top:30px solid #fff;  
+ border-bottom:10px solid #fff;  
+ }  
+ .clock-face:after{/*--------3/9刻度-----------*/  
+ content:" ";  
+ display:block;position:absolute;  
+ width:7px;height:290px;left:50%;top:50%;  
+ margin:-147px 0 0 -8px;  
+ border-top:30px solid #fff;  
+ border-bottom:30px solid #fff;  
+ transform:rotate(90deg);  
+ }  
+ .Num{/*--------3、6、9、12数字位置-----------*/  
+ z-index:9;  
+ display:block;position:absolute;   
+ left:50%;top:50%;font-size:30pt;color:#f4f915;  
+ }  
+ .num3{margin:-32px 0 0 145px}  
+ .num6{margin:135px 0 0 -14px}  
+ .num9{margin:-31px 0 0 -189px}  
+ .num12{margin:-203px 0 0 -21px}  
+ /*--------其他数字位置-----------*/  
+ .num3:before{content:"Ⅰ";font-size:23pt;color:#00ff00 !important;  
+ margin:-146px 0 0 -82px;display:block;position:absolute; }  
+ .num3:after{content:"Ⅱ";font-size:23pt;color:#00ff00 !important;  
+ margin:-148px 0 0 -19px;display:block;position:absolute; }  
+ .num6:before{content:"Ⅳ";font-size:23pt;color:#00ff00 !important;   
+ margin:-75px 0 0 142px;display:block;position:absolute; }  
+ .num6:after{content:"Ⅴ";font-size:23pt;color:#00ff00 !important; 
+ margin:-75px 0 0 91px;display:block;position:absolute; }  
+ .num9:before{content:"Ⅶ";font-size:23pt;color:#00ff00 !important;   
+ margin:165px 0 0 95px;display:block;position:absolute; }  
+ .num9:after{content:"Ⅷ";font-size:23pt;color:#00ff00 !important;   
+ margin:31px 0 0 23px;display:block;position:absolute; }  
+ .num12:before{content:"Ⅹ";font-size:23pt;color:#00ff00 !important;   
+ margin:97px 0 0 -142px;display:block;position:absolute; }  
+ .num12:after{content:"Ⅺ";font-size:23pt;color:#00ff00!important;   
+ margin:-21px 0 0 -81px;display:block;position:absolute; }  
+ /*--------表轴原点--------------------------------------------*/  
+ .pivot {  
+ z-index:90;  
+ display:block;position:absolute; left:50%;top:50%;  
+ margin:-5px 0 0 -2px;  
+ width:11px;height:11px;  
+ border-radius:5px;  
+ background:#fff;  
+ box-shadow:0 0 10px 1px #ff0 ;  
+ }  
+ /*----------------时针-------------------------------------------*/  
+ .hour-hand{/*--------时针：主线-----------*/  
+ z-index:10;  
+ display:block;position:absolute;   
+ left:50%;top:50%;margin:-100px 0 0 0;  
+ width:7px;height:136px;  
+ background:rgba(216, 212, 194, 0.89);
+ box-shadow:inset 0 0 0px 4px #e4f30e;  
+ opacity:1;  
+ transform-origin:50% 101px;  
+ -webkit-transform-origin:50% 101px;  
+ }  
+ .hour-hand:after{/*--------时针：头-----------*/  
+ content:" ";display:block;position:absolute; left:3px;top:-10px;  
+ width:20px;height:20px;  
+ border-radius:0px 0;  
+ transform-origin:0 100%;  
+ -webkit-transform-origin:0 100%;  
+ box-shadow:inset 0 0 20px 4px #e4f30e;
+ transform:rotate(-45deg) skew(-20deg,-20deg);  
+ -webkit-transform:rotate(-45deg) skew(-20deg,-20deg);  
+ background:rgba(216, 212, 194);  
+ }  
+ .hour-hand:before{/*--------时针：尾-----------*/  
+ content:" ";display:block;position:absolute; left:2px;top:89px;  
+ width:20px;height:20px;  
+ border-radius:100% 0 100% 100%;  
+ transform-origin:4px 100%;  
+ -webkit-transform-origin:4px 100%;  
+ transform:rotate(-45deg) ;  
+ -webkit-transform:rotate(-45deg) ;  
+ background:#c0c0c0;box-shadow:0 0 10px #000;  
+ }  
+ /*---------------分针--------------------------------------------*/  
+ .minute-hand{/*--------分针：主线-----------*/  
+ z-index:10;  
+ display:block;position:absolute;   
+ left:50%;top:50%;margin:-120px 0 0 1px;  
+ width:5px;height:156px;  
+ box-shadow:inset 0 0 0px 4px #e4f30e;  
+ opacity:1;  
+ transform-origin:50% 121px;  
+ -webkit-transform-origin:50% 121px;  
+ }  
+ .minute-hand:after{/*--------分针：头-----------*/  
+ content:" ";display:block;position:absolute; left:2px;top:-10px;  
+ width:20px;height:20px;  
+ border-radius:0px 0;  
+ transform-origin:0 100%;  
+ -webkit-transform-origin:0 100%;  
+ transform:rotate(-45deg) skew(-30deg,-30deg);  
+ -webkit-transform:rotate(-45deg) skew(-30deg,-30deg);  
+ box-shadow:inset 0 0 20px 4px #e4f30e; 
+ background:rgba(216, 212, 194);   
+ }  
+ .minute-hand:before{/*--------分针：尾-----------*/  
+ content:" ";display:block;position:absolute; left:2px;top:111px;  
+ width:20px;height:20px;  
+ border-radius:100% 0 100% 100%;  
+ transform-origin:2px 100%;  
+ -webkit-transform-origin:2px 100%;  
+ transform:rotate(-45deg) ;  
+ -webkit-transform:rotate(-45deg) ;  
+ background:#c0c0c0;box-shadow:0 0 10px #000;  
+ }  
+ /*-----------------秒针------------------------------------------*/  
+ .second-hand{/*--------秒针：主线-----------*/  
+ z-index:10;  
+ display:block;position:absolute;   
+ left:50%;top:50%;margin:-140px 0 0 2px;  
+ width:3px;height:176px;  
+ background:rgba(216, 212, 194,1); 
+ box-shadow:inset 0 0 0px 4px #e4f30e;    
+ opacity:1;  
+ transform-origin:50% 141px;  
+ -webkit-transform-origin:50% 141px;  
+ }  
+ .second-hand:after{/*--------秒针：头-----------*/  
+ content:" ";display:block;position:absolute; left:2px;top:-10px;  
+ width:30px;height:30px;  
+ border-radius:5px 0;  
+ transform-origin:0 100%;  
+ -webkit-transform-origin:0 100%;
+ box-shadow:inset 0 0 20px 4px #e4f30e;   
+ transform:rotate(-45deg) skew(-30deg,-30deg);  
+ -webkit-transform:rotate(-45deg) skew(-30deg,-30deg);  
+ background:rgba(216, 212, 194);  
+ }  
+ .second-hand:before{/*--------秒针：尾-----------*/  
+ content:" ";display:block;position:absolute; left:2px;top:131px;  
+ width:20px;height:20px;  
+ border-radius:100% 0 100% 100%;  
+ transform-origin:2px 100%;  
+ -webkit-transform-origin:2px 100%;  
+ transform:rotate(-45deg) ;  
+ -webkit-transform:rotate(-45deg) ;  
+ background:#c0c0c0;box-shadow:0 0 10px #000;  
+ }  
+ /*--------动画:指针----(使用JavaScript脚本対时）-----------------------------------*/  
+ /*   
+ .hour-hand{ animation:anim_hr 43200s linear infinite; }  
+ .minute-hand{ animation:anim_min 3600s  steps(60) infinite; }  
+ .second-hand{ animation:anim_sec 60s steps(60) infinite; }  
+ @keyframes anim_sec{  
+  from{transform:rotate(0deg) ;}  
+  to{ transform:rotate(360deg) ;}  
+ }  
+ @keyframes anim_min{  
+  to{ transform:rotate(360deg) ;}  
+ }  
+ @keyframes anim_hr{  
+  to{ transform:rotate(360deg) ;}  
+ }  
+ */  
+ /*-----------------------------------------------------------*/  
+ .milli-second{/*--------毫秒小盘-----------*/  
+ z-index:9;  
+ display:block;position:absolute;  
+ left:50%;left:50%;  
+ margin:257px 0 0 -38px;  
+ width:80px;height:80px;  
+ border:1px dashed #fff;  
+ border-radius:100%;  
+ background:#f0f3e9;  
+ opacity:0.7;  
+ box-shadow:0 0 10px 1px #fff inset;  
+ }  
+ .milli-second:after{/*--------毫秒：指针----------*/  
+ content:" ";  
+ display:block;position:absolute;  
+ margin:4px 0 0 37px;  
+ width:3px;height:35px;  
+ border:1px dashed #990099;  
+ background:#9900cc;  
+ border-radius:100%;  
+ opacity:1.5;  
+ }  
+.show-date{
+	z-index:9;  
+	display:block;position:absolute;  
+	left:29%;
+	top:11%;  
+	font-size:40pt;
+	text-align:center;
+	margin:37px 0 0 -38px;  
+	width:80px;height:80px;  
+	border:1px dashed #fff;  
+	border-radius:100%;  
+	background:#f0f3e9;  
+	opacity:0.7;  
+	box-shadow:0 0 20px 1px #fff inset;   
+}
+.show-week{
+	z-index:9;  
+	display:block;position:absolute;  
+	left:69%;
+	top:10%;  
+	font-size:40pt;
+	text-align:center;
+	margin:37px 0 0 -38px;  
+	width:80px;height:80px;  
+	border:1px dashed #fff;  
+	border-radius:100%;  
+	background:#f0f3e9;  
+	opacity:0.7;  
+	box-shadow:0 0 20px 1px #fff inset; 
+}
+.milli-second:after{/*--------毫秒：动画----------*/  
+	transform-origin:50% 35px;  
+	-webkit-transform-origin:50% 35px;  
+	animation:anim_l 1s linear infinite;   
+	-webkit-animation:anim_l 1s linear infinite;   
+}  
+@keyframes anim_l{  
+	 from{ transform:rotate(0deg) ; -webkit-transform:rotate(0deg) ;}  
+	 to{ transform:rotate(360deg) ; -webkit-transform:rotate(360deg) ;}  
+}  
+/*-----------------------------------------------------------*/  
+.clock-logo{  
+	position:absolute;z-index:8;  
+	left:180px;top:107px; 
+	white-space:nowrap; 
+	display:inline;  
+	color:#fff;  
+	font-size:25px;  
+	opacity:1;  
+}  
+.clock-logo:before{  
+	content:attr(data-content);/*"my-top.top"*/;  
+	display:block;position:absolute;font-family:"方正舒体" ;  
+	left:50%;top:50%;margin:28px 0 0 -52px;  
+	color:#fff;  
+	opacity:0.8;  
+	font-size:20px;  
+}  
+.clock-logo:after{  
+	content:"Copyright @LDF 2017";  
+	display:block;position:absolute;  
+	margin:75px 0 0 -51px;  
+	width:150px;  
+	border:0px solid #cc3300;  
+	color:#fff;  
+	font-size:14px;  
+	opacity:0.6;  
+}  
+.time-face{z-index:8;  
+	position:absolute;  
+	left:80px;  
+	top:75px;  
+	width:250px;  
+	height:250px;  
+	border:0px solid #09c;  
+	background:#0099ff;  
+	border-radius:40px;  
+	border-radius:40px;  
+	opacity:0.1;  
+}  
+.time-face:before{content:" ";  
+	position:absolute;  
+	width:250px;  
+	height:250px;  
+	border:0px solid #00c;  
+	background:#0099ff;  
+	transform:rotate(60deg);  
+	border-radius:40px;  
+	-webkit-transform:rotate(60deg);  
+}  
+.time-face:after{content:" ";  
+	position:absolute;  
+	width:250px;  
+	height:220px;  
+	border:0px solid #a9c;  
+	background:#0099ff;  
+	border-radius:40px;  
+	transform:rotate(120deg);  
+	-webkit-transform:rotate(120deg);  
+}  
+
+/*倒计时样式*/
+@charset "utf-8";
+/* time scroll*/
+.count-inline{
+	width:100%; 
+	text-align:center; 
+	display:inline-block;	
+}
+.count-time{
+	height:200px;
+	width:200px; 
+	display:inline-block;	
+	margin:0 auto
+}
+.count-circle{
+	width:200px;
+	height:200px;
+	border-radius:100px;
+	position:absolute;
+}
+.count-circle-1{
+	clip:rect(0px,200px,200px,100px);
+	-o-transform:rotate(0deg);
+	-moz-transform:rotate(0deg);
+	-webkit-transform:rotate(0deg);
+	background-color:#fff;
+	}
+.count-circle-2{
+	clip:rect(0px,100px,200px,0px);
+	-o-transform:rotate(0deg);
+	-moz-transform:rotate(0deg);
+	-webkit-transform:rotate(0deg);
+	background-color:#fff;
+}
+.count-hold{
+	width:200px;
+	height:200px;
+	position:absolute;
+	z-index:1;
+}
+.count-time-bg{
+	width:200px;
+	height:200px;
+	border-radius:200px;
+	position:absolute;
+	background-color:#d13c36;
+}
+.count-time-str{
+	width:160px;
+	height:160px;
+	margin:20px 0 0 20px;
+	background-color:#e45534;
+	border-radius:160px;
+	position:absolute;
+	z-index:1;
+	text-align:center;
+	line-height:160px;
+	font-size:30px;
+}

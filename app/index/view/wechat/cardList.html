@@ -1,0 +1,134 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small class="bigger-105">
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				<b>卡券管理</b>
+			</small>
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				卡券列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+<!-- 	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>-->	 
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Wechat/cardList')}">
+		<div class="row margintop">
+			<div class="col-xs-12 col-lg-12">
+				{customTag:pageNum class_name='col-xs-2' select_num='$Request.param.page_num'/}	
+		        <select name="card_type" id="card_type" class="select2 ajax-change col-xs-3" data-placeholder='搜索'>
+					{volist name="Think.config.wechatExt.wechat_card_type" id="card_type_info"}
+						<option value="{$card_type_info.code}" {if condition="$card_type_info.code eq $Request.param.card_type"}selected{/if}>{$card_type_info.title}</option>
+					{/volist}					
+		        </select> 
+		        <select name="code_type" id="code_type" class="select2 ajax-change col-xs-3" data-placeholder='搜索'>
+					{volist name="Think.config.wechatExt.wechat_code_type" id="code_type_info"}
+						<option value="{$code_type_info.code}" {if condition="$code_type_info.code eq $Request.param.code_type"}selected{/if}>{$code_type_info.title}</option>
+					{/volist}					
+		        </select> 			
+			</div>				
+		</div> 
+		<div class="row margintop" id="table_bar">	
+			<div class="col-xs-12 col-lg-7">
+			  <div class="input-daterange input-group col-xs-12"> <span class="input-group-addon">记录时间 </span>
+			    <input class="form-control date-plug start-date" name="start_time" type="text" value="{$_GET['start_time']|default=''}" placeholder="选择日期范围">
+			    <span class="input-group-addon"> <i class="fa fa-exchange"></i> </span>
+			    <input class="form-control date-plug end-date" name="end_time" type="text" value="{$_GET['end_time']|default=''}" placeholder="选择日期范围">
+			  </div>       
+			</div>		
+			<div class="col-xs-12 col-lg-5 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm btn-success" href="{:url('admin/Wechat/massMsgList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe fa-spin bigger-130"></i> 显示全部 </a>				 
+				<a data-ajax-page='true' href="{:url('admin/Wechat/editCard')}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加"><i class="ace-icon fa fa-plus bigger-130"></i>添加卡券</a>
+				{notempty name="card_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}			
+			</div>					
+		</div> 	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th>
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Wechat/delCard')}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-field="title" data-sortable="true" class="hidden-sm hidden-xs">名称</th>
+							<th data-field="card_type" data-sortable="true" class="hidden-sm hidden-xs">卡券类型</th>
+							<th data-field="code_type" data-sortable="true">核销码类型</th>
+							<th data-field="brand_name" data-sortable="true" class="hidden-sm hidden-xs">门店名称</th>
+							<th data-field="quantity" data-sortable="true">库存</th>
+							<th data-field="is_enabled" data-sortable="true">是否启用</th>
+							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{foreach name="card_list" item="card_info"}
+							<tr id="data_{$card_info.id}">
+								<td>
+									<label class="pos-rel">
+										<input type="checkbox" class="ace input-lg check-data" value="{$card_info.id}"/>
+										<span class="lbl"></span>															
+									</label>											
+								</td>
+								<td data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">{$card_info.id}</td>
+								<th data-field="title" data-sortable="true" class="hidden-sm hidden-xs">{$card_info.title}</th>
+								<td  data-field="card_type" data-sortable="true" class="hidden-sm hidden-xs">
+									{volist name="Think.config.wechatExt.wechat_card_type" id="card_type_info"}
+										{if condition="$card_type_info.code eq $card_info['card_type']"}{$card_type_info.title}{/if}
+									{/volist}								
+								</td>
+								<td  data-field="code_type" data-sortable="true" class="hidden-sm hidden-xs">
+									{volist name="Think.config.wechatExt.wechat_code_type" id="code_type_info"}
+										{if condition="$code_type_info.code eq $card_info['code_type']"}{$code_type_info.title}{/if}
+									{/volist}								
+								</td>								
+								<th data-field="brand_name" data-sortable="true" class="hidden-sm hidden-xs">{$card_info.brand_name}</th>
+								<th data-field="quantity" data-sortable="true">{$code_type_info.quantity}</th>																
+								<td>
+									{if condition="$code_info['is_enabled'] eq 1"}
+										<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Wechat/changeCardStatus',['w'=>$code_info.wechat_id])}" data-id="{$code_.id}" title="已开启">
+											开启
+										</a>
+										{else/}
+										<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Wechat/changeCardStatus',['w'=>$code_info.wechat_id])}" data-id="{$code_.id}" title="已禁用">
+											禁用
+										</a>
+									{/if}
+								</td>								
+							</tr>
+						{/foreach}
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+	<div class="row">
+		<div class="col-xs-1 btn-corner"></div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>		
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	      </div>
+	    </div>
+	</div>      	
+
+	<script type="text/javascript">
+
+	</script>	 
+{/block}	    	

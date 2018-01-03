@@ -1,0 +1,138 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal" id="attr_form" method="post" action="{:url('saveProductAttr')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">商品属性</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<input type="hidden" id="category_id" name="category_id" value="{$Request.param.category_id}" />	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">属性栏目 </label>
+					<div class="col-sm-9">
+				        <select name="attr_id" id="attr_id" class="select2 col-xs-6" data-placeholder='点击选择'>
+							{volist name="attr_list" id="attr_temp"}
+								<option value="{$attr_temp.id}" >{$attr_temp.name}</option>
+							{/volist}					
+				        </select>			        
+					</div>
+				</div>							
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">属性值 </label>
+					<div class="col-sm-9" id="attr_val">
+								    
+					</div>
+				</div>		
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">原价 </label>
+					<div class="col-sm-9">
+						<input type="text" name="original_price" id="original_price" value="{$product_attr_info.original_price|default=$Request.param.o}" placeholder="原价" class="col-xs-8" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">一口价 </label>
+					<div class="col-sm-9">
+						<input type="text" name="sale_price" id="sale_price" value="{$product_attr_info.sale_price|default=$Request.param.l}" placeholder="一口价" class="col-xs-8" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">数量 </label>
+					<div class="col-sm-9">
+						<input type="text" name="stock" id="stock" value="{$product_attr_info.stock|default='100'}" placeholder="数量" class="col-xs-8" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>												
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+					<div class="col-sm-9" style="margin-top:0.78rem">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($product_attr_info.is_enabled eq 1) OR !isset($product_attr_info.is_enabled)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-6">
+							<span class="middle">默认启用</span>
+						</span>							
+					</div>
+				</div>														
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">排序 </label>
+					<div class="col-sm-9">
+						<input type="text" name="sort" id="sort" value="{$product_attr_info.sort|default='100'}" placeholder="排序" class="col-xs-8" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" id="save_attr_data" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+$(function(){	
+	function get_attr_data(attr_id){
+		$.ajax({
+			url:"{:url('getAttrVal')}",
+			type:'GET',
+			dataType:'json',
+			data:{'attr_id':attr_id},
+			success:function(data){
+				if(data.code==1){
+					var html_tpl='',
+					list=data.data_list;
+					for(key in list){
+						html_tpl+="<div class='col-xs-3'>"+
+						"<label class='block'>"+
+						"<input class='ace input-lg' value='"+list[key]['id']+"' name='attr_val_id[]' type='checkbox'>"+
+						"<span class='lbl bigger-120'>"+list[key]['name']+"</span>"+
+						"</label></div> ";
+					}
+					$("#attr_val").empty().append(html_tpl);
+				}
+				else{
+					layer.msg(data.msg);
+				}
+			}
+		})
+	}
+	get_attr_data($("#attr_id option:first").val());
+	$('.modal-body').unbind().delegate('#attr_id','change',function(){
+		get_attr_data($("#attr_id").val());
+	});
+	//提交至缓存  
+	$(".modal-footer").unbind().delegate('#save_attr_data','click',function(){
+		var url=$("#attr_form").attr('action'),
+		data=$("#attr_form").serialize();
+		$.post(url,data,function(data){
+			if(data.code==1){
+				attr_list=data.data_list;
+				$("#edit_data").modal('hide');
+			}
+			else{
+				layer.alert(data.msg);
+			}
+		},"json");	
+		return false;
+	})
+	
+})
+</script>

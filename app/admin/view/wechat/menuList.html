@@ -1,0 +1,187 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				菜单列表<span class='red'>（每个公众号一级菜单能同时启用3个，二级菜单每个可以同时启用5个）</span>
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Wechat/menuList')}">
+		<div class="row margintop" id="table_bar">
+			<div class="col-xs-12 col-lg-4">
+				{customTag:pageNum  width='35%' select_num='$Request.param.page_num'/}	
+				{customTag:screen width="64%" table_name='wechat_info' field_name='wechat_id' select_val='$Request.param.wechat_id'/}	  		        				
+			</div>
+			<div class="col-xs-12 col-lg-3">
+				<div class="input-group"> <span class="input-group-addon"><i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="名称" />
+				</div>       
+			</div>			
+			<div class="col-xs-12 col-lg-5 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Wechat/menuList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe bigger-130"></i> 显示全部 </a>	
+				<a data-ajax-page='true' href="{:url('admin/Wechat/editMenu')}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加"><i class="ace-icon fa fa-plus bigger-130"></i>添加菜单</a>
+				<a class="btn btn-sm btn-yellow sync-wechat" href="{:url('admin/Wechat/syncWechat')}" data-rel="tooltip" data-placement="bottom" title="同步"><i class="ace-icon fa fa-arrows-v bigger-130"></i>同步至微信</a>
+			</div>
+		</div>  
+	</form>		 
+	<div class="row margintop" id="ajax_table">
+		<div class="col-xs-12">
+			<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" class="table table-striped table-bordered table-condensed table-hover">
+				<thead>
+					<tr>
+						<th class="center">展开折叠</th>
+						<th class="center hidden-sm hidden-xs">编号</th>
+						<th class="center hidden-sm hidden-xs col-xs-2">名称</th>
+						<th class="center">是否启用</th>
+						<th>公众号</th>
+						<th class="center">类型</th>
+						<th class="center hidden-sm hidden-xs">排序</th>
+						<th class="center hidden-sm hidden-xs">添加时间</th>
+						<th style="border-right:#CCC solid 1px;">操作</th>
+					</tr>	
+				</thead>	
+				<tbody>
+					{volist name="menu_list" id="menu_info"}
+					<tr id="pid_{$menu_info.pid}_{$menu_info.id}">
+						<td>
+							<i class="fa ace-icon blue fa-plus bigger-160 open-menu" data-pid='{$menu_info.id}' data-pid-id='pid_{$menu_info.id}' style='cursor: pointer'/></i>																								
+						</td>
+						<td class="hidden-sm hidden-xs">{$menu_info.id}</td>
+						<td class="hidden-sm hidden-xs col-xs-2 left">{$menu_info.title}</td>
+						<td>
+						{if condition="$menu_info['is_enabled'] eq 1"}
+							<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Wechat/changeMenuState',['t'=>$menu_info.wechat_id])}" data-id="{$menu_info.id}" title="已启用">
+								启用
+							</a>
+							{else/}
+							<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Wechat/changeMenuState',['t'=>$menu_info.wechat_id])}" data-id="{$menu_info.id}" title="已禁用">
+								禁用
+							</a>
+						{/if}						
+						</td>
+						<td>{$menu_info.wechat_title}</td>
+						<td>
+							{volist name="Think.config.wechatExt.wechat_click_type" id="click_type_info"}
+								{if condition="$click_type_info['code']==$menu_info.even_type"}
+								<span class="label label-lg label-primary">{$click_type_info.title}</span>
+								{/if}
+							{/volist}						
+						</td>
+						<td class="hidden-sm hidden-xs col-xs-1">
+							<input class='form-control input-sm width-80 list-order' name="{$menu_info.id}" value='{$menu_info.sort}'>						
+						</td>
+						<td class="hidden-sm hidden-xs">{$menu_info.create_time|date='Y-m-d',###}</td>
+						<td style="border-right:#CCC solid 1px;">
+							<div class="hidden-sm hidden-xs btn-group action-buttons">
+								<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/editMenu',['id'=>$menu_info['id']])}" title="编辑">
+								<i class="ace-icon fa fa-pencil bigger-160"></i>
+								</a>							
+								<a data-ajax-page='true' class="btn btn-xs  btn-primary" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/editMenu',['pid'=>$menu_info['id']])}" title="添加子菜单">
+								<i class="ace-icon fa fa-plus-circle bigger-160"></i>
+								</a>
+								<a data-ajax-page='true' class="btn btn-xs btn-default" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/delMenu',['ids'=>$menu_info['id']])}" title="删除">
+								<i class="ace-icon fa fa-trash-o bigger-160"></i>
+								</a>
+							</div>		
+							<div class="hidden-md hidden-lg">
+								<div class="inline position-relative">
+									<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+										<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+									</button>
+									<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+										<li>
+											<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/editMenu',['id'=>$menu_info['id']])}" title="编辑">
+												<span class="green">
+													<i class="ace-icon fa fa-pencil bigger-120"></i>
+												</span>
+											</a>
+										</li>
+										<li>
+											<a data-ajax-page='true' class="btn btn-xs btn-primary" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/editMenu',['pid'=>$menu_info['id']])}" title="添加子菜单">
+												<span class="green">
+													<i class="ace-icon fa fa-plus-circle bigger-120"></i>
+												</span>
+											</a>
+										</li>
+										<li>
+											<a data-ajax-page='true' class="btn btn-xs btn-default" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/delMenu',['ids'=>$menu_info['id']])}" title="删除">
+												<span class="green">
+													<i class="ace-icon fa fa-trash-o bigger-120"></i>
+												</span>
+											</a>
+										</li>																				
+									</ul>
+								</div>
+							</div>												
+						</td>
+					</tr>				
+					{/volist}									
+				</tbody>
+			</table>		
+		</div>		
+	</div> 
+	<div class="row">
+		<div class="col-xs-1 btn-corner">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Wechat/orderMenu')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>
+	<script type="text/javascript">
+		$("#ajax_content").unbind().delegate('.sync-wechat','click',function(e){
+			e.preventDefault();
+			var url=$(this).attr("href"),
+			param_data=$(this).parents("form").serialize(),
+			wechat_id=$("#wechat_id").val();
+			$.openload();
+			if(empty(wechat_id)){
+				layer.msg("请选择要同步菜单的<b class='red'>公众号</b>");layer.close(loading);return false;
+			}
+	        $.post(url,{'wechat_id':wechat_id}, function (data) {
+	            if (data.code==1) {
+	                layer.alert(data.msg, {icon: 6}, function (index) {
+	                    layer.close(index);
+	                });
+	            }else{
+	                layer.alert(data.msg, {icon: 5}, function (index) {
+	                	layer.close(index);
+	                });
+	            }
+	            $.closeload();
+	        }, "json");
+	        return false;
+		})
+		
+		$("#ajax_table").unbind().delegate('.open-menu','click',function(){
+			var pid_id=$(this).data('pid-id'),
+			pid=$(this).data('pid'),
+			tr=$(this).parents('tr')
+ 			if($(this).hasClass('fa-plus')){  //展开
+ 				//是否已加载
+ 				$(this).removeClass('fa-plus').addClass('fa-minus ');
+ 				if($("tr[id^='"+pid_id+"']").length > 0){
+ 					$("tr[id^='"+pid_id+"']").show(300);
+ 				}
+ 				else{
+ 					$.ajax({
+ 						url:"{:url('admin/Wechat/menuList',['type'=>'sub'])}",
+ 						type:'POST',
+ 						data: {'pid':pid},
+ 						dataType: "html",
+ 						success: function(data){
+ 							if(data)tr.after(data);
+ 						}
+ 					})
+ 				}
+			}			
+			else{
+				$(this).addClass('fa-plus').removeClass('fa-minus ');
+				$("tr[id^='"+pid_id+"']").hide(300);
+			} 
+		})
+	</script>		 
+{/block}	    	

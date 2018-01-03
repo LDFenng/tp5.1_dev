@@ -1,0 +1,54 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Wechat/saveFansTag')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$tag_info.name|default='添加标签'}</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-6">
+						<input type="text" name="name" value="{$tag_info.name|default=''}" placeholder="名称" class="col-xs-11" required/>
+						<span class="help-inline col-xs-1">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">所属公众号</label>
+					<div class="col-sm-6">
+						{volist name="wechat_list" id="wechat_info"}
+						<div class="col-sm-6 checkbox-margin">
+							<label class="block">
+								<input class="ace input-lg" name="wechat_id[]" value='{$wechat_info.id}' type="checkbox">
+								<span class="lbl bigger-120">{$wechat_info.title}</span>
+							</label>
+						</div>
+						{/volist}																																															
+					</div>
+				</div>																								
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">排序 </label>
+					<div class="col-sm-6">
+						<input type="text" name="sort" id="sort" value="{$tag_info.sort|default='100'}" placeholder="排序" class="col-xs-11" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-1">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+	
+</script>

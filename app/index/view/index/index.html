@@ -1,0 +1,151 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+
+<div class="row">
+	<div class="col-xs-12">		
+		<div class="alert alert-block alert-success">
+			<button type="button" class="close" data-dismiss="alert">
+				<i class="ace-icon fa fa-times"></i>
+			</button>
+			<i class="ace-icon fa fa-check green"></i>
+			Welcome to
+			<strong class="green">LDFcmf<small>(v1.0)</small></strong>,
+			the lightweight, feature-rich and easy to use admin template.
+		</div>
+		<div class="row">
+			<div class="space-6"></div>
+			<div class="col-sm-12 infobox-container" style="text-align: left;">
+				<!-- #section:pages/dashboard.infobox -->
+				<div class="infobox infobox-green">
+					<div class="infobox-icon">
+						<i class="iconfont icon-php-fbd" style="font-size: 50px;line-height: 1;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.php_v}</span>
+						<div class="infobox-content">php版本</div>
+					</div>
+				</div>	
+				<div class="infobox infobox-blue">
+					<div class="infobox-icon" style="font-size: 30px;line-height: 1.5;">
+						<i class="iconfont icon-zendesk"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center">
+						<span class="infobox-data-number">{$system_info.zend_v}</span>
+						<div class="infobox-content">zend环境版本</div>
+					</div>
+				</div>				
+				<div class="infobox infobox-pink">
+					<div class="infobox-icon">
+						<i class="iconfont icon-xingzhuang" style="font-size: 30px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.mysql_v}</span>
+						<div class="infobox-content">MySQL版本</div>
+					</div>
+				</div>				
+				<div class="infobox infobox-red">
+					<div class="infobox-icon">
+						<i class="iconfont icon-athit-iconfont-share-broswer" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number" style="font-size:12px;">{$system_info.broswer}</span>
+						<div class="infobox-content">浏览器</div>
+					</div>
+				</div>	
+				
+				<!-- #section:pages/dashboard.infobox -->
+				<div class="infobox infobox-green">
+					<div class="infobox-icon">
+						<i class="ace-icon fa fa-link" style="font-size: 50px;line-height: 1;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.max_mysql_link}</span>
+						<div class="infobox-content">mysql最大连接数</div>
+					</div>
+				</div>	
+				<div class="infobox infobox-blue">
+					<div class="infobox-icon" style="font-size: 30px;line-height: 1.5;">
+						<i class="iconfont icon-fuwuqi"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.php_os}</span>
+						<div class="infobox-content">服务器系统</div>		
+					</div>
+				</div>				
+				<div class="infobox infobox-pink">
+					<div class="infobox-icon">
+						<i class="ace-icon fa fa-upload" style="font-size: 30px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.upload_max_filesize}</span>
+						<div class="infobox-content">最大文件上传限制</div>	
+					</div>
+				</div>				
+				<div class="infobox infobox-red">
+					<div class="infobox-icon">
+						<i class="iconfont icon-qingqiuqiaojie" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data">
+						<span class="infobox-data-number" style="text-align: center;">{$system_info.max_time}</span>
+						<div class="infobox-content">最长响应时间</div>
+					</div>
+				</div>
+				<div class="infobox">
+					<div class="infobox-icon">
+						<i class="iconfont icon-memory" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.max_memory}</span>
+						<div class="infobox-content">最大使用内存</div>
+					</div>
+				</div>
+				<div class="infobox" style="color: rgb(45, 49, 198);">
+					<div class="infobox-icon">
+						<i class="iconfont icon-OS" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.get_os}</span>
+						<div class="infobox-content">本机系统</div>
+					</div>
+				</div>	
+				<div class="infobox" style="color:rgb(32, 188, 110);">
+					<div class="infobox-icon">
+						<i class="iconfont icon-url" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{$system_info.is_curl}</span>
+						<div class="infobox-content">是否支持curl</div>
+					</div>
+				</div>					
+				<div class="infobox infobox-pink">
+					<div class="infobox-icon">
+						<i class="ace-icon fa fa-clock-o" style="font-size: 35px;"></i>
+					</div>
+					<div class="infobox-data" style="text-align: center;">
+						<span class="infobox-data-number">{:date('Y-m-d')}</span>
+						<div class="infobox-content" style="font-size:18px;">
+							<span class="hour-num"></span>
+							<span class="minute-num"></span>
+							<span class="seconds-num"></span>
+						</div>
+					</div>
+				</div>																			
+			</div>	
+		</div>
+		
+	</div>	
+</div>		
+<script type="text/javascript">
+	$(function(){
+		setInterval(function (){
+			var nowtime = new Date(),
+			hour=(parseInt(nowtime.getHours())<10)?'0'+nowtime.getHours():nowtime.getHours(),
+			minute=(parseInt(nowtime.getMinutes())<10)?'0'+nowtime.getMinutes():nowtime.getMinutes(),	
+			seconds=(parseInt(nowtime.getSeconds())<10)?'0'+nowtime.getSeconds():nowtime.getSeconds();
+			$(".hour-num").html(hour+":");
+			$(".minute-num").html(minute+":");
+			$(".seconds-num").html(seconds);
+		},1000)
+	})
+</script>
+{/block}

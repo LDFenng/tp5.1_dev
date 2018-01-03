@@ -1,0 +1,444 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-content">
+		<!--主题-->
+		<div class="page-header">
+			<h1>
+				模型管理
+				<small>
+					<i class="ace-icon fa fa-angle-double-right"></i>
+					编辑模型
+				</small>
+			</h1>
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<form class="form-horizontal ajax-form-2" method="post" action="{:url('admin/DbModel/saveModel')}">
+					<input name="id" id="id" type="hidden" value="{$model_info.id|default=''}"/>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">模型标识</label>
+						<div class="col-sm-9">
+							<input type="text" name="name" onKeyUp="value=value.replace(/[^\w\.\/]/ig,'')" class="col-xs-6 col-sm-6" value="{$model_info.name|default=''}" required/>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填，标识必须是以字母开头,字母或数字组合</span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">模型标题 </label>
+						<div class="col-sm-9">
+							<input type="text" name="title" value="{$model_info.title|default=''}" class="col-xs-6 col-sm-6" required/>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填,可以英文和中文</span>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">引擎类型</label>
+						<div class="col-sm-9">
+							<select name="engine" class="hidden-sm select2 col-xs-4" data-placeholder='搜索'>
+								<option value="MyISAM" {if condition="$model_info['engine'] eq 'MyISAM'"}selected{/if}>MyISAM</option>
+								<option value="InnoDB" {if condition="$model_info['engine'] eq 'InnoDB'"}selected{/if}>InnoDB</option>
+							</select>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必选</span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">字段列表</label>
+						<div class="col-sm-9">
+							<label class="col-sm-12 no-padding-left">
+								<a class="purple" href="javascript:void(0)" onclick="insert_field(this)" data-rel="tooltip" title="插入到最后">
+									<i class="ace-icon fa fa-plus-circle bigger-130"></i>
+								</a>
+							</label>
+							<div class="col-sm-9 col-xs-12 no-padding-left">
+								<table class="table table-striped table-bordered table-hover" id="dynamic-table">
+									<thead>
+									<tr>
+										<th>名称</th>
+										<th>标题</th>
+										<th>类型</th>
+										<th class="hidden">数据</th>
+										<th class="hidden">说明</th>
+										<th class="hidden">长度</th>
+										<th>规则</th>
+										<th>默认值</th>
+										<th style="border-right:#CCC solid 1px;">操作</th>
+									</tr>
+									</thead>
+
+									<tbody id="fields_data">
+										{notempty name="field_list"}
+										{foreach name="field_list" item="field_info"}
+										<tr>
+											<td>{$field_info['name']}</td>
+											<td>{$field_info['title']}</td>
+											<td>{$field_info['type']}</td>
+											<td class="hidden">{$field_info['data']}</td>
+											<td class="hidden">{$field_info['description']}</td>
+											<td class="hidden">{$field_info['length']}</td>
+											<td>{$field_info['rules']}</td>
+											<td>{$field_info['default']}</td>
+											<td style="border-right:#CCC solid 1px;">
+												<div class="action-buttons">
+													<a class="green" href="javascript:void(0)" onclick="edit_field(this)" data-toggle="tooltip" title="修改"><i class="ace-icon fa fa-pencil bigger-130"></i></a>
+													<a class="red" href="javascript:void(0)" onclick="delete_field(this)" data-info="你确定要删除吗？" data-toggle="tooltip" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a>
+													<a class="green" href="javascript:void(0)" onclick="up_field(this)" data-toggle="tooltip" title="上移"><i class="ace-icon fa fa-arrow-up bigger-130"></i></a>
+													<a class="green" href="javascript:void(0)" onclick="down_field(this)" data-toggle="tooltip" title="下移"><i class="ace-icon fa fa-arrow-down bigger-130"></i></a>
+												</div>
+											</td>
+										</tr>
+										{/foreach}
+										{/notempty}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">模型主键 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="pk" value="{$model_info.pk}" class="col-xs-6 col-sm-6" required/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填,单字段（以上表字段不包含主键）</span>
+                        </div>
+                    </div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">默认排序字段</label>
+						<div class="col-sm-9">
+							<input type="text" name="order" value="{$model_info.order}" class="col-xs-6 col-sm-6" required/>
+							<span class="lbl">&nbsp;&nbsp;<span class="red">*</span>必填,'字段a desc,字段b'</span>
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">排序 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="sort" value="{$model_info.sort|default='100'}" class="col-xs-6 col-sm-6"/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red"></span>'字段a desc,字段b''</span>
+                        </div>
+                    </div>					
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">列表显示字段</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="display_field" id="display_field" value="{$model_info.display_field}" class="col-xs-6 col-sm-6"/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red"></span>'字段a,字段b'，多个字段以英文‘,’隔开，为空显示全部</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">可编辑字段</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="edit_field" id="edit_field" value="{$model_info.edit_field}" class="col-xs-6 col-sm-6"/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red"></span>'字段a,字段b'，多个字段以英文‘,’隔开，为空除主键外均可编辑</span>
+                        </div>
+                    </div>					
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">模型索引 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="index_field" id="index_field" value="{$model_info.index_field}" class="col-xs-6 col-sm-6"/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red"></span>格式：'字段a,字段b',可以包含多个字段</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">模型搜索字段</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="search_field" id="search_field" value="{$model_info.search_field}" class="col-xs-6 col-sm-6"/>
+                            <span class="lbl">&nbsp;&nbsp;<span class="red"></span>格式：'字段a,字段b',可以包含多个字段</span>
+                        </div>
+                    </div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right">是否启用</label>
+						<div class="col-sm-9" style="padding-top:5px;">
+							<input name="is_enabled" id="is_enabled" value="1" class="ace ace-switch ace-switch-4 btn-flat" type="checkbox" {if condition="($model_info.is_enabled eq 1) OR (!isset($model_info.is_enabled))"}checked{/if}/>
+							<span class="lbl">&nbsp;&nbsp;默认启用</span>
+						</div>
+					</div>
+					<div class="clearfix form-actions">
+						<div class="col-sm-offset-6 col-sm-5">
+							<button class="btn btn-info" id="save_data" type="submit">
+								<i class="ace-icon fa fa-check bigger-110"></i>
+								保存
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- 显示添加模态框（Modal） -->
+		<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="myModalLabel">
+							添加\编辑字段
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12">
+					            <input name="tr_index" id="tr_index" type="hidden" value="" />
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段名称</label>
+									<div class="col-sm-9">
+										<input type="text" onKeyUp="value=value.replace(/[^\w\.\/]/ig,'')" name="name" id="name" placeholder="输入字段名称" class="col-xs-10 col-sm-5" required/><span class="lbl">*必填 以英文开头</span>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段标题</label>
+									<div class="col-sm-9">
+										<input type="text" name="title" id="title" placeholder="输入字段标题" class="col-xs-10 col-sm-5" required/><span class="lbl">*必填</span>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段类型</label>
+									<div class="col-sm-9">
+										<select name="field_type" id="field_type" class="select2 col-xs-4 field-type" required>
+											{volist name="Think.config.extarray.field_type" id="field_info"}
+												<option value="{$field_info.val}">文{$field_info.title}</option>
+											{/volist}		
+										</select>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段数据 </label>
+									<div class="col-sm-9">
+										<input type="text" name="field_data" id="field_data" placeholder="输入字段数据" class="col-xs-10 col-sm-5"/><span class="lbl">格式:'1:text1,2:text2,3:text3'或'数据表名|值字段名|标题字段名(|排序字段)'</span>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段长度</label>
+									<div class="col-sm-9">
+										<input type="number" name="field_length" id="field_length" placeholder="输入字段长度" class="col-xs-10 col-sm-5"/><span class="lbl"></span>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right"> 字段默认值：  </label>
+									<div class="col-sm-9">
+										<input type="text" name="field_default" id="field_default" placeholder="输入字段默认值" class="col-xs-10 col-sm-5"/>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段注释 </label>
+									<div class="col-sm-9">
+										<input type="text" name="field_note" id="field_note" placeholder="输入字段说明" class="col-xs-10 col-sm-5"/><span class="lbl"></span>
+									</div>
+								</div>
+								<div class="space-4 col-xs-12"></div>
+								<div class="form-group">
+									<label class="col-sm-3 control-label no-padding-right">字段规则</label>
+									<div class="col-sm-9">
+										<select name="input_rules[]" id='input_rules' class="selectpicker" data-width='41.77777777%' data-size="8" data-style='btn btn-primary btn-white' multiple title="选择字段规则">
+										    <option value="required">required</option>
+										    <option value="unsigned">unsigned</option>
+										    <option value="unique">unique</option>
+											<option value="readonly">readonly</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" id="submit_data" class="btn btn-primary insert-field">
+							确认
+						</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							关闭
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div><!-- /.page-content -->
+	
+	<script type="text/javascript">
+	    //上移字段
+	    function up_field(obj) {
+	        var $tr = $(obj).parents("tr");
+	        if ($tr.index() != 0) {
+	            $tr.fadeOut().fadeIn();
+	            $tr.prev().before($tr);
+	        }
+	    }
+	    //下移字段
+	    function down_field(obj) {
+	        var $tr = $(obj).parents("tr");
+	        var $len=$("table#dynamic-table tr").length;
+	        if ($tr.index() != $len - 1) {
+	            $tr.fadeOut().fadeIn();
+	            $tr.next().after($tr);
+	        }
+	    }
+	    //删除字段
+	    function delete_field(obj) {
+	        var trs=$("table#dynamic-table tr"),
+	            $index=trs.index($(obj).closest("tr")),
+	            $info=$(obj).data('info');
+	        layer.confirm($info, {icon: 3}, function (index) {
+	            layer.close(index);
+	            $('#fields_data').find('tr').eq($index-1).remove();
+	        });
+	        return false;
+	    }
+	    //插入字段
+	    function insert_field(obj) {
+	        var trs=$("table#dynamic-table tr"),
+	        index=trs.index($(obj).closest("tr")),
+	        Modal=$('#edit_data');
+	        Modal.find('#tr_index').val(index);
+	        Modal.modal('show');
+	        $("#submit_data").removeClass('edit-field').addClass('insert-field');
+	    }
+	    //删除字段
+	    function delete_field(obj) {
+	        var trs=$("table#dynamic-table tr"),
+	            $index=trs.index($(obj).closest("tr")),
+	            $info=$(obj).data('info');
+	        layer.confirm($info, {icon: 3}, function (index) {
+	            layer.close(index);
+	            $('#fields_data').find('tr').eq($index-1).remove();
+	        });
+	        return false;
+	    }
+	    //修改字段
+	    function edit_field(obj) {
+	        var trs=$("table#dynamic-table tr");
+	        var tr=$(obj).closest("tr");
+	        var index=trs.index(tr);
+	        var tds=tr.find('td');
+	        var Modal=$('#edit_data');
+	        //alert(tds.eq(2).text().toUpperCase());
+	        Modal.find('#tr_index').val(index);
+	        Modal.find('#name').val(tds.eq(0).text());
+	        Modal.find('#title').val(tds.eq(1).text());
+	        //Modal.find('#field_type').selectpicker('val',tds.eq(2).text().toUpperCase());//单选
+	        Modal.find('#field_note').val(tds.eq(4).text());//单选
+	        Modal.find('#field_data').val(tds.eq(3).text());
+	        Modal.find('#field_length').val(tds.eq(5).text());
+	       // Modal.find('#input_rule').selectpicker('val',tds.eq(6).text().replace(/\s/g, "").split(','));
+	        Modal.find('#field_default').val(tds.eq(7).text());
+	        Modal.modal('show');
+	        $("#submit_data").removeClass('insert-field').addClass('edit-field');
+	    }
+
+	    //保存模型
+	    $("#ajax_content").delegate('#save_data','click',function(){
+			var args = {},$form=$('.ajax-form-2'),$url=$form.attr('action');
+			$("#dynamic-table tr:gt(0)").each(function(i){  
+				var data = new Object();  
+				$(this).find("td").each(function(j){  
+					if(j<8){
+						data[j]= $(this).text(); 
+					}
+				});
+				args[i]=data;
+			});
+			console.log(args);
+			$.post($url, $form.serialize()+"&fields="+JSON.stringify(args), function (data) {
+	            if (data.code==1) {
+	                layer.alert(data.msg, {icon: 6}, function (index) {
+	                    layer.close(index);
+	                    window.location.href = data.url;
+	                });
+	            } else {
+	                layer.alert(data.msg, {icon: 5});
+	            }
+	        }, "json");
+			return false;
+		});
+	$(function () {
+		//插入字段
+		$("#ajax_content").delegate('.insert-field','click',function(){
+	        var Modal=$('#edit_data');
+	        var $table=$('#fields_data'),
+	            $field_name = Modal.find('#name').val(),
+	            $field_title = Modal.find('#title').val(),
+	            $field_type = Modal.find('#field_type').val(),
+	            $html ='';
+	        if(empty($field_name) || empty($field_title) || empty($field_type)){
+	            layer.alert('字段名、字段标题、字段类型不能为空', {icon: 5}, function (index) {
+	                layer.close(index);
+	            });
+	        }
+			else{
+			var $field_data = Modal.find('#field_data').val(),
+				$field_length = Modal.find('#field_length').val(),
+				$field_default = Modal.find('#field_default').val(),
+				$field_note = empty(Modal.find('#field_note').val())?'':Modal.find('#field_note').val();
+				$field_rules = empty(Modal.find('#input_rules').val())?'':Modal.find('#input_rules').val();
+				$html='<tr>'+
+					  '<td>'+$field_name+'</td>'+
+					  '<td>'+$field_title+'</td>'+
+					  '<td>'+$field_type+'</td>'+
+					  '<td class="hidden">'+$field_data+'</td>'+
+					  '<td class="hidden">'+$field_note+'</td>'+
+					  '<td class="hidden">'+$field_length+'</td>'+
+					  '<td>'+$field_rules+'</td>'+
+					  '<td>'+$field_default+'</td>'+
+					  '<td style="border-right:#CCC solid 1px;">'+
+					  '<div class="action-buttons">'+
+					  '<a class="green" href="javascript:void(0)" onclick="edit_field(this)" data-toggle="tooltip" title="修改"><i class="ace-icon fa fa-pencil bigger-130"></i></a><a class="red" href="javascript:void(0)" onclick="delete_field(this)" data-info="你确定要删除吗？" data-toggle="tooltip" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a><a class="green" href="javascript:void(0)" onclick="up_field(this)" data-toggle="tooltip" title="上移"><i class="ace-icon fa fa-arrow-up bigger-130"></i></a><a class="green" href="javascript:void(0)" onclick="down_field(this)" data-toggle="tooltip" title="下移"><i class="ace-icon fa fa-arrow-down bigger-130"></i></a>'+
+					  '</div></td></tr>';
+	            var $tr_index = Modal.find('#tr_index').val();
+	            if($tr_index>0){
+	                $table.find('tr').eq($tr_index-1).after($html);
+	            }else{
+	                $table.append($html);
+	            }
+	            Modal.modal('hide');
+			}
+	    });
+	    //编辑字段
+	    $("#ajax_content").delegate('.edit-field','click',function(){	
+	        var Modal=$('#edit_data');
+	        var $table=$('#fields_data'),
+	            $field_name = Modal.find('#name').val(),
+	            $field_title = Modal.find('#title').val(),
+	            $field_type = Modal.find('#field_type option:selected').val(),
+	            $html ='';
+	        if(empty($field_name) || empty($field_title) || empty($field_type)){
+	            layer.alert('字段名、字段标题、字段类型不能为空', {icon: 5}, function (index) {
+	                layer.close(index);
+	            });
+	        }else{
+	            var $field_data = Modal.find('#field_data').val(),
+	            $field_length = Modal.find('#field_length').val(),
+	            $field_default = Modal.find('#field_default').val(),
+	            $field_note = empty(Modal.find('#field_note').val())?'':Modal.find('#field_note').val();
+	            $field_rules = empty(Modal.find('#input_rules').val())?'':Modal.find('#input_rules').val();
+	            console.log($field_note);
+	            $html='<td>'+$field_name+'</td>'+
+				  '<td>'+$field_title+'</td>'+
+				  '<td>'+$field_type+'</td>'+
+				  '<td class="hidden">'+$field_data+'</td>'+
+				  '<td class="hidden">'+$field_note+'</td>'+
+				  '<td class="hidden">'+$field_length+'</td>'+
+				  '<td>'+$field_rules+'</td>'+
+				  '<td>'+$field_default+'</td>'+
+				  '<td style="border-right:#CCC solid 1px;">'+
+				  '<div class="action-buttons">'+
+				  '<a class="green" href="javascript:void(0)" onclick="edit_field(this)" data-toggle="tooltip" title="修改"><i class="ace-icon fa fa-pencil bigger-130"></i></a><a class="red" href="javascript:void(0)" onclick="delete_field(this)" data-info="你确定要删除吗？" data-toggle="tooltip" title="删除"><i class="ace-icon fa fa-trash-o bigger-130"></i></a><a class="green" href="javascript:void(0)" onclick="up_field(this)" data-toggle="tooltip" title="上移"><i class="ace-icon fa fa-arrow-up bigger-130"></i></a><a class="green" href="javascript:void(0)" onclick="down_field(this)" data-toggle="tooltip" title="下移"><i class="ace-icon fa fa-arrow-down bigger-130"></i></a>'+
+				  '</div></td>';  
+	            var $tr_index = Modal.find('#tr_index').val();
+	            var tr=$table.find('tr').eq($tr_index-1);
+	            tr.html($html);
+	            Modal.modal('hide');
+	        }
+	    });
+		//隐藏模态框时清空,removeData无效,不清楚为啥
+		$('#edit_data').on('hide.bs.modal', function () {
+			$(this).find('#name').val('');
+	        $(this).find('#title').val('');
+	        $(this).find('#field_type').selectpicker('deselectAll');
+	        $(this).find('#field_data').val('');
+	        $(this).find('#field_length').val('');
+	        $(this).find('#field_default').val('');
+	        $(this).find('#tr_index').val('');
+		});
+	});  
+	</script>
+		
+{/block}

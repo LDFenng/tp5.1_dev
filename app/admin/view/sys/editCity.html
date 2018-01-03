@@ -1,0 +1,93 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sys/saveCity')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$city_info.name|default='添加'}</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-9">
+						<input type="text" name="name" id="name" value="{$city_info.name|default=''}" placeholder="名称" class="col-xs-8" required/>
+						<span class="help-inline col-sm-2">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>		
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">城市编码 </label>
+					<div class="col-sm-9">
+						<input type="text" name="code" id="code" value="{$city_info.code|default=''}" placeholder="城市编码" class="col-xs-8" required/>
+						<span class="help-inline col-sm-2">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>		
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">经度</label>
+					<div class="col-sm-9">
+						<input type="text" name="longitude" id="longitude" value="{$city_info.longitude|default=''}" placeholder="经度" class="col-xs-8" required/>
+						<span class="help-inline col-sm-2">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>		
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">纬度 </label>
+					<div class="col-sm-9">
+						<input type="text" name="latitude" id="latitude" value="{$city_info.latitude|default=''}" placeholder="纬度" class="col-xs-8" required/>
+						<span class="help-inline col-sm-2">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>														
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">所属城市</label>
+					<div class="col-sm-9">
+				        <select name="pid" class="select2 col-xs-8" data-placeholder='搜索'>
+							{volist name="city_list" id="city_temp"}
+								<option value="{$city_temp.id}" {if condition="($city_temp.id == $city_info['pid']) OR ($city_temp.id == $Request.param.pid)"}selected{/if}>{$city_temp.name}--{$city_temp.levle}级</option>
+							{/volist}					
+				        </select>
+					</div>
+				</div>											
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+					<div class="col-sm-9" style="margin-top:0.78rem">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($city_info.is_enabled eq 1) OR !isset($city_info.is_enabled)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-6">
+							<span class="middle">默认启用</span>
+						</span>							
+					</div>
+				</div>													
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">排序 </label>
+					<div class="col-sm-9">
+						<input type="text" name="sort" id="sort" value="{$city_info.sort|default='100'}" placeholder="排序" class="col-xs-8" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

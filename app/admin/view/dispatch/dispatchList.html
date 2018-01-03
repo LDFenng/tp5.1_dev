@@ -1,0 +1,239 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			{$head_info.parent_title|default='首页'}
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				{$head_info.sub_title|default='操作'}
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-search" id="ajax_page_list" method="post" action="{:url('dispatchList')}" autocomplete="off">
+	 <div class="row margintop">
+		<div class="col-md-3 input-group-btn">
+		 <a data-ajax-page='true' class="btn btn-sm btn-danger ajax-display-all" href="{:url('dispatchList')}"><i class="ace-icon fa fa-refresh bigger-110"></i>更新数据</a>
+		</div>
+	</div>
+	</form>
+	<div class="row">
+	  <div class="col-xs-12">
+	    <div>
+	      <table class="table table-striped table-bordered table-hover" id="dynamic-table">
+	        <thead>
+	          <tr>
+<!-- 	            <th class="center hidden-sm hidden-xs">
+	            <label class="pos-rel">
+	                <input type="checkbox" class="ace check-all"/>
+	                <span class="lbl"></span>
+	             </label>
+	            </th> -->
+	            <th class="hidden-xs"><nobr>分配ID</nobr></th>
+	            <th class="hidden-sm hidden-xs">名称</th>
+	            <th>有效时间</th>
+	            <th>分配方式</th>
+	            <th>课程顾问</th>
+	            <th>学员信息</th>
+	            <th>报考项目</th>
+	            <th>分配状态</th>
+	            <th class="hidden-sm hidden-xs">分配时间</th>
+	            <th style="border-right:#CCC solid 1px;">操作</th>
+	          </tr>  
+	        </thead>
+	        <tbody>
+			{foreach name="dispatch_list" item="dispatch_info"}
+			<tr id="data_{$dispatch_info.id}">
+<!-- 			  <td class="center hidden-sm hidden-xs">
+			  <label class="pos-rel">
+			      <input type="checkbox" class="ace checked-data" value="{$dispatch_info.id}"/>
+			      <span class="lbl"></span>
+			      </label>
+			  </td> -->
+			  <td class="hidden-xs" height="28" >{$dispatch_info.id}</td>
+			  <td class="hidden-sm hidden-xs" height="28" ><nobr>{$dispatch_info.group_title|default="【未设置】"}</nobr></td>
+			  <td><nobr>{$dispatch_info.dispatch_effective_time|date='Y-m-d H:i',###}</nobr></td>
+			  <td><nobr>{if condition="$dispatch_info.dispatch_type =='1'"}
+			  			<span class="label label-warning">自动</span>
+			  			{else/}
+			  			<span class="label label-success">手动</span>
+			  			{/if}</nobr></td>
+			  <td><nobr>{$dispatch_info.officer_name}</nobr></td>
+			  <td>
+			  	<nobr>{$dispatch_info.student_name}</nobr><br>
+			  	<nobr>{$dispatch_info.student_phone}</nobr>
+			  </td>
+			  <td><nobr>{$dispatch_info.project_title}</nobr><br>
+				<div class="action-buttons" dispatch-id="{$dispatch_info.id}" data-rel="tooltip" title="查看详情">
+					<a class="green bigger-140 show-details-btn" href="#" title="查看详情">
+					<i class="ace-icon fa fa-stack-exchange"></i>
+					</a>
+				</div>
+			  </td>
+			  <td><nobr>{if condition="$dispatch_info.dispatch_status ==1"} 
+			  			<span class="label label-warning">预分配</span>
+			  			{elseif condition="$dispatch_info.dispatch_status ==2"/}
+			  			<span class="label label-success">已分配</span>
+			  			{elseif condition="$dispatch_info.dispatch_status ==3"/}
+			  			<span class="label label-danger">执行中···</span>
+			  			{elseif condition="$dispatch_info.dispatch_status ==4"/}
+			  			<span class="label label-info">未分配</span>
+			  			{elseif condition="$dispatch_info.dispatch_status ==5"/}
+			  			<span class="label label-inverse">已完成报名</span>
+			  			{elseif condition="$dispatch_info.dispatch_status ==6"/}
+			  			<span class="label">数据无效</span>
+			  			{/if}</nobr>
+			  </td>
+			  <td><nobr>{$dispatch_info.update_time|date='Y-m-d H:i',###}</nobr></td>
+			  <td>
+			  <div class="hidden-sm hidden-xs btn-group action-buttons">
+			  	{if condition="($dispatch_data eq true) AND (($dispatch_info.dispatch_status eq 1) OR ($dispatch_info.dispatch_status eq 2) OR ($dispatch_info.dispatch_status eq 4))" }
+			  	<a class="btn btn-xs btn-warning" data-rel="tooltip" data-toggle="modal" data-target="#edit_data" title="分配" href="{:url('dispatchStudent',['id'=>$dispatch_info.id,'modal'=>'remote'])}" data-placement="bottom"><i class="ace-icon fa fa-sitemap bigger-160"></i></a>
+			   	{/if}
+			   	{if condition="($dispatch_info.dispatch_status eq 1)"}
+			   	<a class="btn btn-xs btn-danger get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'refuse'])}" title="拒接" href="#" data-placement="bottom"> <i class="ace-icon fa fa-hand-stop-o bigger-160"></i></a>
+			  	<a class="btn btn-xs btn-info get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'receive'])}" data-placement="bottom" title="接单"> <i class="ace-icon fa fa-download bigger-160"></i></a>
+			  	{/if}
+			  	{if condition="($dispatch_info.dispatch_status eq 2)"}
+			  	<a class="btn btn-xs btn-success get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'admit'])}" data-placement="bottom" title="接待学员"> <i class="ace-icon fa fa-handshake-o bigger-160"></i></a>
+			  	{/if}
+			  	{if condition="($dispatch_info.dispatch_status eq 3)"}
+			  	<a class="btn btn-xs btn-purple get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'success'])}" data-placement="bottom"><i class="ace-icon fa fa-check bigger-160"></i></a>
+			  	<a class="btn btn-xs btn-inverse handle-fail" data-rel="tooltip" data-type='fail' data-id="{$dispatch_info.id}" href="#" title="接待失败" data-placement="bottom"><i class="ace-icon fa fa-meh-o bigger-160"></i></a>
+			  	{/if}
+			  </div>
+			    <div class="hidden-md hidden-lg">
+				    <div class="inline position-relative">
+				      	<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto" data-rel="tooltip" title="操作"> <i class="ace-icon fa fa-cog icon-only bigger-110"></i> </button>
+					    <ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+						  	{if condition="$dispatch_data eq true"}
+						  	<li><a class="btn btn-xs btn-warning" data-rel="tooltip" data-toggle="modal" data-target="#edit_data" title="分配" href="{:url('dispatchStudent',['id'=>$dispatch_info.id,'modal'=>'remote'])}" data-placement="bottom"><i class="ace-icon fa fa-sitemap bigger-160"></i></a></li>
+						   	{/if}
+						   	{if condition="($dispatch_info.dispatch_status eq 1)"}
+						   	<li><a class="btn btn-xs btn-danger get-btn" data-rel="tooltip" title="拒接" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'refuse'])}" data-placement="bottom"> <i class="ace-icon fa fa-hand-stop-o bigger-160"></i></a></li>
+						  	<li><a class="btn btn-xs btn-info get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'receive'])}" data-placement="bottom" title="接单"> <i class="ace-icon fa fa-download bigger-160"></i></a></li>
+						  	{/if}
+						  	{if condition="($dispatch_info.dispatch_status eq 2)"}
+						  	<li><a class="btn btn-xs btn-success get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'admit'])}" data-placement="bottom" title="接待学员"> <i class="ace-icon fa fa-handshake-o bigger-160"></i></a></li>
+						  	{/if}
+						  	{if condition="($dispatch_info.dispatch_status eq 3)"}
+						  	<li><a class="btn btn-xs btn-purple get-btn" data-rel="tooltip" href="{:url('handleStatus',['id'=>$dispatch_info.id,'type'=>'success'])}" title="成功报名" data-placement="bottom"><i class="ace-icon fa fa-check bigger-160"></i></a></li>
+						  	<li><a class="btn btn-xs btn-inverse handle-fail" data-rel="tooltip" data-type='fail' data-id="{$dispatch_info.id}" href="#" title="接待失败" data-placement="bottom"><i class="ace-icon fa fa-meh-o bigger-160"></i></a></li>
+						  	{/if}		    	
+						</ul>
+				    </div>
+			  </div>
+			</td>
+			</tr>
+				<tr class="detail-row open-{$dispatch_info.id}">
+					<td colspan="11">
+						<div class="table-detail">
+							<div class="row">
+								<div class="col-xs-12 col-sm-4">
+									<div class="space visible-xs"></div>
+									<div class="profile-user-info profile-user-info-striped">
+										<div class="profile-info-row">
+											<div class="profile-info-name">学员姓名</div>	
+											<div class="profile-info-value">
+												<span>{$dispatch_info.student_name}</span>
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">联系电话</div>
+											<div class="profile-info-value">
+												<span>{$dispatch_info.student_phone}</span>
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">项目</div>
+											<div class="profile-info-value">
+												<span>{$dispatch_info.project_title}</span>
+											</div>
+										</div>
+										<div class="profile-info-row">
+											<div class="profile-info-name">到期时间</div>
+											<div class="profile-info-value">
+												<span>{$dispatch_info.dispatch_effective_time|date='Y-m-d H:i',###}</span>
+											</div>
+										</div>							
+									</div>
+								</div>
+								<div class="col-xs-12 col-sm-8">
+									<div class="space visible-xs"></div>
+									<h4 class="header blue lighter less-margin">备注</h4>
+									<div class="space-6"></div>
+							        <div class="text-center">
+										{$dispatch_info.remark}
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+				</tr>
+			{/foreach}
+	        </tbody>
+	      </table>
+	    </div>
+	  </div>
+	  <div class="col-xs-12 center">{$page}</div>
+	</div>
+	
+	<!-- 项目状态模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	      
+	      </div>
+	      <!-- /.modal-content --> 
+	  </div>
+	  <!-- /.modal-dialog -->
+	</div>	
+	
+	<!-- 项目状态模态框 -->
+	<div class="modal fade" id="fail_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+			<!-- 项目状态模态框 -->
+			<form class="form-horizontal ajax-form" method="post" action="{:url('handleStatus')}">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">	 
+			   		<input type="hidden" name="id" id="dispatch_id">
+			   		<input type="hidden" name="type" id="dispatch_type">
+					<div class="form-group">
+						<label class="col-sm-3 control-label no-padding-right" for="form-field-1">原因：</label>
+						<div class="col-sm-9">
+							<textarea  name="remark" cols="20" rows="3" class="col-xs-10 col-sm-7 limited1" placeholder="最多600个字符"  id="form-field-10"  maxlength="600">暂无</textarea>
+							<span class="help-inline col-xs-5 col-sm-5">
+								还可以输入 <span class="middle charsLeft1"></span>个字符
+							</span>
+						</div>
+					</div>	
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-info" type="submit"><i class="ace-icon fa fa-check bigger-110"></i>保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</form>	      
+	    </div>
+	    <!-- /.modal-content --> 
+	  </div>
+	  <!-- /.modal-dialog -->
+	</div>	  
+	<script type="text/javascript">
+	$('#ajax_content').delegate('.handle-fail','click',function () {	
+	    var type = $(this).data('type'),
+	    id = $(this).data('id');
+	   	$("#fail_data").modal('show');
+	   	$("#dispatch_type").val(type);
+	   	$("#dispatch_id").val(id);    
+	});
+	var active_class = 'open';
+	//select/deselect a row when the checkbox is checked/unchecked
+	$('#ajax_content').delegate('.action-buttons','click', function(){
+		var class_id = $(this).attr('dispatch-id');
+		$(".open-"+class_id).toggleClass("open");
+	});
+	</script> 
+{/block}

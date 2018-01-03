@@ -1,0 +1,98 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title">{if condition="$Request.param.z=='video'"}视频{elseif condition="$Request.param.z=='audio'"/}音频{elseif condition="$Request.param.z=='img'"/}图片{/if}素材
+    {if condition="$Request.param.z=='video'"}<a class="btn btn-white btn-danger" target="_blank" href="{:url('Material/videoList')}" style="float:right" type="button">添加视频 </a>{/if}
+    {if condition="$Request.param.z=='audio'"/}<a class="btn btn-white btn-danger" target="_blank" href="{:url('Material/audioList')}" style="float:right" type="button">添加音频 </a>{/if}
+    {if condition="$Request.param.z=='img'"/}<a class="btn btn-white btn-danger" target="_blank" href="{:url('Material/imgList')}" style="float:right" type="button">添加图片</a>{/if}&nbsp;&nbsp;&nbsp;&nbsp;
+    </h4>
+</div>
+<div class="modal-body" id="material_data">
+	<div class="row">	
+		<div class="col-xs-12">
+			<div id="accordion" class="accordion-style1 panel-group">
+				<div class="panel panel-default" id="material_date_list">
+					{empty name="data_date"}
+					<p class='center bigger-160'>暂无本地数据</p>
+					{/empty}
+					{volist name="data_date" id="data_item"}
+					<div class="panel-heading">
+						<h4 class="panel-title">
+						<a class="accordion-toggle panel-date" data-index-id='{$data_item.index_id}' data-date="{$data_item.upload_date}" data-toggle="collapse" data-parent="#accordion" href="#collapse_{$data_item.index_id}" aria-expanded="true">
+						<i class="bigger-110 ace-icon fa {if condition='$key==0'}fa-angle-down{else /}fa-angle-right{/if}" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+						 {$data_item.upload_date}
+						</a>
+						</h4>
+					</div>	
+					<div id="collapse_{$data_item.index_id}" class="panel-collapse collapse {if condition='$key==0'}in{/if}" aria-expanded="true">
+						<div class="panel-body update-date" id="file_data_{$data_item.upload_date}" data-date="{$data_item.upload_date}">
+							{if condition='$key==0'}
+							{include file="file_upload/ajaxMaterialFile"/}
+							{/if}
+						</div>
+					</div>									
+					{/volist}
+					<div class="text-right">{$date_page}</div>	
+				</div>
+			</div>
+		</div>
+	</div>		
+</div>	
+<script type="text/javascript">
+$("#ajax_content").unbind().delegate('.modal-page','click',function(){
+	var page=$(this).data('page'),
+	date=$(this).parents('.update-date').data('date');
+	modal_page(page,date);	
+})
+function modal_page(page,date){
+	var z="{$Request.param.z}",
+	loading=layer.load(0,{shade: [0.2, '#cccc']});
+	$.ajax({
+		url:"{:url('admin/FileUpload/getMaterialData')}?type="+z,
+		type:"POST",
+		data:$('.modal-search-input').serialize()+'&page='+page+'&date='+date,            
+		success: function(data,status){
+			$("#file_data_"+date).html(data);
+			layer.close(loading);
+		}
+	});
+	layer.close(loading);
+	return false;
+}
+$("#material_data").unbind().delegate('.panel-date','click',function(){
+	$("div[id*='collapse_']").find('.remove-data').remove();
+	if($(this).attr('aria-expanded')=='false'){
+		var date=$(this).data('date');
+		modal_page(0,date);
+	}
+})	
+$("#material_date_list").delegate(".page-ui",'click',function(e){
+	e.preventDefault();
+	var z="{$Request.param.z}";
+	var url=$(this).attr('href');
+	$.ajax({
+		url:url+"&type="+z,
+		type:"POST",         
+		success: function(data){
+			if(data.code==0){
+				layer.msg(data.msg);
+				return false;
+			}
+			$("#material_date_list").empty().html(data);
+		}
+	})
+})
+$("#material_data").delegate('.select-material','click',function(){
+	var material_id=$(this).data('id'),
+	input_id=$(this).data('input-id'),
+	material_type=$(this).data('type'),
+	url=$(this).data('url');
+	$("#"+input_id).val(material_id);
+	if(material_type=='img'){
+		$("#"+input_id+"_url").attr('src',url);
+	}
+	else{
+		$("#"+input_id+"_url").val(url);
+	}
+	$("#file_modal").modal('hide');
+})
+</script>	

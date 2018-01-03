@@ -1,0 +1,32 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" name="form0" method="post" action="{:new_url('admin/Sys/saveGroupAuth')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">用户授权限组</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-10">
+				{volist name="group_list" id="group_info"}
+				<div class="checkbox col-sm-4">
+					<label class="block">
+					<input class="ace input-lg check-data" name="group_id[]" value="{$group_info.id}" {in name="group_info.id" value="$auth_ids"}checked{/in} type="checkbox">
+					<span class="lbl bigger-120">{$group_info.title}</span>
+					</label>
+				</div>	
+				{/volist}							
+			</div>	
+			<div class="col-sm-2"><button class="btn btn-white btn-primary is-check" type="button">全选/反选</button></div>													
+		</div>
+	</div>
+	<div class="modal-footer">
+		<input type="hidden" name="admin_id" value="{$Request.param.admin_id}"/>
+		<button class="btn btn-info" type="submit" id="submit_data"><i class="ace-icon fa fa-check bigger-110"></i>保存</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>
+</form>
+
+<script type="text/javascript">
+
+</script>
+

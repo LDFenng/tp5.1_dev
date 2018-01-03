@@ -1,0 +1,196 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<form class="form-horizontal ajax-form" method="post" action="{:url('saveDispatch')}" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="{$dispatch_info.id|default=null}" />
+	<div class="row">
+		<div class="col-xs-6">
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">名称：</label>
+				<div class="col-sm-9">
+					<select name="group_id" id="group_id" class="col-sm-6" required>
+						{volist name="group_list" id="group_info"}
+						<option value="{$group_info.id}" {eq name="group_info.id" value='$dispatch_info.group_id'}selected{/eq}>{$group_info.title}</option>
+						{/volist}
+					</select>			
+					<span class="help-inline col-xs-2 col-sm-5">
+						<span class="middle red" id="resone">*</span>
+					</span>																																																							
+				</div>
+			</div>	
+		    <div class="form-group">
+		        <label class="col-sm-3 control-label">查看分配数据成员：</label>
+		        <div class="col-sm-9">
+		            <select name="dispatch_auth[]" class="selectpicker" data-width='50%' data-size="8" data-style='btn btn-primary btn-white' data-live-search="true" data-live-search-placeholder='搜索' multiple title="选择分配数据成员">
+		               {volist name="officer_list" id="officer_info"}
+		                <optgroup label="{$officer_info.title}">
+		                	{notempty name="officer_info['personal_list']"}
+		                   	{volist name="officer_info['personal_list']" id="personal_info"}
+		                    <option value="{$personal_info.id}" {in name="personal_info.id" value="$dispatch_auth"}selected{/in}>{$personal_info.name}</option>
+							{/volist}
+							{/notempty}
+		                </optgroup>			              
+		               {/volist}
+		            </select>
+		        </div>
+		    </div>						
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">分配类型：</label>
+				<div class="col-sm-9">
+					<select name="type" id="type" class="col-sm-6" required>
+						<option value="percent" {eq name="dispatch_info.type" value='percent'}selected{/eq}>百分比</option>
+						<option value="number" {eq name="dispatch_info.type" value='number'}selected{/eq}>成功预约数量</option>
+					</select>
+				</div>	
+			</div>						
+			<div class="space-4"></div>				
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">统计周期：</label>
+				<div class="col-sm-9">
+					<select name="cycle" id="cycle" class="col-sm-6" required>
+						<option value="months" {eq name="dispatch_info.cycle" value='months'}selected{/eq}>一个月</option>
+						<option value="weeks" {eq name="dispatch_info.cycle" value='weeks'}selected{/eq}>一周</option>
+						<option value="custom" {eq name="dispatch_info.cycle" value='custom'}selected{/eq}>自定义</option>
+					</select>
+				</div>	
+			</div>	
+			<div class="form-group" id="custom_display" style="display:none">
+				<label class="col-sm-3 control-label no-padding-right">总天数：</label>
+				<div class="col-sm-9">
+					<input type="text" name="total_days" value="{$dispatch_info.total_days|default=''}" placeholder="总天数" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>
+					<span class="help-inline col-xs-2 col-sm-5">
+						<span class="middle red" id="resone">*</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">分配有效时长：</label>
+				<div class="col-sm-9">
+					<input type="text" name="duration_time" value="{$dispatch_info.duration_time|default='1'}" placeholder="小时" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+					<span class="help-inline col-xs-2 col-sm-5" style="margin-top:0.68rem">
+						<span class="middle">小时</span>
+					</span>																																																							
+				</div>
+			</div>																												
+			<div class="space-4"></div>		
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right" for="form-field-1">是否启用： </label>
+				<div class="col-sm-1" style="margin-top:0.78rem">
+					<label>
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="$dispatch_info.is_enabled eq '1'"}checked="checked"{elseif condition="$dispatch_info.id eq null"/}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="help-inline col-xs-2 col-sm-5">
+						<span class="middle" id="resone"></span>
+					</span>							
+				</div>
+			</div>	
+			<div class="space-4"></div>		
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right" for="form-field-1">是否手动分配 ：</label>
+				<div class="col-sm-1" style="margin-top:0.78rem">
+					<label>
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_manual" type="checkbox" value="1" {if condition="$dispatch_info.is_manual eq '1'"}checked="checked"checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="help-inline col-xs-2 col-sm-5">
+						<span class="middle" id="resone"></span>
+					</span>							
+				</div>
+			</div>													
+		</div>
+		<div class="col-xs-6" id="condition_data">	
+			<div class="form-group">
+				<label class="col-sm-3">
+				<button class="btn btn-white btn-primary" id="add_condition" type="button">添加条件</button>
+				</label>	
+				<label class="col-sm-9">
+				最多可添加十个分配条件
+				</label>								
+			</div>	
+			{volist name="dispatch_info['dispatch_data']" id="item"}			
+			<div class="form-group" id="count_num_{$key}">
+				<label class="col-sm-2 control-label no-padding-right type-title">百分比：</label>
+				<div class="col-sm-3">
+					<input type="text" name="condition_data[{$key}][min_num]" value="{$item.min_num|default=''}" placeholder="最小数字" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>
+					<input type="text" name="condition_data[{$key}][max_num]" value="{$item.max_num|default=''}" placeholder="最大数字" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>																																																						
+				</div>
+				<label class="col-sm-2 control-label no-padding-right">最大分配量：</label>
+				<div class="col-sm-2">
+					<input type="text" name="condition_data[{$key}][max_dispatch]" value="{$item.max_dispatch|default='5'}" placeholder="最大分配量" class="col-xs-10 col-sm-12" onkeyup="value=value.replace(/[\D]/g,'') "/>																																																						
+				</div>	
+				<label class="col-sm-2">
+				<button class="btn btn-white btn-danger del-condition" data-id='{$key}' type='button'>删除</button>
+				</label>									
+			</div>
+			{/volist}												
+		</div>							
+		<div class="clearfix">
+			<div class="col-md-offset-5 col-md-4">
+				<button class="btn btn-info" type="submit">
+					<i class="ace-icon fa fa-check bigger-110"></i>
+					保存
+				</button>
+				&nbsp; &nbsp; &nbsp;
+				<button class="btn" type="reset">
+					<i class="ace-icon fa fa-undo bigger-110"></i>
+					重置
+				</button>
+			</div>
+		</div>			
+	</div>
+	</form>		
+<script type="text/javascript" src="__PUBLIC_PC__/ace/components/phpjs/functions/misc/uniqid.js"></script>
+<script type="text/javascript">
+$("#ajax_content").delegate('#type','change',function(){
+	var type=$("#type").val();
+	if(type=='percent'){
+		$(".type-title").html('百分比：');
+	}
+	else{
+		$(".type-title").html('数量：');
+	} 
+})
+$("#ajax_content").delegate('#cycle','change',function(){
+	var cycle=$("#cycle").val();
+	if(cycle=='custom'){
+		$("#custom_display").show(500);
+	}
+	else{
+		$("#custom_display").hide(500);
+	} 
+})
+
+$("#ajax_content").delegate('#add_condition','click',function(){
+	var count_num = $("div[id*='count_num']").size(),
+	id = uniqid(count_num),
+	type_title = $("#type").val()=='percent'?'百分比':'数量',
+	html_tpl = "<div class='form-group' id='count_num_"+id+"'>"+
+		"<label class='col-sm-2 control-label no-padding-right type-title'>"+type_title+"：</label>"+
+		"<div class='col-sm-3'>"+
+		"<input type='text' name='condition_data["+id+"][min_num]' value='' placeholder='最小值（数字）' class='col-xs-10 col-sm-6 check-num'/>"+
+		"<input type='text' name='condition_data["+id+"][max_num]' value='' placeholder='最大值（数字）' class='col-xs-10 col-sm-6 check-num'/>"+
+		"</div>"+
+		"<label class='col-sm-2 control-label no-padding-right'>最大分配量：</label>"+
+		"<div class='col-sm-2'>"+
+		"<input type='text' name='condition_data["+id+"][max_dispatch]' value='5' placeholder='最大分配量' class='col-xs-10 col-sm-12 check-num'/>"+
+		"</div>"+
+		"<label class='col-sm-2'>"+
+		"<button class='btn btn-white btn-danger del-condition' data-id='"+id+"' type='button'>删除</button>"+
+		"</label></div>";
+	count_num<10?$("#condition_data").append(html_tpl):layer.msg('条件不可超过十个'); 	
+})
+
+var old_val = '';
+$("#condition_data").delegate(".check-num","input propertychange",function(){
+	var ret = /^[0-9]{0,2}$/,
+	str = $(this).val();
+	!ret.test(str)?$(this).val(old_val):old_val=str;
+});
+$("#condition_data").delegate(".del-condition","click",function(){
+	str = $(this).data('id');
+	$("#count_num_"+str).remove();
+});
+</script>
+
+{/block}

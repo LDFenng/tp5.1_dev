@@ -1,0 +1,236 @@
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/DbModel/saveForm')}">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">编辑字段</h4>
+    </div>
+	<div class="modal-body">
+		<div class="row">	
+		<input type="hidden" name="id" value="{$form_info.id|default=''}" />
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">名称 </label>
+			<div class="col-sm-9">
+				<input type="text" name="title" id="title" value="{$form_info.title|default=''}" placeholder="名称" class="col-xs-8" required/>
+				<span class="help-inline col-xs-4">
+					<span class="middle red">*</span>
+				</span>
+			</div>
+		</div>
+		<div class="space-4"></div>
+           <div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right">所属字段</label>
+			<div class="col-sm-6">
+				{notempty name="table_list"}
+				<select name="table_name" id="table_name" class="select2 col-xs-4" data-placeholder='搜索'>
+					<option value=''>请选择</option>
+					{volist name="table_list" id="table_info"}
+						<option value="{$table_info.table_name_EN}" {in name="table_info.table_name_EN" value="$Request.param.table_name"}selected{/in}>{$table_info.table_name_CN}</option>
+					{/volist}
+				</select>
+				{/notempty}
+				{empty name="table_list"}
+				<input type="text" disabled='disabled' value="{$form_info.table_name|default=''}"/>
+				{/empty}
+				<select name="form_name" id="form_name" class="select2 col-xs-4" data-placeholder='搜索'>
+					<option value=''>请选择</option>
+					{notempty name="field_list"}
+					{volist name="field_list" id="field_info"}
+					<option value="{$field_info.field_name}" {if condition="$field_info.field_name eq $form_info.form_name"}selected="selected"{/if}>{$field_info.field_name}</option>
+					{/volist}
+					{/notempty}								
+				</select>
+			</div>										
+		</div>
+           <div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">表单类型</label>
+			<div class="col-sm-6">
+				<select name="form_type" id="form_type" class="select2 col-xs-4" data-placeholder='搜索'>
+					<option value=''>请选择</option>
+					<option value="text" {in name="form_info.form_type" value="text"}selected{/in}>text</option>
+					<option value="hidden" {in value="hidden" name="form_info.form_type"}selected{/in}>hidden</option>
+					<option value="number" {in value="number" name="form_info.form_type"}selected{/in}>number</option>
+					<option value="password" {in value="text" name="form_info.form_type"}selected{/in}>password</option>
+					<option value="search" {in value="search" name="form_info.form_type"}selected{/in}>search</option>
+					<option value="tel" {in value="tel" name="form_info.form_type"}selected{/in}>tel</option>
+					<option value="image" {in value="image" name="form_info.form_type"}selected{/in}>image</option>
+					<option value="email" {in value="email" name="form_info.form_type"}selected{/in}>email</option>
+					<option value="file" {in value="file" name="form_info.form_type"}selected{/in}>file</option>
+					<option value="checkbox" {in value="checkbox" name="form_info.form_type"}selected{/in}>checkbox</option>
+					<option value="textarea" {in value="textarea" name="form_info.form_type"}selected{/in}>textarea</option>
+					<!-- <option value="select" {in value="select" name="form_info.form_type"}selected{/in}>select</option> -->
+				</select>
+			</div>
+		</div>	
+		<div class="space-4"></div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">表单属性 </label>
+			<div class="col-sm-9" style="margin-top:0.78rem">
+				<label class="col-sm-3" id="is_hide">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_hide" type="checkbox" value="1" {if condition="$form_info.is_hide eq '1'"}checked="checked"{/if}>
+					<span class="lbl">是否隐藏</span>
+				</label>
+				<label class="col-sm-3" id="is_disabled">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_disabled" type="checkbox" value="1" {if condition="$form_info.is_disabled" eq '1'"}checked="checked"{/if}>
+					<span class="lbl">是否禁用</span>
+				</label>
+				<label class="col-sm-3" id="is_read">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_read" type="checkbox" value="1" {if condition="$form_info.is_read eq '1'"}checked="checked"{/if}>
+					<span class="lbl">是否只读</span>
+				</label>
+				<label class="col-sm-3" id="is_required">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_required" type="checkbox" value="1" {if condition="$form_info.is_required eq '1'"}checked="checked"{/if}>
+					<span class="lbl">是否必填</span>
+				</label>
+				<label class="col-sm-3" id="autocomplete">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="autocomplete" type="checkbox" value="on" {if condition="$form_info.autocomplete eq 'on'"}checked="checked"{/if}>
+					<span class="lbl">自动完成</span>
+				</label>				
+				<label class="col-sm-4" id="is_multiple">
+					<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_multiple" type="checkbox" value="1" {if condition="$form_info.is_multiple eq '1'"}checked="checked"{/if}>
+					<span class="lbl">是否多选（只对select）</span>
+				</label>																			
+			</div>
+		</div>	
+		<div class="form-group" id="pattern">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">匹配正则 </label>
+			<div class="col-sm-9">
+				<input type="text" name="pattern" id="pattern" value="{$form_info.pattern|default=''}" placeholder="正则表达式" class="col-xs-8"/>
+				<span class="help-inline col-xs-4">
+					<span class="middle">填写正确的正则表达式</span>
+				</span>
+			</div>
+		</div>	
+		<div class="form-group" id="default_value">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">默认值 </label>
+			<div class="col-sm-9">
+				<input type="text" name="default_val" id="default_val" value="{$form_info.default_val|default=''}" placeholder="默认值" class="col-xs-8"/>
+				<span class="help-inline col-xs-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>	
+		<div class="form-group" id="textarea_option">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">文本域行列 </label>
+			<div class="col-sm-2">
+				<input type="text" name="rows" value="{$form_info.rows|default=''}" placeholder="行数" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>
+				<input type="text" name="cols" value="{$form_info.cols|default=''}" placeholder="列数" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>																																																						
+			</div>	
+			<label class="col-sm-2 control-label no-padding-right type-title">数字范围：</label>
+			<div class="col-sm-2">
+				<input type="text" name="min" value="{$form_info.min|default=''}" placeholder="最小数字" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>
+				<input type="text" name="max" value="{$form_info.max|default=''}" placeholder="最大数字" class="col-xs-10 col-sm-6" onkeyup="value=value.replace(/[\D]/g,'') "/>																																																						
+			</div>						
+		</div>	
+		<div class="form-group" id="tip_text">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">提示文本 </label>
+			<div class="col-sm-9">
+				<input type="text" name="tip_text" id="tip_text" value="{$form_info.tip_text|default=''}" placeholder="提示文本" class="col-xs-8"/>
+				<span class="help-inline col-xs-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>	
+		<div class="form-group" id="placeholder">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">提示信息（input灰色字体） </label>
+			<div class="col-sm-9">
+				<input type="text" name="placeholder" id="placeholder" value="{$form_info.placeholder|default=''}" placeholder="提示文本" class="col-xs-8"/>
+				<span class="help-inline col-xs-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>
+		<div class="form-group" id="placeholder">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">表单样式、插件类 </label>
+			<div class="col-sm-9">
+				<input type="text" name="form_css" id="form_css" value="{$form_info.form_css|default='col-xs-8'}" placeholder="表单样式、插件类" class="col-xs-8"/>
+				<span class="help-inline col-xs-4">
+					<span class="middle"></span>
+				</span>
+			</div>
+		</div>		
+		<div class="form-group" id="maxlength">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1">最大长度 </label>
+			<div class="col-sm-2">
+				<input type="text" name="maxlength" id="maxlength" value="{$form_info.placeholder|default=''}" placeholder="最大长度 " class="col-xs-8"/>
+			</div>
+			<label class="col-sm-1 control-label no-padding-right" for="form-field-1">排序 </label>
+			<div class="col-sm-4">
+				<input type="text" name="sort" id="sort" value="{$form_info.sort|default='100'}" placeholder="最大长度 " class="col-xs-6"/>
+				<span class="help-inline col-xs-6">
+					<span class="middle">值越小越靠前</span>
+				</span>
+			</div>			
+		</div>	
+		<div class="form-group">
+
+		</div>																				
+		</div>
+	</div>					
+	<div class="modal-footer">
+	    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	    <button type="submit" class="btn btn-primary">提交</button>
+	</div>
+</form>	  
+<script type="text/javascript">
+$("#table_name").bind('change',function(){
+	var t_name = $("#table_name").val();
+	if(!empty(t_name)){
+		$.ajax({
+			type: "GET",
+			url: "{:url('admin/DbModel/getTableField')}",
+			data: {'t_name':t_name},
+			dataType: "json",
+			success: function(data){
+				var html_tpl="<option value=''>请选择</option>";
+				for(key in data){
+					html_tpl +="<option value='"+data[key]['field_name']+"' default_val='"+data[key]['default_val']+"'>"+data[key]['field_name']+"</option>";
+				}
+				$("#form_name").empty().append(html_tpl);
+			    $('#form_name').selectpicker('refresh');
+			    $('#form_name').selectpicker('render');
+			}
+		})
+	}
+})
+
+$("#ajax_content").delegate('#form_name','change',function(){
+	var default_val =$("#form_name").find("option:selected").attr('default_val');
+	$("#default_val").val(default_val);
+})
+/* $("#form_type").bind('change',function(){
+	var form_type = $("#form_type").val();
+	if(form_type=='text' || form_type=='number' || form_type=='search' || form_type=='tel' || form_type=='email'){
+		$("#is_hide").show(100),$("#is_disabled").show(100),$("#is_read").show(100),
+		$("#is_required").show(100),$("#autocomplete").show(100),$("#maxlength").show(100);
+	}
+	else{
+		$("#is_hide").hide(100),$("#is_disabled").hide(100),$("#is_read").hide(100),
+		$("#is_required").hide(100),$("#autocomplete").hide(100),
+		$("[type='checkbox']").prop('checked',false);
+	}
+	if(form_type=='number' || form_type=='tel'){
+		$("#num_option").show(100);
+	}
+	else{
+		$("#num_option").hide(100);
+	}
+	if(form_type=='textarea'){
+		$("#textarea_option").show(100),$("#maxlength").show(100),$("#is_required").show(100);
+	}
+	else{
+		$("#textarea_option").hide(100),$("#maxlength").hide(100),$("#is_required").hide(100);
+	}
+	if(form_type!='hidden' || form_type!='file'){
+		$("#placeholder").show(100),
+		$("#tip_text").show(100);
+	}
+	else{
+		$("#placeholder").hide(100),
+		$("#tip_text").hide(100)
+	}
+	if(form_type=='select'){
+		
+	}
+}) */
+
+					
+</script>

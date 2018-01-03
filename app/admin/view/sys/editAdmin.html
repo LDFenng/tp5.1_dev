@@ -1,0 +1,83 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sys/saveAdmin')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$admin_info.user_name|default='用户信息'}</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="position-relative">
+					<div id="signup-box" class="widget-box no-border">
+						<div class="widget-body">
+							<div class="widget-main">
+								<h4 class="header green lighter bigger">
+									<i class="ace-icon fa fa-users blue"></i>
+									编辑账号
+								</h4>
+								<p> 你的信息</p>
+								<div class="col-sm-6">
+									<input type="hidden" name="id" value="{$admin_info.id}"/>
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="email" name="user_email" value="{$admin_info.user_email|default=''}" class="form-control" placeholder="邮箱" pattern="([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+" title="邮箱格式错误"/>
+											<input type="hidden" name="old_user_email" value="{$admin_info.user_email|default=''}" pattern="([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+"/>
+											<i class="ace-icon fa fa-envelope"></i>
+										</span>
+									</label>
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="text" name="user_phone" value="{$admin_info.user_phone|default=''}" class="form-control" maxlength='11' placeholder="手机号码" pattern="(13[0-9]{9})|(15[0-9]{9})|(18[0-9]{9})|(17[0-9]{9})"/>
+											<i class="ace-icon fa fa-mobile"></i>
+											<input type="hidden" name="old_user_phone" value="{$admin_info.user_phone|default=''}"/>
+										</span>
+									</label>													
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="text" name="user_name" value="{$admin_info.user_name|default=''}" class="form-control" placeholder="用户名" required/>
+											<i class="ace-icon fa fa-user"></i>
+											<input type="hidden" name="old_user_name" value="{$admin_info.user_name|default=''}"/>
+										</span>
+									</label>
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="password" name="password" class="form-control" placeholder="6-16位由首字母+数字组成的密码（不修改密码留空）" title="6-16位由首字母+数字组成的密码" pattern="^[a-zA-Z]\w{5,17}$"/>
+											<i class="ace-icon fa fa-lock"></i>
+										</span>
+									</label>
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="password" name="password_confirm" class="form-control" placeholder="重复输入密码（不修改密码留空）" title="6-16位由首字母+数字组成的密码" pattern="^[a-zA-Z]\w{5,17}$"/>
+											<i class="ace-icon fa fa-retweet"></i>
+										</span>
+									</label>
+									<label class="block clearfix">
+										<span class="block input-icon input-icon-right">
+											<input type="text" name="effective_time" value="{$admin_info.effective_time|default=''}" class="form-control input-date-format" placeholder="有效期（不填写为无限）" title="日期格式错误" pattern="[0-9]{4}-[0-1][0-9]-[0-3][0-9]"/>
+											<i class="ace-icon fa fa-calendar"></i>
+										</span>
+									</label>										
+								</div>
+								<div class="col-sm-6">
+									<input type="hidden" name="head_img" id="head_img" value="{$admin_info.head_img|default=''}"/>
+									<input type="hidden" name="old_admin_avatar" value="{$admin_info.head_img|default=''}"/>
+							        <img id="head_src" class="col-sm-8 crop-img" src="{$admin_info.head_img|default=default_img(2)}" data-input-id='head_img' data-src-id='head_src' src="{$admin_info.head_img|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+									<span class="help-inline col-xs-12 col-sm-4">
+										<span class="middle">宽高比1:1</span>
+									</span>										
+								</div>
+							</div>
+						</div><!-- /.widget-body -->
+					</div><!-- /.signup-box -->
+				</div><!-- /.position-relative -->		
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

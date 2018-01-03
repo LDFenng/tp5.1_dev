@@ -1,0 +1,237 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			素材管理{:session('user_id')}
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				幻灯片编辑
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-horizontal ajax-form" method="post" action="{:new_url('admin/Material/saveSlide',['page'=>$Request.param.page])}">
+	<input type="hidden" name='id' value="{$slide_info.id|default=''}" />
+	<div class="row margintop">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">标题</label>
+				<div class="col-sm-9">
+					<input type="text" name="title" value="{$slide_info.title|default=null}" placeholder="标题" class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">场景</label>
+				<div class="col-sm-9">
+			        <select name="scene" class="select2 col-xs-4" data-placeholder='搜索'>
+						{volist name="Think.config.extarray.scene_type" id="scene_info"}
+							<option value="{$scene_info.code}" {if condition="$scene_info.code eq $slide_info['scene']"}selected{/if}>{$scene_info.title}</option>
+						{/volist}
+			        </select> 																																																							
+				</div>
+			</div>		
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否动画 </label>
+				<div class="help-inline col-sm-6">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" id="is_animate" name="is_animate" type="checkbox" value="1" {if condition="$slide_info.is_animate eq 1"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认不启用（启用需要有css基础知识）</span>
+					</span>							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right" id='img_title'>{if condition="$slide_info.is_animate eq 1"}背景图{else/}轮播图{/if}</label>
+				<div class="col-sm-9">
+					<input type="hidden" name="old_img_url" value="{$slide_info.img_url|default=''}"/>
+					<input type="hidden" name="img_url" id="img_url" value="{$slide_info.img_url|default=''}"/>
+			        <img id="img_src" class="col-sm-3 img-responsive crop-img" data-input-id='img_url' data-src-id='img_src' src="{$slide_info.img_url|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+					<span class="help-inline col-xs-12 col-sm-5">
+						<span class="middle"></span>
+					</span>								
+				</div>
+			</div>									
+			<div class="space-2"></div>	
+			<div id="animate" {if condition="!isset($slide_info.is_animate) OR ($slide_info.is_animate==0)"}style="display:none"{/if}>
+				<hr class="space-6">
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">动画数据</label>
+					<div class="col-sm-9">
+						<button class="btn btn-white btn-primary col-xs-6" id="add_animate" type="button">添加动画数据（多图片不同效果组成动画）</button>																																																														
+					</div>
+				</div>
+				<div id="animate_data">
+					{notempty name="slide_info['animate_data']"}
+					{volist name="slide_info['animate_data']" id="animate_info"}
+					<div class='form-group group-{$key}'>
+						<label class='col-sm-3 control-label no-padding-right'>动画数据-{$key}</label>
+						<div class='col-sm-7'>
+							<textarea name='animate_data[{$key}][style]' rows='3' class='col-xs-7' placeholder='CSS样式'>{$animate_info.style}</textarea>								
+							<span class='help-inline col-xs-5'>
+								CSS格式：style="position:absolute;left:10px;top:10%;margin-left:15px"
+							</span>							
+							<div class='input-group'>
+								<span class='input-group-addon'>变幻效果</span>
+								<input name='animate_data[{$key}][effect]' value='{$animate_info.effect}' class='form-control' value='bounceInLeft' type='text'>	
+								
+								<span class='input-group-addon'>持续时间</span>
+								<input name='animate_data[{$key}][duration]' value='{$animate_info.duration}' class='form-control' type='text'>
+								<span class='input-group-addon'>秒</span>
+								
+								<span class='input-group-addon'>延迟时间</span>
+								<input name='animate_data[{$key}][delay]' value='{$animate_info.delay}' class='form-control' type='text'>
+								<span class='input-group-addon'>秒</span>																							
+							</div>	
+							<div class='input-group'>
+								<span class='input-group-addon'>url</span>
+								<input name='animate_data[{$key}][url]' value='{$animate_info.url}' class='form-control' type='text'>																						
+							</div>																			
+						</div>															
+					</div>
+					<div class='form-group group-{$key}'>
+						<label class='col-sm-3 control-label no-padding-right'>组图-{$key}</label>
+						<div class='col-sm-9'>
+							<input type='hidden' name='animate_data[{$key}][old_animate_img]' value='{$animate_info.animate_img_url}'/>
+							<input type='hidden' name='animate_data[{$key}][animate_img_url]' id='animate_img_url_{$key}' value='{$animate_info.animate_img_url}'/>
+					        <img id='animate_img_src_{$key}' class='col-sm-3 img-responsive crop-img' data-input-id='animate_img_url_{$key}' data-src-id='animate_img_src_{$key}' src='{$animate_info.animate_img_url|default=default_img()}' data-rel='tooltip' title='点击上传图片'>
+							<span class='help-inline col-xs-12 col-sm-5'>
+								<span class='middle'>
+								<a class='red' target='_blank' href='http://www.dowebok.com/demo/2014/98/'>更多变幻效果（复制黏贴即可）</a>
+								<button class='btn btn-white btn-pink btn-sm del-animate' data-group-id='{$key}' type='button'>删除此组图</button>
+								</span>
+							</span>								
+						</div>
+					</div>
+					<hr class="space-6 group-{$key}">
+					{/volist}
+					{/notempty}					
+				</div>										
+			</div>
+			<div class="space-4"></div>
+			<div class="form-group" id="no_animate" {if condition="$slide_info.is_animate eq 1"}style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">url地址</label>
+				<div class="col-sm-9">
+					<input type="text" name="url" value="{$slide_info.url|default=null}" placeholder="原文地址"  title='请输入正确的url地址' class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle">以http://或者https://开头</span>
+					</span>																																																							
+				</div>
+			</div>						
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">排序</label>
+				<div class="col-sm-9">
+					<input type="text" name="sort" value="{$slide_info.sort|default='100'}" placeholder="排序" class="col-xs-8" pattern="[0-9]{1,9}" title='只允许9位数字' required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red"></span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+				<div class="help-inline col-sm-6">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($slide_info.is_enabled eq 1) OR !isset($slide_info.is_enabled)"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认启用</span>
+					</span>							
+				</div>
+			</div>	
+			<div class="clearfix form-actions">
+				<div class="col-sm-offset-6 col-sm-5">
+					<button class="btn btn-info" type="submit">
+						<i class="ace-icon fa fa-check bigger-110"></i>
+						保存
+					</button>
+				</div>
+			</div>																													
+		</div>		
+	</div> 
+	</form>
+	{include file="file_upload/fileModal" /}	
+	<script type="text/javascript" src="__PUBLIC_PC__/ace/components/phpjs/functions/misc/uniqid.js"></script>
+	<script type="text/javascript">
+		$("body").delegate('#is_animate','click',function(){
+			if($("#is_animate").is(':checked')){
+				$("#animate").show(200);
+				$("#no_animate").hide(200);
+				$("#img_title").html('背景图');
+			}
+			else{
+				$("#animate").hide(200);
+				$("#no_animate").show(200);
+				$("#img_title").html('轮播图');
+			}
+		})
+		
+		//添加动画
+		$("#ajax_content").unbind().delegate('#add_animate','click',function(){
+			//最多可增加10张图片
+			var current_num=$("#animate_data").find('.form-group').size(), //除去一半才是真实数量
+			default_img='{:default_img()}',
+			uniq_id=uniqid(current_num);
+			if(intval(current_num)>=30){
+				layer.msg('一个动画组图最多15张图片');
+				return false;
+			}
+			var html_tpl="<div class='form-group group-"+uniq_id+"'>"+
+			"<label class='col-sm-3 control-label no-padding-right'>动画数据-"+uniq_id+"</label>"+
+			"<div class='col-sm-7'>"+
+			"<textarea name='animate_data["+uniq_id+"][style]' rows='3' class='col-xs-7' placeholder='CSS样式'></textarea>"+								
+			"<span class='help-inline col-xs-5'>"+
+			"CSS格式：style='position:absolute;left:10px;top:10%;margin-left:15px'"+
+			"</span>"+	
+			"<div class='input-group'>"+
+			"<span class='input-group-addon'>变幻效果</span>"+
+			"<input name='animate_data["+uniq_id+"][effect]' class='form-control' value='bounceInLeft' type='text'>"+	
+			"<span class='input-group-addon'>持续时间</span>"+
+			"<input name='animate_data["+uniq_id+"][duration]' value='' class='form-control' type='text'>"+
+			"<span class='input-group-addon'>秒</span>"+
+			"<span class='input-group-addon'>延迟时间</span>"+
+			"<input name='animate_data["+uniq_id+"][delay]' value='' class='form-control' type='text'>"+
+			"<span class='input-group-addon'>秒</span>"+																							
+			"</div>"+
+			"<div class='input-group'>"+
+			"<span class='input-group-addon'>url</span>"+
+			"<input name='animate_data["+uniq_id+"][url]' value='' class='form-control' type='text'>"+																						
+			"</div>"+																		
+			"</div>"+															
+			"</div>"+
+			"<div class='form-group group-"+uniq_id+"'>"+
+			"<label class='col-sm-3 control-label no-padding-right'>组图-"+uniq_id+"</label>"+
+			"<div class='col-sm-9'>"+
+			"<input type='hidden' name='animate_data["+uniq_id+"][old_animate_img]' value=''/>"+
+			"<input type='hidden' name='animate_data["+uniq_id+"][animate_img_url]' id='animate_img_url_"+uniq_id+"' value=''/>"+
+			"<img id='animate_img_src_"+uniq_id+"' class='col-sm-3 img-responsive crop-img' data-input-id='animate_img_url_"+uniq_id+"' data-src-id='animate_img_src_"+uniq_id+"' src='"+default_img+"' data-rel='tooltip' title='点击上传图片'>"+
+			"<span class='help-inline col-xs-12 col-sm-5'>"+
+			"<span class='middle'>"+
+			"<a class='red' target='_blank' href='http://www.dowebok.com/demo/2014/98/'>更多变幻效果（复制黏贴即可）</a>"+
+			"<button class='btn btn-white btn-pink btn-sm del-animate' data-group-id='"+uniq_id+"' type='button'>删除此组图</button>"+
+			"</span>"+
+			"</span>"+								
+			"</div>"+
+			"</div>"+
+			"<hr class='space-6 group-"+uniq_id+"''>";	
+			$("#animate_data").append(html_tpl);
+		})
+		
+		//删除组图
+		$("#animate_data").unbind().delegate('.del-animate','click',function(){
+			var group_id= $(this).data('group-id');
+			layer.confirm('确定删除此组图吗？',{icon: 3}, function(index){
+				$('.group-'+group_id).remove();
+				layer.close(index);
+			})
+		})
+	</script>
+{/block}	    	

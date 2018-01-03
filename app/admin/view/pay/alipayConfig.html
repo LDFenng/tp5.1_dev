@@ -1,0 +1,108 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Pay/saveAlipay')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">添加、编辑支付宝配置</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" name="id" value='{$ali_info.id|default=null}'>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"> 支付宝账号APPID： </label>
+					<div class="col-sm-9">
+						<input type="text" name="partner_id" id="partner_id" value="{$ali_info.partner_id|default=null}" class="col-xs-7" required/>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">应用APPID： </label>
+					<div class="col-sm-9">
+						<input type="text" name="app_id" id="app_id" value="{$ali_info.app_id|default=null}" class="col-xs-7"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>									
+					</div>							
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">支付宝公钥： </label>
+					<div class="col-sm-9">
+						<textarea name="ali_public_key" cols="20" rows="4" class="col-xs-7">{$ali_info.ali_public_key}</textarea>
+						<span class="help-inline col-xs-5"> 
+							<span class="middle"><a href="https://open.alipay.com/platform/home.htm" target="_blank">开放平台获取</a></span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">支付宝私钥： </label>
+					<div class="col-sm-9">
+						<textarea name="rsa_private_key" cols="20" rows="6" class="col-xs-7">{$ali_info.rsa_private_key}</textarea>
+						<span class="help-inline col-xs-12 col-sm-4"> 
+							<span class="middle"><a href="https://docs.open.alipay.com/291/106097" target="_blank">私钥生成器（公钥必须一致）</a></span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">哪些方式不可支付： </label>
+					<div class="col-sm-6">
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="1" type="checkbox">
+								<span class="lbl bigger-120">余额</span>
+							</label>
+						</div>		
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="2" type="checkbox">
+								<span class="lbl bigger-120">余额宝</span>
+							</label>
+						</div>		
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="3" type="checkbox">
+								<span class="lbl bigger-120">借记卡快捷</span>
+							</label>
+						</div>		
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="4" type="checkbox">
+								<span class="lbl bigger-120">信用卡</span>
+							</label>
+						</div>		
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="5" type="checkbox">
+								<span class="lbl bigger-120">信用卡快捷</span>
+							</label>
+						</div>	
+						<div class="col-xs-4">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="6" type="checkbox">
+								<span class="lbl bigger-120">信用卡卡通</span>
+							</label>
+						</div>		
+						<div class="col-xs-8">
+							<label class="block">
+								<input class="ace input-lg" name="limit_pay[]" value="7" type="checkbox">
+								<span class="lbl bigger-120">信用支付类型（包含信用卡卡通、信用卡快捷、花呗、花呗分期）</span>
+							</label>
+						</div>																																																							
+					</div>
+				</div>					
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

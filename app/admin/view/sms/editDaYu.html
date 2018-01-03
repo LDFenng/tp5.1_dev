@@ -1,0 +1,88 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sms/saveDaYu')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">添加短信模板</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">短信名称 </label>
+					<div class="col-sm-6">
+						<input type="text" name="title" value="" placeholder="短信名称" class="col-xs-9" required/>
+						<span class="help-inline col-xs-3">
+							<span class="middle red">自定义名称</span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">短信签名 </label>
+					<div class="col-sm-6">
+						<input type="text" name="sign_name" value="" placeholder="短信签名 " class="col-xs-9" required/>
+						<span class="help-inline col-xs-3">
+							<span class="middle red"><a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fhome.console.aliyun.com%2Fnew" target="_blank">前往大于获取</a></span>
+						</span>
+					</div>
+				</div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">模板ID </label>
+					<div class="col-sm-6">
+						<input type="text" name="sms_code" value="" placeholder="模板ID " class="col-xs-9" required/>
+						<span class="help-inline col-xs-3">
+							<span class="middle red"><a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fhome.console.aliyun.com%2Fnew" target="_blank">前往大于获取</a></span>
+						</span>
+					</div>
+				</div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">短信KEY </label>
+					<div class="col-sm-6">
+						<input type="text" name="sms_key" value="" placeholder="短信KEY" class="col-xs-9" required/>
+						<span class="help-inline col-xs-3">
+							<span class="middle red"><a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fhome.console.aliyun.com%2Fnew" target="_blank">前往大于获取</a></span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">短信SECRET</label>
+					<div class="col-sm-6">
+						<input type="text" name="sms_secret" value="" placeholder="短信SECRET" class="col-xs-9" required/>
+						<span class="help-inline col-xs-3">
+							<span class="middle red"><a href="https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Fhome.console.aliyun.com%2Fnew" target="_blank">前往大于获取</a></span>
+						</span>
+					</div>
+				</div>																												
+				<div class="space-4"></div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">模板示例 </label>
+					<div class="col-sm-6">
+						<textarea name="sms_template" id="sms_template" cols="20" rows="3" class="col-xs-9 limited" placeholder="最多90个字符" maxlength="90"></textarea>
+						<span class="help-inline col-xs-3">
+							还可以输入 <span class="middle red charsLeft"></span> 个字符
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+					<div class="col-sm-6" style="margin-top:0.78rem">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" checked="checked">
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-6">
+							<span class="middle">默认启用</span>
+						</span>							
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+
+</script>

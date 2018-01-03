@@ -1,0 +1,8 @@
+{volist name="member_list" id="member_info"}
+<div class="checkbox col-sm-3">
+	<label class="block">
+		<input class="ace input-lg" name="member_ids[]" value="{$member_info.id}" {in name="member_info.id" value="$member_ids"}checked='checked'{/in} type="checkbox">
+		<span class="lbl bigger-120">{$member_info.name}</span>
+	</label>
+</div>
+{/volist}			

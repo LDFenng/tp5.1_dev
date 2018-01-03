@@ -1,0 +1,109 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Material/saveVideo')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$video_info.name|default='添加视频'}</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-9">
+						<input type="text" name="name" id="name" value="{$video_info.name|default=''}" placeholder="音频名称" class="col-xs-10" required/>
+						<span class="help-inline col-sm-2">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="space-4"></div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">视频类型</label>
+					<div class="col-sm-9">
+						<div class="btn-group" data-toggle="buttons">
+							{volist name="Think.config.extarray.video_type" id="type_info"}
+							{notempty name="type_info.code"}
+							<label class="btn click-type {if condition='$video_info.type ==$type_info.code'}btn-success active{else/} btn-info{/if}">
+								<input type="radio" value='{$type_info.code}' {if condition="$video_info.type ==$type_info.code"}checked='checked'{/if} name="type">{$type_info.title}
+							</label>
+							{/notempty}
+							{/volist}				
+						</div>																																												
+					</div>
+				</div>					
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">视频</label>
+					<div class="col-sm-9">
+						<div class="input-group col-sm-10">
+							<input type="hidden" name="old_video_url" value="{$video_info.audio_url|default=''}"/>
+							<input type="hidden" name="file_info" id="file_info"/>
+							<input class="form-control input-mask-date" name="video_url" value="{$video_info.path_url|default=''}" id='audio_url' readonly type="text">
+							<span class="input-group-btn">
+								<button class="btn btn-sm  btn-warning upload-file" data-input-id='audio_url' data-file-info='file_info' data-file-type='video' type="button">
+								<i class="ace-icon fa fa-upload bigger-110"></i>
+								上传视频
+								</button>
+							</span>
+						</div>	
+						<span class="help-inline col-sm-2">
+							<span class="middle red">最大支持50MB</span>
+						</span>																			
+					</div>
+				</div>					
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+					<div class="col-sm-9" style="margin-top:0.78rem">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($video_info.is_enabled eq 1) OR !isset($video_info.is_enabled)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-6">
+							<span class="middle">默认启用</span>
+						</span>							
+					</div>
+				</div>		
+				<div class="space-4"></div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">描述 </label>
+					<div class="col-sm-9">
+						<textarea name="describe" id="describe" cols="20" rows="3" class="col-xs-10 limited" placeholder="最多500个字符" maxlength="500">{$video_info.describe|default=''}</textarea>
+						<span class="help-inline col-xs-7">
+							还可以输入 <span class="middle red charsLeft"></span> 个字符
+						</span>
+					</div>
+				</div>												
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">排序 </label>
+					<div class="col-sm-9">
+						<input type="text" name="sort" id="sort" value="{$video_info.sort|default='100'}" placeholder="排序" class="col-xs-10" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-2">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+$("#ajax_content").delegate('.click-type','click',function(){
+	$(".click-type").addClass('btn-info').removeClass('btn-success');
+	$(this).addClass('btn-success').removeClass('btn-info');
+	$(".click-type").children("input[type='radio']").attr("checked",false);
+	$(this).children("input[type='radio']").attr("checked",true);
+})	
+$("#file_modal").on("hidden.bs.modal", function() {  
+	var video_info=JSON.parse($("#file_info").val());
+	if(!empty(video_info)){
+		$("#name").val(video_info['file_name']);
+	}
+});
+</script>

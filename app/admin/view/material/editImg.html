@@ -1,0 +1,87 @@
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Material/saveImg')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">{$img_info.name|default='添加图片'}</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="id" name="id" value="{$Request.param.id}" />
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">名称 </label>
+					<div class="col-sm-6">
+						<input type="text" name="name" value="{$img_info.name|default=''}" placeholder="名称" class="col-xs-11" required/>
+						<span class="help-inline col-xs-1">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>	
+				<div class="space-4"></div>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">图片类型</label>
+					<div class="col-sm-6">
+						<div class="btn-group" data-toggle="buttons">
+							{volist name="Think.config.extarray.img_type" id="type_info"}
+							{notempty name="type_info.code"}
+							<label style='margin-top:1px' class="btn click-type {if condition='$img_info.type ==$type_info.code'}btn-success active{else/} btn-info{/if}">
+								<input type="radio" value='{$type_info.code}' {if condition="$img_info.type ==$type_info.code"}checked='checked'{/if} name="type">{$type_info.title}
+							</label>
+							{/notempty}
+							{/volist}				
+						</div>																																												
+					</div>
+				</div>							
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">图片</label>
+					<div class="col-sm-6">
+						<input type="hidden" name="old_path_url" value="{$img_info.path_url|default=''}"/>
+						<input type="hidden" name="path_url" id="path_id" value="{$img_info.path_url|default=''}"/>
+				        <img id="path_id_url" class="col-sm-5 img-responsive crop-img" data-input-id='path_id' data-src-id='path_id_url' src="{$img_info.path_url|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle">
+							<a class="btn btn-white btn-danger" data-toggle="modal" data-target="#file_modal" href="{:url('FileUpload/imgFileList',['a'=>'path_id'])}" style="float:right" type="button">图库选择</a>
+							</span>
+						</span>								
+					</div>
+				</div>					
+				<div class="space-4"></div>												
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+					<div class="col-sm-6" style="margin-top:0.78rem">
+						<label class="col-sm-2">
+							<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($img_info.is_enabled eq 1) OR !isset($img_info.is_enabled)"}checked="checked"{/if}>
+							<span class="lbl"></span>
+						</label>
+						<span class="help-inline col-xs-6">
+							<span class="middle">默认启用</span>
+						</span>							
+					</div>
+				</div>										
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">排序 </label>
+					<div class="col-sm-6">
+						<input type="text" name="sort" id="sort" value="{$img_info.sort|default='100'}" placeholder="排序" class="col-xs-11" required onkeyup="value=value.replace(/[^\d\.]/g,'')"/>
+						<span class="help-inline col-xs-1">
+							<span class="middle"></span>
+						</span>
+					</div>
+				</div>									
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">提交</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>
+<script type="text/javascript">
+$("body").delegate('.click-type','click',function(){
+	$(".click-type").addClass('btn-info').removeClass('btn-success');
+	$(this).addClass('btn-success').removeClass('btn-info');
+	$(".click-type").children("input[type='radio']").attr("checked",false);
+	$(this).children("input[type='radio']").attr("checked",true);
+})	
+</script>

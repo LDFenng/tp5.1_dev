@@ -1,0 +1,276 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			商品管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				商品列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+<!-- 	<div class="alert alert-info">
+		<button class="close" type="button" data-dismiss="alert">
+		<i class="ace-icon fa fa-times"></i>
+		</button>
+		<a class="red" target="_blank" href='http://kf.qq.com/faq/120322fu63YV130422aEv6nq.html'>微信公众平台如何添加被动回复 </a>
+		（每个公众最多且只能启用一条自动回复！）
+	</div>	 -->
+	<form class="form-search form-horizontal" id="ajax_page_list" method="post" action="{:url('admin/Goods/productList')}">
+		<div class="row margintop" id="table_bar">
+			<div class="col-xs-12 col-lg-5">
+				{customTag:pageNum width='40%' select_num='$Request.param.page_num'/}
+		        <select name="category_id" class="ajax-change select2" style="width:58%" data-placeholder='点击选择'>
+					<option value="0" selected>查询分类</option>
+					{volist name="category_list" id="category_temp"}
+						<option value="{$category_temp.id}" {if condition="$category_temp.id == $Request.param.category_id"}selected{/if}>{$category_temp.name}</option>
+					{/volist}					
+		        </select>			        			  		        				
+			</div>
+			<div class="col-xs-12 col-lg-3">
+				<div class="input-group"><span class="input-group-addon"><i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="名称" />
+				</div>       
+			</div>			
+			<div class="col-xs-12 col-lg-4 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+				<a data-ajax-page='true' class="btn btn-sm  btn-success" href="{:url('admin/Goods/productList')}" data-rel="tooltip" data-placement="bottom" title="显示全部"><i class="ace-icon fa fa-globe bigger-130"></i> 显示全部 </a>	
+				<a data-ajax-page='true' href="{:url('admin/Goods/editProduct')}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加"><i class="ace-icon fa fa-plus bigger-130"></i>添加商品</a>
+				{notempty name="product_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}
+			</div>
+		</div>  	 
+		<div class="row margintop">
+			<div class="col-xs-12">
+				<table data-locale='zh-CN' data-toggle="table" data-toolbar="#table_bar" data-search='true' data-show-columns="true" class="table table-striped table-bordered table-condensed table-hover">
+					<thead>
+						<tr>
+							<th class="center">
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Goods/delProduct')}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">编号</th>
+							<th data-sortable="true" class="center hidden-sm hidden-xs">商品名称</th>
+							<th>商品类型</th>
+							<th class="center hidden-sm hidden-xs">一口价</th>
+							<th class="center hidden-sm hidden-xs">产地</th>
+							<th class="center">是否顶置</th>
+							<th class="center">是否显示</th>
+							<th class="center">总库存</th>
+							<th data-field="sort" data-sortable="true" class="center hidden-sm hidden-xs">排序</th>
+							<th data-field="start_time" data-sortable="true" class="center hidden-sm hidden-xs">上架方式</th>
+							<th style="border-right:#CCC solid 1px;">操作</th>
+						</tr>	
+					</thead>	
+					<tbody>
+						{volist name="product_list" id="product_info"}
+						<tr id="data_{$product_info.id}">
+							<td>
+								<label class="pos-rel">
+									<input type="checkbox" class="ace input-lg check-data" value="{$product_info.id}"/>
+									<span class="lbl"></span>															
+								</label>											
+							</td>
+							<td data-field="id" data-sortable="true" class="center hidden-sm hidden-xs">{$product_info.id}</td>
+							<td data-field="name" data-sortable="true" class="center hidden-sm hidden-xs">{$product_info.name}</td>
+							<td class="center">
+								<div class="action-buttons">
+									<a class="green bigger-140 show-details-btn" data-product_id='{$product_info.id}' href="{:url('admin/Goods/productAttrList')}" data-rel="tooltip" title='查看商品种类' data-placement="bottom">
+									<i class="ace-icon fa fa-angle-double-up"></i>
+									<span class="sr-only">商品种类</span>
+									</a>
+								</div>							
+							</td>
+							<td data-field="lowest_price" data-sortable="true" class="center hidden-sm hidden-xs">{$product_info.lowest_price}</td>
+							<td class="center hidden-sm hidden-xs"></td>
+							<td class="center">
+							{if condition="$product_info['is_top'] eq 1"}
+								<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Goods/changeProductStatus',['t'=>'t'])}" data-id="{$product_info.id}" title="顶置">
+									顶置
+								</a>
+								{else/}
+								<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Goods/changeProductStatus',['t'=>'t'])}" data-id="{$product_info.id}" title="不顶置">
+									未顶置
+								</a>
+							{/if}								
+							</td>
+							<td class="center">
+							{if condition="$product_info['is_display'] eq 1"}
+								<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Goods/changeProductStatus',['t'=>'d'])}" data-id="{$product_info.id}" title="显示">
+									显示
+								</a>
+								{else/}
+								<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Goods/changeProductStatus',['t'=>'d'])}" data-id="{$product_info.id}" title="隐藏">
+									隐藏
+								</a>
+							{/if}								
+							</td>
+							<td class="center">{$product_info.total_stock}</td>
+							<td class="hidden-sm hidden-xs col-xs-1">
+								<input class='form-control input-sm width-80 list-order' name="{$product_info.id}" value='{$product_info.sort}'>						
+							</td>
+							<td data-field="shelves_type" data-sortable="true" class="center hidden-sm hidden-xs">
+							{if condition="$product_info.shelves_type==1"}
+							立即上架：{$product_info.shelves_time|date='Y-m-d',###}
+							{elseif condition="$product_info.shelves_type=2"}
+							预定上架{$product_info.shelves_time|date='Y-m-d',###}
+							{else/}
+							暂不上架
+							{/if}
+							</td>							
+							<td style="border-right:#CCC solid 1px;">
+								<div class="hidden-sm hidden-xs btn-group action-buttons">
+									<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" href="{:new_url('admin/Goods/editProduct',['id'=>$product_info['id']])}" title="编辑">
+									<i class="ace-icon fa fa-pencil bigger-160"></i>
+									</a>						
+									<a data-ajax-page='true' class="btn btn-xs btn-primary" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Goods/editProduct',['id'=>$product_info['id'],'type'=>'copy'])}" title="复制">
+									<i class="ace-icon fa fa-files-o bigger-160"></i>
+									</a>
+								</div>		
+								<div class="hidden-md hidden-lg">
+									<div class="inline position-relative">
+										<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+											<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+										</button>
+										<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+											<li>
+												<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Goods/editProduct',['id'=>$product_info['id']])}" title="编辑">
+													<span class="green">
+														<i class="ace-icon fa fa-pencil bigger-120"></i>
+													</span>
+												</a>
+											</li>
+											<li>
+												<a data-ajax-page='true' class="btn btn-xs btn-primary" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Goods/editProduct',['id'=>$product_info['id'],'type'=>'copy'])}" title="复制">
+													<span class="green">
+														<i class="ace-icon fa fa-files-o bigger-120"></i>
+													</span>
+												</a>
+											</li>																				
+										</ul>
+									</div>
+								</div>						
+							</td>
+						</tr>
+						{/volist}	
+					</tbody>								
+				</table>
+			</div>		
+		</div> 
+	</form> 
+ 	<div class="row">
+		<div class="col-xs-1 btn-corner">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Goods/orderProduct')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+	<script type="text/javascript">
+	$(function(){
+		var scripts=['__PUBLIC_PC__/ace/components/template/template.js'];
+		if($.addScript(scripts)=='success'){
+			$("#ajax_content").unbind().delegate(".show-details-btn",'click',function(e){
+				e.preventDefault();
+				var _this=$(this),
+				product_id=_this.data('product_id'),
+				href=this.href;
+				if(_this.children('i').hasClass('fa-angle-double-up')){
+					//是否已加载
+					if($("#product_attr_"+product_id).length>0){
+						_this.children('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+						$("#product_attr_"+product_id).show(200);
+					}
+					else{
+						$.ajax({
+							url:href,
+							type:'POST',
+							data:{'product_id':product_id},
+							dataType:'json',
+							success:function(data){
+								if(data.code==1){
+									_this.children('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+									var product_attr_tpl=$('#product_attr_tpl')[0].innerHTML;
+									var html=template(product_attr_tpl,{
+										product_id:product_id,
+										img_url:data.img_url,
+										category_title:data.category_title,
+										edit_url:data.edit_all_url,
+										list: data.data_list
+									});
+									$("#data_"+product_id).after(html);
+								}
+								else{
+									layer.msg(data.msg);
+								}
+							}
+						})
+					}
+				}
+				else{
+					$("#product_attr_"+product_id).hide();
+					_this.children('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+				}
+			})
+		}
+	})
+	</script>	
+	<script id="product_attr_tpl" type="text/html">	
+		<tr id="product_attr_<%=product_id%>">
+			<td colspan='12' class="row">
+				<div class="col-xs-2">
+					<img class="col-sm-12 img-responsive img-rounded" src="<%=img_url%>"/>
+					<div class="space-12"></div>	
+					<p class="center"><%=category_title%></p>
+					<p>
+						<a href="<%=edit_url%>" data-toggle="modal" data-target="#edit_data" class="btn btn-danger btn-white btn-block">一键修改</a>
+					</p>
+				</div>
+				<div class="col-xs-10">
+				<table class="table table-hover attr-table">
+				<%for(var i = 0; i < list.length; i++) {%>
+					<tr>
+						<td class="left no-line edit-data"><strong><a href="<%=list[i].edit_url%>" data-toggle="modal" data-target="#edit_data">编码：</strong><%=list[i].product_code%></a></td>
+						<td class="left edit-data"><strong>属性：</strong><%=list[i].attr_data%></td>
+						<td class="no-line edit-data"><a href="<%=list[i].edit_url%>" data-toggle="modal" data-target="#edit_data"><strong>价格：</strong><%=list[i].sale_price%></a></td>
+						<td class="no-line edit-data"><a href="<%=list[i].edit_url%>" data-toggle="modal" data-target="#edit_data"><strong>库存：</strong><%=list[i].stock%></a></td>
+						<td class="no-line">
+							<%if(list[i].is_enabled==1){%>
+								<a class="btn btn-minier btn-yellow status-btn" href="<%=list[i].enabled_url%>" data-id="<%=list[i].id%>" title="启用">
+									启用
+								</a>
+							<%}else{%>
+								<a class="btn btn-minier btn-danger status-btn" href="<%=list[i].enabled_url%>" data-id="<%=list[i].id%>" title="禁用">
+									禁用
+								</a>
+							<%}%>			
+						</td>
+						<td class="left edit-data"><strong>活动：</strong>
+							<%if(list[i].is_active==1){%>
+								活动价：1</br>
+								2017-9-2 00:00:00~2017-9-5 23:59:59								
+							<%}else{%>
+								暂无活动
+							<%}%>
+						</td>
+					</tr>
+				<%}%>																	
+				</table>
+				</div>
+			</td>
+		</tr>
+	</script>
+	 
+{/block}	    	

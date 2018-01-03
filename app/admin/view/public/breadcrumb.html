@@ -1,0 +1,46 @@
+<div id="breadcrumbs" class="breadcrumbs ace-save-state breadcrumbs-fixed">
+	<div class="breadcrumb">
+	
+	</div> 
+</div>
+<style>
+.breakcrumb-btn>.btn-title{
+	border-right:0px;
+}
+.breakcrumb-btn>.btn-icon{
+	position: relative;
+	border-left:0px;
+	margin-left:-1px !important;
+}
+</style>
+<script type="text/javascript">
+$("#breadcrumbs").delegate('.remove-breadcrumb','click',function(e){
+	e.preventDefault();
+	$(this).parents('.breakcrumb-btn').remove();
+})
+$("#breadcrumbs").delegate("a[data-ajax-page='true']",'click',function(e){
+	var menu_id_str=$(this).data('id'),
+	menu_arr=menu_id_str.split('_');
+	var menu_arr_count=menu_arr['length'];
+	$('.submenu').hide(); 
+	$(".nav-list").find('li').removeClass("active open");
+	if(menu_arr_count==2){
+		$("#"+menu_id_str).addClass('active');
+	}
+	else if(menu_arr_count==3){
+		$("#menu_"+menu_arr[1]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]).addClass('active');
+	}
+	else if(menu_arr_count==4){
+		$("#menu_"+menu_arr[1]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]+'_'+menu_arr[3]).addClass('active open');
+	}
+	else if(menu_arr_count==5){
+		$("#menu_"+menu_arr[1]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]+'_'+menu_arr[3]).addClass('active open');
+		$("#menu_"+menu_arr[1]+'_'+menu_arr[2]+'_'+menu_arr[3]+'_'+menu_arr[4]).addClass('active');
+	}
+})
+</script>

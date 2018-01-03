@@ -1,0 +1,350 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			微信管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				菜单编辑
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-horizontal ajax-form" method="post" action="{:url('admin/Wechat/saveMenu',['page'=>$Request.param.page])}">
+	<input type="hidden" name='id' value="{$menu_info.id|default=''}" />
+	<div class="row margintop">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">名称</label>
+				<div class="col-sm-9">
+					<input type="text" name="title" value="{$menu_info.title|default=null}" placeholder="名称" class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">所属菜单</label>
+				<div class="col-sm-9 help-inline">
+					{if condition="$Request.param.pid !=null"}
+					<span class="label label-warning label-xlg">{$parent_title}</span>
+					<input name='pid' value='{$Request.param.pid}' type="hidden"/>	
+					{elseif condition="$Request.param.id !=null" /}						
+					<span class="label label-warning label-xlg">
+					{if condition="($menu_info.pid==0) OR !isset($menu_info.pid)"}一级菜单{else /}{$parent_title}{/if}
+					<input name='pid' value='{$menu_info.pid|default=0}' type="hidden"/>
+					</span>
+					{elseif condition="$Request.param.id==''" /}
+					<input name='pid' value='{$menu_info.pid}' type="hidden"/>
+					<span class="label label-warning label-xlg">一级菜单</span>
+					<input name='pid' value='0' type="hidden"/>
+					{/if}																																																											
+				</div>
+			</div>			
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">公众号</label>
+				<div class="col-sm-9">
+					{customTag:screen table_name='wechat_info' class_name="col-xs-4" field_name='wechat_id' select_val='$menu_info.wechat_id' is_edit='true'/}																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">菜单类型</label>
+				<div class="col-sm-9">
+					<div class="btn-group" data-toggle="buttons">
+						{volist name="Think.config.wechatExt.wechat_click_type" id="click_info"}
+						<label class="btn click-type {if condition='$menu_info.even_type ==$click_info.code'}btn-success active{else/} btn-info{/if}">
+							<input type="radio" value='{$click_info.code}' {if condition="$menu_info.even_type ==$click_info.code"}checked='checked'{/if} name="even_type">{$click_info.title}
+						</label>
+						{/volist}				
+					</div>																																												
+				</div>
+			</div>		
+			<div class="form-group msg-data" {if condition="$menu_info.even_type!=1"}style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">信息类型</label>
+				<div class="col-sm-9">
+			        <select name="msg_type" id="type_code" class="select2 col-xs-6" data-placeholder='搜索'>
+						{volist name="Think.config.wechatExt.wechat_msg_type" id="msg_info"}
+							<option value="{$msg_info.code}" {if condition="$msg_info.code eq $menu_info['msg_type']"}selected{/if}>{$msg_info.title}</option>
+						{/volist}					
+			        </select> 																																																							
+				</div>
+			</div>															
+			<div class="form-group" id="url" {if condition="$menu_info.even_type!=2"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">url地址</label>
+				<div class="col-sm-9">
+					<input type="text" name="url" value="{$menu_info.url|default=null}" placeholder="链接地址"  title='请输入正确的url地址' class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle">以http://或者https://开头</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="form-group" id="key_words">
+				<label class="col-sm-3 control-label no-padding-right">关键字</label>
+				<div class="col-sm-9">
+					<input type="text" name="key_words" id="keyws" value="{$menu_info.key_words|default=null}" placeholder="关键字" required class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle">多个以逗号“，”隔开</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="form-group wechat-hide" id="wechat_text" {if condition="$menu_info.msg_type!=1"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">文本</label>
+				<div class="col-sm-9">
+					<textarea name="content" id="text" cols="20" rows="3" class="col-xs-8 limited" placeholder="最多300个字符" maxlength="300">{$menu_info.content|default=null}</textarea>
+					<span class="help-inline col-xs-4">
+						还可以输入 <span class="middle red charsLeft"></span> 个字符
+					</span>																																																						
+				</div>
+			</div>	
+			<div class="form-group wechat-hide" id="wechat_img" {if condition="$menu_info.msg_type!=2"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">图片</label>
+				<div class="col-sm-9">
+					<input type="hidden" name="img_id" id="img_id" value="{$menu_info.img_id|default=''}"/>
+			        <img id="img_id_url" class="col-sm-4 img-responsive select-file" data-input-id='img_id' data-file-z='img' src="{$menu_info.img_url|default=default_img()}" data-rel="tooltip" title="点击上传图片">																																																					
+				</div>
+			</div>	
+			<div class="form-group wechat-hide" id="wechat_news" {if condition="$menu_info.msg_type!=3"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">图文</label>
+				<div class="col-sm-3">
+			        <select id="news_select" class="select2 col-xs-12" multiple="multiple" title='选择图文'>
+						{volist name="news_list" id="news_info"}
+							<option value="{$news_info.id}" data-info='{$news_info|json_encode}'>{$news_info.title}</option>
+						{/volist}					
+			        </select> 																																								
+				</div>
+				<input type="hidden" name="news_ids" value='{$menu_info.news_ids}' id="news_ids"/>
+				<div class="col-sm-6">
+					<div id="nestable" class="dd" {empty name="menu_info.news_list"}style="display:none"{/empty}>
+						<ol class="dd-list search-media" id="news_data">
+							{notempty name="menu_info.news_list"}
+							{volist name="menu_info.news_list" id="news_info"}	
+							<li class='dd-item news-id' data-id='{$news_info.id}'>
+								<div class='dd-handle'>
+									<div class='media-left'>
+										<img class='media-object' style='width:72px; height: 72px;' src='{$news_info.cover_img}' data-holder-rendered='true'>
+									</div>
+									<div class='media-body'>
+										<div>
+										<h4 class='media-heading'>{$news_info.title}</h4>"
+										</div>
+										<p>{$news_info.summary}</p>
+									</div>					
+								</div>
+							</li>
+							{/volist}	
+							{/notempty}															
+						</ol>
+					</div>				
+				</div>		
+			</div>	
+			<div class="form-group wechat-hide" id="wechat_video" {if condition="$menu_info.msg_type!=4"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">视频</label>
+				<div class="col-sm-9">
+					<input name="video_id" id="video_id" value="{$menu_info.video_id|default=''}" type="hidden"/>
+					<div class="input-group col-xs-8">
+						<input class="form-control input-mask-date" value="{$menu_info.video_url|default=''}" id='video_id_url' readonly type="text">
+						<span class="input-group-btn">
+							<button class="btn btn-sm  btn-warning select-file" data-input-id='video_id' data-file-z='video' type="button">
+							<i class="ace-icon fa fa-upload  bigger-110"></i>
+							选择视频
+							</button>
+						</span>
+					</div>																																								
+				</div>
+			</div>		
+			<div class="form-group wechat-hide" id="wechat_voice" {if condition="$menu_info.msg_type!=5"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">音频</label>
+				<div class="col-sm-9">
+					<div class="input-group col-xs-8">
+					    <input name="voice_id" id="audio_id" value="{$menu_info.voice_id|default=''}" type="hidden"/>
+						<input class="form-control input-mask-date" value="{$menu_info.audio_url|default=''}" id="audio_id_url" type="text">
+						<span class="input-group-btn">
+							<button class="btn btn-sm btn-warning select-file" data-input-id='audio_id' data-file-z='audio' type="button">
+							<i class="ace-icon fa fa-upload  bigger-110"></i>
+							选择音频
+							</button>
+						</span>
+					</div>																																								
+				</div>
+			</div>		
+			<div class="form-group wechat-hide wechat-app" {if condition="$menu_info.msg_type!=8"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">小程序appID</label>
+				<div class="col-sm-9">
+					<input type="text" name="appid" id="appid" value="{$menu_info.appid|default=null}" placeholder="小程序appID" class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle"></span>
+					</span>																																												
+				</div>
+			</div>				
+			<div class="form-group wechat-hide wechat-app" {if condition="$menu_info.msg_type!=8"} style="display:none"{/if}>
+				<label class="col-sm-3 control-label no-padding-right">小程序文件路径</label>
+				<div class="col-sm-9">
+					<input type="text" name="pagepath" id="pagepath" value="{$menu_info.pagepath|default=null}" placeholder="小程序文件路径" class="col-xs-8"/>
+					<span class="help-inline col-xs-4">
+						<span class="middle"></span>
+					</span>																																												
+				</div>
+			</div>																													
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">排序</label>
+				<div class="col-sm-9">
+					<input type="text" name="sort" value="{$menu_info.sort|default='100'}" placeholder="排序" class="col-xs-8" pattern="[0-9]{1,9}" title='只允许9位数字' required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red"></span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+				<div class="help-inline col-sm-6">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_enabled" type="checkbox" value="1" {if condition="($menu_info.is_enabled eq 1) OR !isset($menu_info.is_enabled)"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认启用</span>
+					</span>							
+				</div>
+			</div>	
+			<div class="clearfix form-actions">
+				<div class="col-sm-offset-6 col-sm-5">
+					<button class="btn btn-info" id="save_data" type="submit">
+						<i class="ace-icon fa fa-check bigger-110"></i>
+						保存
+					</button>
+				</div>
+			</div>																													
+		</div>		
+	</div> 
+	</form>
+	{include file="file_upload/fileModal" /}
+	<script type="text/javascript">
+	$(function(){
+		var scripts=['__PUBLIC_PC__/ace/components/nestable/jquery.nestable.js',
+			'__PUBLIC_PC__/ace/components/template/template.js']; 
+		if($.addScript(scripts)=='success'){
+			$("#ajax_content").delegate('.click-type','click',function(){
+				$(".click-type").addClass('btn-info').removeClass('btn-success');
+				$(this).addClass('btn-success').removeClass('btn-info');
+			
+				$(".click-type").children("input[type='radio']").attr("checked",false);
+				$(this).children("input[type='radio']").attr("checked",true);
+				var click_type=$(this).children("input[type='radio']").val(); 
+				if(click_type==1){  //点击显示各种信息类型
+					$(".msg-data").show();
+					$(".select2").select2();
+					$("#url").hide();
+					get_msg_type($("#type_code option:first").val());
+				} 
+				else if(click_type==2){
+					$(".msg-data").hide();
+					$(".wechat-hide").hide();
+					$("#url").show();
+				}
+				else if(click_type==8){
+					$(".msg-data").hide();
+					$(".wechat-hide").hide();
+					$("#url").hide();
+					$(".wechat-app").show();
+				}
+				else{
+					$(".msg-data").hide();
+					$(".wechat-hide").hide();
+					$("#url").hide();
+				}
+			})	
+			
+			function get_msg_type(type_code){
+				$(".wechat-hide").hide();
+				//均包含关键字
+				if(type_code==1){  //文本
+					$("#wechat_text").show();
+				}
+				else if(type_code==2){ //图片
+					$("#wechat_img").show();
+				}
+				else if(type_code==3){ //图文
+					$("#wechat_news").show();
+					$(".select2").select2();
+				}
+				else if(type_code==4){ //视频
+					$("#wechat_video").show();
+				}
+				else if(type_code==5){ //音频
+					$("#wechat_voice").show();
+				}
+			}
+			
+			$("#ajax_content").delegate('#type_code','change',function(){
+				get_msg_type($("#type_code").val())
+			})
+			
+			$('#nestable').nestable({
+				maxDepth:1
+			});
+			$('.dd-handle a').on('mousedown', function(e){
+				e.stopPropagation();
+			});	
+			$("#ajax_content").delegate('#news_select','change',function(){
+				$("#news_data").empty();
+				data_info=[],
+				key_words=[];
+				$("#news_select option").each(function(index){
+					if($(this).is(":selected")){
+						data_info.push($(this).data('info'));	
+					}
+				})
+				var news_tpl=$('#news_tpl')[0].innerHTML,
+				html_tpl=template(news_tpl,{list: data_info});
+				for(key in data_info){
+					key_words[key]=data_info[key]['key_words'];
+				}	
+				$("#keyws").val(key_words.join(","));
+				if(empty(html_tpl)){
+					$("#nestable").hide(100);
+				}
+				else{
+					$("#news_data").append(html_tpl);
+					$('#nestable').nestable({
+						maxDepth:1
+					});
+					$('.dd-handle a').on('mousedown', function(e){
+						e.stopPropagation();
+					});	
+					$("#nestable").show(100);
+				}
+			})
+			
+			$('#ajax_content').delegate("#save_data",'click',function(){
+				var news_ids=[];
+				$("#news_data").find('.news-id').each(function(i){
+					news_ids.push($(this).data('id'));
+				})
+				$("#news_ids").val(news_ids);
+			})
+		}	
+	})
+	</script>
+	
+	<script type="text/html" id="news_tpl">
+		<%for(var i = 0; i < list.length; i++) {%>
+		<li class='dd-item news-id' data-id='<%=list[i].id%>'>
+			<div class='dd-handle'>
+				<div class='media-left'>
+					<img class='media-object' style='width: 72px; height: 72px;' src='<%=list[i].cover_img%>' data-holder-rendered='true'>
+				</div>
+				<div class='media-body'>
+					<div>
+					<h4 class='media-heading'><%=list[i].title%></h4>
+					</div>
+					<p><%=list[i].summary%></p>
+				</div>					
+			</div>
+		</li>
+		<%}%>
+	</script>
+{/block}	    	

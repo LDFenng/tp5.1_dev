@@ -1,0 +1,78 @@
+{foreach name="menu_list" item="menu_info"}
+	<tr id="{$pid}_{$menu_info.id}">
+		<td class="hidden-xs center">
+			<label class="pos-rel">
+				<input class="ace input-lg check-data" type='checkbox' value='{$menu_info.id}'>
+				<span class="lbl"></span>
+			</label>
+		</td>	
+		<td class="hidden-xs center">{$menu_info.id}</td>
+		<td class="center"><a data-id="{$menu_info.id}" data-levle="{$menu_info.levle}" href="{:new_url('admin/Sys/menuList',['type'=>'son'])}" style="cursor:pointer;" class="menu-list"><span class="fa {if condition='$menu_info.levle egt 4'}fa-minus{else /}fa-plus{/if} blue bigger-175"></span></a></td>
+		<td class="hidden-xs left">{$menu_info.title}</td>
+		<td class="hidden-xs hidden-sm center">
+			<i class="ace-icon fa {$menu_info.icon|default='fa-desktop'}"></i>	
+		</td>
+		<td class="hidden-xs hidden-sm center">{$menu_info.action_name}</td>
+		<td class="hidden-xs hidden-sm center">{$menu_info.levle|default='1'}级</td>
+		<td class="center">
+			{if condition="$menu_info['is_enabled'] eq 1"}
+				<a class="status-btn btn btn-minier btn-yellow" href="{:url('admin/Sys/changeMenuStatus',['type'=>'a'])}" data-id="{$menu_info.id}">
+					启用
+				</a>
+				{else/}  
+				<a class="status-btn btn btn-minier btn-danger" href="{:url('admin/Sys/changeMenuStatus',['type'=>'a'])}" data-id="{$menu_info.id}">
+					禁用
+				</a>
+			{/if}
+		</td>
+		<td class="center">
+			{if condition="$menu_info['is_display'] eq 1"}
+				<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Sys/changeMenuStatus',['type'=>'b'])}" data-id="{$menu_info.id}">
+					显示
+				</a>
+				{else/}
+				<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Sys/changeMenuStatus',['type'=>'b'])}" data-id="{$menu_info.id}">
+					隐藏
+				</a>
+			{/if}
+		</td>
+		<td class='col-xs-1'><input class='form-control input-sm list-order' name="{$menu_info.id}" value='{$menu_info.sort}'></td>		
+		<td>
+			<div class="hidden-sm hidden-xs btn-group action-buttons">
+				<a class="btn btn-xs btn-success" data-rel="tooltip" href="{:url('admin/Sys/editMenu',['id'=>$menu_info.id,'pid'=>$menu_info.pid])}" data-toggle="modal" data-target="#edit_data" title="修改">
+					<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+				</a>
+				{if condition="$menu_info.levle <= 3"}
+				<a class="btn btn-xs btn-primary" data-rel="tooltip" href="{:url('admin/Sys/editMenu',['id'=>'','pid'=>$menu_info.id])}" data-toggle="modal" data-target="#edit_data" title="添加操作">
+					<i class="ace-icon fa fa-plus-circle bigger-160"></i>
+				</a>
+				{/if}
+			</div>			
+			<div class="hidden-md hidden-lg">
+				<div class="inline pos-rel">
+					<a class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto" aria-expanded="false">
+					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+					</a>
+					<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+						<li>
+							<a data-rel="tooltip" href="{:url('admin/Sys/editMenu',['id'=>$menu_info.id,'pid'=>$menu_info.pid])}" data-toggle="modal" data-target="#edit_data" title="修改">
+							<span class="blue">
+							<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+							</span>
+							</a>
+						</li>
+						{if condition="$menu_info.levle <= 3"}
+						<li>
+							<a data-rel="tooltip" href="{:url('admin/Sys/editMenu',['id'=>'','pid'=>$menu_info.id])}" data-toggle="modal" data-target="#edit_data" title="添加操作">
+							<span class="green">
+							<i class="ace-icon fa fa-pencil bigger-160"></i>
+							</span>
+							</a>
+						</li>
+						{/if}			
+					</ul>
+				</div>
+			</div>	
+		</td>
+	</tr>
+{/foreach}

@@ -1,0 +1,195 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			系统管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				邮件账号配置
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+    <div class="row margintop">
+		<form class="form-search"  method="post" id="ajax_page_list" action="{:url('admin/Sys/emailList')}" autocomplete="off">
+			<div class="col-xs-2 col-lg-2">
+				{customTag:pageNum class_name='col-xs-12' select_num='$Request.param.page_num'/}			
+			</div>
+			<div class="col-xs-6 col-lg-6 input-group-btn"> 
+				<a href="{:url('admin/Sys/editEmail')}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加" data-toggle="modal" data-target="#edit_data"><i class="ace-icon fa fa-plus bigger-130"></i>添加邮件账号</a>
+				{notempty name="email_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				<a href="#send_data" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加" data-toggle="modal"><i class="ace-icon fa fa-plus bigger-130"></i>测试发送</a>
+				{/notempty}
+			</div>			   		
+		</form>
+    </div>	
+	<div class="row">
+		<div class="col-xs-12 table-responsive">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+				<tr>
+					<th class="center">
+						<label class="pos-rel">
+							<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Sys/delEmail')}"/>
+							<span class="lbl"></span>															
+						</label>											
+					</th>
+					<th data-sortable="true" class="center">名称</th>
+					<th data-sortable="true" class="center">账号</th>
+					<th class="center hidden-md">回复账号</th>
+					<th data-sortable="true" class="center hidden-md">排序</th>
+					<th class="center hidden-md">是否启用</th>
+					<th data-sortable="true" class="center hidden-md">添加时间</th>
+					<th style="border-right:#CCC solid 1px;">操作</th>
+				</tr>
+				</thead>
+				<tbody>
+					{foreach name="email_list" item="email_info"}
+						<tr class="center" id="data_{$email_info.id}">
+							<td class="hidden-xs center">
+								<label class="pos-rel">
+									<input class="ace input-lg check-data" type='checkbox' value='{$email_info.id}'>
+									<span class="lbl"></span>
+								</label>
+							</td>	
+							<td>{$email_info.name}</td>
+							<td>{$email_info.email}</td>
+							<td class="hidden-md">{$email_info.reply_mail}</td>
+							<td class='hidden-md col-xs-1'><input class='form-control input-sm list-order' name="{$email_info.id}" value='{$email_info.sort}'></td>
+							<td class="hidden-md">
+								{if condition="$email_info['is_enabled'] eq 1"}
+									<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Sys/changeEmailStatus')}" data-id="{$email_info.id}" title="已开启">
+										开启
+									</a>
+									{else/}
+									<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Sys/changeEmailStatus')}" data-id="{$email_info.id}" title="已禁用">
+										禁用
+									</a>
+								{/if}
+							</td>
+							<td class="hidden-md">{$email_info.create_time|date="Y-m-d",###}</td>
+							<td>
+								<div class="hidden-sm hidden-xs btn-group action-buttons">
+									<a class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Sys/editEmail',['id'=>$email_info['id']])}" data-toggle="modal" data-target="#edit_data" title="编辑">
+									<i class="ace-icon fa fa-pencil-square-o bigger-160"></i>
+									</a>
+								</div>		
+								<div class="hidden-md hidden-lg">
+									<div class="inline position-relative">
+										<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+											<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+										</button>
+										<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+											<li>
+												<a href="{:new_url('admin/Sys/editEmail',['id'=>$email_info['id']])}" data-toggle="modal" data-target="#edit_data" data-placement="bottom" data-rel="tooltip" title="编辑">
+													<span class="green">
+														<i class="ace-icon fa fa-pencil bigger-120"></i>
+													</span>
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row margintop">
+		<div class="col-xs-1">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Sys/orderEmail')}">排序</a>
+		</div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1"></div>	
+	</div>	
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+	
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="send_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+<!-- 项目状态模态框 -->
+<form class="form-horizontal ajax-form-1" method="post" action="{:new_url('admin/Sys/sendEmail')}">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		<h4 class="modal-title">添加、编辑邮件账户</h4>
+	</div>
+	<div class="modal-body">	
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" name="id" value='{$email_info.id|default=null}'>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">收件人： </label>
+					<div class="col-sm-9">
+						<input type="text" name="name" id="name" value="" class="col-xs-7" required/>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">地址： </label>
+					<div class="col-sm-9">
+						<input type="text" name="email" id="email" value="" class="col-xs-7" required/>
+						<span class="help-inline col-xs-12 col-sm-5">
+							<span class="middle red">*</span>
+						</span>
+					</div>
+				</div>				
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">抄送人： </label>
+					<div class="col-sm-9">
+						<input type="text" name="cc" id="cc" value="" class="col-xs-7" pattern="([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+" title="邮箱格式错误"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>									
+					</div>							
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">标题： </label>
+					<div class="col-sm-9">
+						<input type="text" name="title" value="" class="col-xs-7"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>	
+					</div>
+				</div>
+				<div class="space-4"></div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right">内容： </label>
+					<div class="col-sm-9">
+						<input type="text" name="content"  value="" class="col-xs-7"/>
+						<span class="help-inline col-xs-12 col-sm-5"> 
+							<span class="middle red">*</span>
+						</span>	
+					</div>
+				</div>					
+			</div>														
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="submit" class="btn btn-success">发送</button>
+		<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	</div>	
+</form>	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>	
+<script type="text/javascript">
+</script>
+{/block}

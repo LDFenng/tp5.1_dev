@@ -1,0 +1,10 @@
+
+
+<script type="text/javascript">
+$("#ajax_content").delegate('#submit_data','click',function(){
+	var field_data = $('.ajax-form-2').serializeJson(),
+	myObj = {};
+	$.data(myObj, 'field_data', field_data);
+})
+
+</script>

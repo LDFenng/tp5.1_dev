@@ -1,0 +1,498 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			商品管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				商品信息
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<form class="form-horizontal ajax-form" method="post" action="{:new_url('admin/Goods/saveProduct')}">
+	<div class="row margintop">
+		<div class="col-xs-12">
+			<input type="hidden" name="id" value='{$product_info.id|default=null}'>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">商品名称</label>
+				<div class="col-sm-9">
+					<input type="text" name="name" id="name" value="{$product_info.name|default=null}" placeholder="商品名称" class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">商品子名称</label>
+				<div class="col-sm-9">
+					<input type="text" name="sub_name" id="sub_name" value="{$product_info.sub_name|default=null}" placeholder="商品子名称" maxlength='45' class="col-xs-8" required/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red">*</span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">封面图</label>
+				<div class="col-sm-9">
+					<input type="hidden" name="old_thumb_cover_img" value="{$product_info.thumb_cover_img|default=''}"/>
+					<input type="hidden" name="thumb_cover_img" id="cover_img_thumb" value="{$product_info.thumb_cover_img|default=''}"/>				
+					<input type="hidden" name="old_cover_img" value="{$product_info.cover_img|default=''}"/>
+					<input type="hidden" name="cover_img" id="cover_img" value="{$product_info.cover_img|default=''}"/>
+			        <img id="cover_src" class="col-sm-3 img-responsive crop-img" data-input-id='cover_img' data-src-id='cover_src' src="{$product_info.cover_img|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+					<span class="help-inline col-xs-12 col-sm-5">
+						<span class="middle"></span>
+					</span>								
+				</div>
+			</div>									
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">分类</label>
+				<div class="col-sm-9" id="category_data">
+					{notempty name="product_info.category_titles"}
+					<span class="label label-warning label-xlg">
+					{$product_info.category_titles|default=''}
+					</span>	
+					<input type="hidden" name="category_id" value="{$category_ids|default=''}">
+					<button class="btn btn-white btn-yellow btn-sm" id="edit_category" type="button">修改</button>
+					{/notempty}																																																						
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">产地</label>
+				<div class="col-sm-9" id="area_data">
+																																																
+				</div>
+			</div>									
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">轮播图（最多六张）</label>
+				<div class="col-sm-6">
+					<input type="hidden" name="old_img_list[0]" value="{$product_info.img_list[0]|default=''}"/>
+					<input type="hidden" name="img_list[0]" id="img_list_0" value="{$product_info.img_list[0]|default=''}"/>
+			        <img id="img_src_0" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_0' data-src-id='img_src_0' src="{$product_info.img_list[0]|default=default_img()}" data-rel="tooltip" title="点击上传图片">																																																						
+					
+					<input type="hidden" name="old_img_list[1]" value="{$product_info.img_list[1]|default=''}"/>
+					<input type="hidden" name="img_list[1]" id="img_list_1" value="{$product_info.img_list[1]|default=''}"/>
+			        <img id="img_src_1" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_1' data-src-id='img_src_1' src="{$product_info.img_list[1]|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+					
+					<input type="hidden" name="old_img_list[2]" value="{$product_info.img_list[2]|default=''}"/>
+					<input type="hidden" name="img_list[2]" id="img_list_2" value="{$product_info.img_list[2]|default=''}"/>
+			        <img id="img_src_2" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_2' data-src-id='img_src_2' src="{$product_info.img_list[2]|default=default_img()}" data-rel="tooltip" title="点击上传图片">			        				
+					
+					<input type="hidden" name="old_img_list[3]" value="{$product_info.img_list[3]|default=''}"/>
+					<input type="hidden" name="img_list[3]" id="img_list_3" value="{$product_info.img_list[3]|default=''}"/>
+			        <img id="img_src_3" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_3' data-src-id='img_src_3' src="{$product_info.img_list[3]|default=default_img()}" data-rel="tooltip" title="点击上传图片">																																																						
+					
+					<input type="hidden" name="old_img_list[4]" value="{$product_info.img_list[4]|default=''}"/>
+					<input type="hidden" name="img_list[4]" id="img_list_4" value="{$product_info.img_list[4]|default=''}"/>
+			        <img id="img_src_4" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_4' data-src-id='img_src_4' src="{$product_info.img_list[4]|default=default_img()}" data-rel="tooltip" title="点击上传图片">
+					
+					<input type="hidden" name="old_img_list[5]" value="{$product_info.img_list[5]|default=''}"/>
+					<input type="hidden" name="img_list[5]" id="img_list_5" value="{$product_info.img_list[5]|default=''}"/>
+			        <img id="img_src_5" class="col-sm-2 img-responsive crop-img" data-input-id='img_list_5' data-src-id='img_src_5' src="{$product_info.img_list[5]|default=default_img()}" data-rel="tooltip" title="点击上传图片">			
+				</div>
+			</div>	
+			<div id="product_option" {empty name="product_info['attr_list']"}style="display:none"{/empty}>
+				
+			<div class="form-group" id="product_attr">
+				<label class="col-sm-3 control-label no-padding-right">商品属性</label>
+				<div class="col-sm-9" id="attr_data">
+					{notempty name="attr_name_list"}
+					{volist name="attr_name_list" id="attr_name_info"}
+						<div class="col-sm-12 attr-count" style="margin-bottom:20px">
+							<label class="col-sm-1 control-label no-padding-right">{$attr_name_info.name}</label>
+							<div class="col-sm-9">
+								{volist name="attr_name_info['attr_val_list']" id="attr_val"}
+								<div class="col-xs-3 checkbox-margin">
+									<label class="block">
+									<input class="ace input-lg product-attr attr-val-{$attr_name_info.id}" {in name="attr_val['id']" value="$attr_checked_ids"}checked{/in} value="{$attr_val.id}" data-attr-id='{$attr_name_info.id}' data-name='{$attr_val.name}' name="attr[{$attr_name_info.id}][]" type="checkbox">
+									<span class="lbl bigger-120">{$attr_val.name}</span>
+									</label>
+								</div>
+								{/volist}												
+							</div>																																																				
+						</div>					
+					{/volist}	
+					{/notempty}																																															
+				</div>		
+			</div>		
+			<div class="space-4"></div>		
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">一键填入数据</label>
+				<div class="col-sm-8">
+					<div class="col-sm-3">
+					<div class="input-group">
+						<span class="input-group-addon">库存</span>
+						<input id="product_stock" class="form-control input-sm" type="text">
+					</div>	
+					</div>
+					<div class="col-sm-3">		
+					<div class="input-group">
+						<span class="input-group-addon">价格（元）</span>
+						<input id="product_price" class="form-control input-sm" type="text">
+					</div>	
+					</div>
+					<div class="col-sm-3">	
+					<div class="input-group">
+						<span class="input-group-addon">编码</span>
+						<input id="product_code" class="form-control input-sm" type="text">
+					</div>	
+					</div>	
+					<div class="col-sm-2">	
+						<button class="btn btn-sm btn-white btn-default one-key-input" type="button">确定</button>
+					</div>																																																																
+				</div>		
+			</div>				
+			<div class="form-group" id="attr_option_price" {empty name="product_info['attr_list']"}style="display:none"{/empty}>
+				<label class="col-sm-3 control-label no-padding-right">商品分类表</label>
+				<div class="col-sm-7" id="attr_option">
+					{notempty name="product_info['attr_list']"}
+					<table class="table table-striped table-bordered table-condensed table-hover">
+						<thead>
+							<tr>
+								<th class="center hidden-sm hidden-xs">名称</th>
+								<th colspan="{$product_info.attr_count}" class="center hidden-sm hidden-xs">属性</th>
+								<th class="center hidden-sm hidden-xs">库存</th>
+								<th class="center hidden-sm hidden-xs">价格</th>
+								<th class="center hidden-sm hidden-xs">商品编码</th>
+							</tr>	
+						</thead>	
+						<tbody>	
+							{volist name="product_info['attr_list']" id="attr_info"}
+							<tr>
+								<td class="center col-xs-2"><input type='text' name="product_option[{$attr_info.attr_val_str}][name]" value="{$attr_info.name}" class='form-control product-name input-sm width-100'></td>
+								{volist name="attr_info['attr_data']" id="data_info"}
+								<td class="center" data-attr_val_id="{$data_info.id}">{$data_info.name}</td>	
+								{/volist}
+								<td class="center col-xs-2"><input type='text' name="product_option[{$attr_info.attr_val_str}][stock]" value="{$attr_info.stock}" class='form-control product-stock input-sm width-100'></td>
+								<td class="center col-xs-2">
+								<input type='text' name="product_option[{$attr_info.attr_val_str}][price]" value="{$attr_info.sale_price}" class='form-control product-price input-sm width-100'>
+								<input type='hidden' name="product_option[{$attr_info.attr_val_str}][id]" value="{$attr_info.id}">
+								</td>
+								<td class="center col-xs-2"><input type='text' name="product_option[{$attr_info.attr_val_str}][code]" value="{$attr_info.product_code}" class='form-control product-code input-sm width-100'></td>
+							</tr>
+							{/volist}																																										
+						</tbody>
+					</table>
+					{/notempty}																																																				
+				</div>		
+			</div>	
+			</div>									
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">商品详情</label>
+				<div class="col-sm-9">
+					<textarea name="product_details" id="product_details" rows="3" class="col-xs-8 limited">{$product_info.product_details|default=''}</textarea>
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">上架方式</label>
+				<div class="col-sm-6">
+					<div class="radio col-sm-4">
+						<label>
+						<input class="ace input-lg shelves-type" checked name="shelves_type" value="1" type="radio">
+						<span class="lbl bigger-120">立即上架</span>
+						</label>
+					</div>
+					<div class="radio col-sm-4">
+						<label>
+						<input class="ace input-lg shelves-type" name="shelves_type" value="2" type="radio">
+						<span class="lbl bigger-120">预定上架时间</span>
+						</label>
+					</div>
+					<div class="radio col-sm-4">
+						<label>
+						<input class="ace input-lg shelves-type" name="shelves_type" value="3" type="radio">
+						<span class="lbl bigger-120">暂不上架</span>
+						</label>
+					</div>																																																					
+				</div>
+			</div>								
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">预定上架时间</label>
+				<div class="col-sm-6">
+					<input class="form-control date-plug input-date-time" id="shelves_time" readonly disabled='disabled' placeholder="预定上架时间" name="shelves_time" type="text">																																																	
+				</div>
+			</div>	
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">一口价</label>
+				<div class="col-sm-6">
+					<input type="text" name="lowest_price" value="{$product_info.lowest_price|default=''}" placeholder="一口价" class="col-xs-8" title='请输入数字' required/>																																																	
+				</div>
+			</div>				
+			<div class="space-4"></div>	
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">排序</label>
+				<div class="col-sm-9">
+					<input type="text" name="sort" value="{$product_info.sort|default='100'}" placeholder="排序" class="col-xs-8" pattern="[0-9]{1,9}" title='只允许9位数字'/>
+					<span class="help-inline col-xs-4">
+						<span class="middle red"></span>
+					</span>																																																							
+				</div>
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否启用 </label>
+				<div class="help-inline col-sm-6">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_display" type="checkbox" value="1" {if condition="($product_info.is_display eq 1) OR !isset($product_info.is_display)"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认启用</span>
+					</span>							
+				</div>
+			</div>	
+			<div class="space-4"></div>												
+			<div class="form-group">
+				<label class="col-sm-3 control-label no-padding-right">是否顶置 </label>
+				<div class="col-sm-6 help-inline">
+					<label class="col-sm-2">
+						<input class="ace ace-switch ace-switch-4 btn-rotate" name="is_top" type="checkbox" value="1" {if condition="$product_info.is_top eq '1'"}checked="checked"{/if}>
+						<span class="lbl"></span>
+					</label>
+					<span class="col-xs-6">
+						<span class="middle">默认未顶置</span>
+					</span>							
+				</div>
+			</div>
+			<div class="clearfix form-actions">
+				<div class="col-sm-offset-6 col-sm-5">
+					<button class="btn btn-info" type="submit">
+						<i class="ace-icon fa fa-check bigger-110"></i>
+						保存
+					</button>
+				</div>
+			</div>																													
+		</div>		
+	</div> 
+	</form>
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>		
+	{include file="file_upload/fileModal"/}	
+	{include file="file_upload/ueditor" selector="['product_details']" height='500' width='700'/}
+	<script type="text/javascript">
+	$(function(){
+		var scripts=['__PUBLIC_PC__/admin/js/link-select-1.1.js',
+			'__PUBLIC_PC__/ace/components/template/template.js']; 
+		if($.addScript(scripts)=='success'){
+			{empty name="product_info.category_titles"}
+			setTimeout(function() {
+				get_data();
+			},200)				
+			{/empty}
+		}
+		function get_data(pid=0,method=null,$this=null){  
+		    $(".select-attr").linkSelect({	
+		    	method:method,
+		    	contant:'#category_data',	
+		        url: "{:url('admin/Goods/getCategoryData')}",
+		        pid:pid,
+		        title:'name',
+		        addClass:'col-xs-2 select-attr select2',
+		        nameField:'category_id',
+		        maxLevle:4 
+		    },$this);
+		}
+		function get_city_data(pid=1,method=null,$this=null){  
+		    $(".select-city").linkSelect({	
+		    	method:method,
+		    	contant:'#area_data',	
+		        url: "{:url('admin/Sys/getCityData')}",
+		        pid:pid,
+		        title:'name',
+		        addClass:'col-xs-2 select-city select2',
+		        nameField:'city_id',
+		        maxLevle:4 
+		    },$this);
+		}		
+		$('#category_data').unbind().delegate('.select-attr','change',function(){
+			get_data($(this).val(),'changeSelect',$(this));	
+			get_attr($("select[name='category_id[]']:last").val());
+		})	
+		$('#ajax_content').unbind().delegate('.select-city','change',function(){
+			get_city_data($(this).val(),'changeSelect',$(this));	
+		})	
+		function get_attr(category_id){
+			$.ajax({
+				url:"{:url('admin/Goods/productAttr')}",
+				type:'POST',
+				data:{'category_id':category_id},
+				dataType:'json',
+	            success: function(data){
+					if(data.code==1){
+						var list=data.data_list,
+						attr_tpl=$('#attr_tpl')[0].innerHTML;
+						var html=template(attr_tpl,{list: list});
+						$("#attr_data").append(html);
+						$("#product_option").show(100);
+					}
+					else{
+						layer.msg(data.msg);
+						$("#product_option").hide();
+					}	                
+	            }
+			})
+		}
+		$('body').delegate('.shelves-type','click',function(){
+			var val=$(this).val();
+			if(val==1 || val==3){
+				$("#shelves_time").attr('disabled','disabled');
+				$("#shelves_time").val('');
+			}
+			else{
+				$("#shelves_time").removeAttr('disabled');
+			}
+		})
+		$("#edit_category").one('click',function(){
+			$("#category_data").children().remove();
+			get_data();
+		})
+	})
+	
+	//计算参数组合
+	var attr_arr=[],
+	attr_list=[];
+	$("#attr_data").delegate('.product-attr','click',function(){
+		var attr=[],
+		i=0,
+		attr_id=$(this).data('attr-id');
+		$(".attr-val-"+attr_id).each(function(){
+			if($(this).is(':checked')){
+				attr.push($(this).data('name')+'┣╋┫'+$(this).val());
+			}
+		})
+		attr_arr[attr_id]=attr;
+ 		for(key in attr_arr){
+ 			attr_list[i]=attr_arr[key];
+ 			i++;
+		} 
+		//doExchange(attr_arr);
+		//组合计算
+		var attr_data=$.doExchange(attr_list),
+		new_attr_list=[];
+		for(var y=0;y<attr_data.length;y++){
+			var attr_temp={},
+			var_data=[],
+			attr_ids=[];
+			attr_names=attr_data[y][0].split('═╪═');
+			//分离各自ID
+			for(var k=0;k<attr_names.length;k++){
+				var attr_val=attr_names[k].split('┣╋┫'),
+				var_temp={};
+				ids=[];
+				if(!empty(attr_val)){
+					var_temp.name=attr_val[0];
+					var_temp.id=attr_val[1];
+					ids.push(attr_val[1]);
+				}
+				attr_ids.push(ids);
+				var_data.push(var_temp);
+			}
+			attr_temp.attr_list=var_data;
+			attr_temp.ids=attr_ids.join("_");
+			if(!empty(attr_val)){
+				new_attr_list.push(attr_temp);
+			}
+		}
+		if(intval($(".attr-count").size())==intval(attr_list.length)){
+	 		attr_tpl=$('#attr_option_tpl')[0].innerHTML;
+			var html=template(attr_tpl,{colspan:attr_list.length,list: new_attr_list});
+			$("#attr_option").empty().append(html); 
+			$("#attr_option_price").show(100);
+		}
+		else{
+			$("#attr_option").empty();
+			$("#attr_option_price").hide();
+		}
+	})
+
+	$("#product_option").unbind().delegate('.one-key-input','click',function(){
+		var product_stock=$("#product_stock").val(),
+		product_price=$("#product_price").val(),
+		product_code=$("#product_code").val();
+		product_name=$("#sub_name").val();
+		if(empty(product_stock) || empty(product_price) || empty(product_code)){
+			layer.msg('请填写需一键输入的数据');return false;
+		}
+		if(empty(product_name)){
+			layer.msg('请填写商品子名称');return false;
+		}
+		$("#attr_option tbody td").find('input').each(function(){
+			if($(this).hasClass('product-stock')){
+				$(this).val(product_stock);
+			}
+			if($(this).hasClass('product-price')){
+				$(this).val(product_price);
+			}
+			if($(this).hasClass('product-code')){
+				$(this).val(product_code);
+			}
+			if($(this).hasClass('product-name')){
+				$(this).val(product_name);
+			}			
+		})
+	})
+
+	</script>
+	<script id='attr_tpl' type="text/html">
+		<%for(var i = 0; i < list.length; i++) {%>
+		<div class="col-sm-12 attr-count" style="margin-bottom:20px">
+			<label class="col-sm-1 control-label no-padding-right"><%=list[i].name%></label>
+			<div class="col-sm-9">
+				<%for(var y = 0; y < list[i].attr_val_list.length; y++) {%>
+				<div class="col-xs-3 checkbox-margin">
+					<label class="block">
+					<input class="ace input-lg product-attr attr-val-<%=list[i].id%>" value="<%=list[i].attr_val_list[y].id%>" data-attr-id='<%=list[i].id%>' data-name='<%=list[i].attr_val_list[y].name%>' name="attr[<%=list[i].id%>][]" type="checkbox">
+					<span class="lbl bigger-120"><%=list[i].attr_val_list[y].name%></span>
+					</label>
+				</div>
+				<%}%>												
+			</div>																																																				
+		</div>
+		<%}%>	
+	</script>
+	<script id="attr_option_tpl" type="text/html">
+		<table class="table table-striped table-bordered table-condensed table-hover">
+			<thead>
+				<tr>
+					<th class="center hidden-sm hidden-xs">名称</th>
+					<th colspan="<%=colspan%>" class="center hidden-sm hidden-xs">属性</th>
+					<th class="center hidden-sm hidden-xs">库存</th>
+					<th class="center hidden-sm hidden-xs">价格</th>
+					<th class="center hidden-sm hidden-xs">商品编码</th>
+				</tr>	
+			</thead>	
+			<tbody>	
+				<%for(var i = 0; i < list.length; i++) {%>
+				<tr>
+					<td class="center col-xs-2"><input type='text' name="product_option[<%=list[i].ids%>][name]" class='form-control product-name input-sm width-100'></td>
+					<%for(var y = 0; y < list[i].attr_list.length; y++) {%>
+					<td class="center" data-attr_val_id="<%=list[i].attr_list[y].id%>"><%=list[i].attr_list[y].name%></td>	
+					<%}%>
+					<td class="center col-xs-2"><input type='text' name="product_option[<%=list[i].ids%>][stock]" class='form-control product-stock input-sm width-100'></td>
+					<td class="center col-xs-2">
+					<input type='text' name="product_option[<%=list[i].ids%>][price]" class='form-control product-price input-sm width-100'>
+					<input type='hidden' name="product_option[<%=list[i].ids%>][id]">
+					</td>
+					<td class="center col-xs-2"><input type='text' name="product_option[<%=list[i].ids%>][code]" class='form-control product-code input-sm width-100'></td>
+				</tr>
+				<%}%>																																										
+			</tbody>
+		</table>
+	</script>
+{/block}

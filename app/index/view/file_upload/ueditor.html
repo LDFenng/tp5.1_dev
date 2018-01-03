@@ -1,0 +1,23 @@
+<script type="text/javascript" charset="utf-8">  
+var script=['__PUBLIC_PC__/ueditor/ueditor1.4.3/ueditor.config.js',
+            '__PUBLIC_PC__/ueditor/ueditor1.4.3/ueditor.all.min.js',
+            '__PUBLIC_PC__/ueditor/ueditor1.4.3/lang/zh-cn/zh-cn.js'],
+selector_ids=[selector],
+height=[height],
+width=[width];
+$(function(){
+	if($.addScript(script)==='success'){
+		setTimeout(function() {
+			window.UEDITOR_HOME_URL = "__PUBLIC_PC__/ueditor/ueditor1.4.3/"; 
+			for(var y = 0; y < selector_ids.length; y++){
+				UE.getEditor(selector_ids[y], {  
+					initialFrameHeight: height,  
+					initialFrameWidth: width,  
+			    	serverUrl: "{:url('admin/FileUpload/requestUE')}",
+			    	webAppKey:''  //百度KEY
+				})
+			}
+		},400)
+	}
+})
+</script> 

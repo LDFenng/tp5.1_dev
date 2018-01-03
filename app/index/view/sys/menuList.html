@@ -1,0 +1,74 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			系统管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				菜单列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+    <div class="row margintop">
+		<form class="form-search"  method="post" id="ajax_page_list" action="{:url('admin/Sys/menuList')}" autocomplete="off">
+				<div class="col-xs-2 col-lg-2">
+				{customTag:pageNum width='100%' select_num='$Request.param.page_num'/}
+				</div>
+			<div class="col-xs-6 col-lg-6 input-group-btn"> 
+				<a href="{:url('admin/Sys/editMenu',['id'=>'','pid'=>0])}" class="btn btn-sm btn-info"  data-rel="tooltip" data-placement="bottom" title="添加" data-toggle="modal" data-target="#edit_data"><i class="ace-icon fa fa-plus bigger-130"></i>添加后台菜单</a>
+				{notempty name="menu_list"}
+				<a class="btn btn-sm btn-default del-data" data-rel="tooltip" data-placement="bottom" title="删除"> <i class="ace-icon fa fa-trash-o bigger-130"></i> </a>			 
+				{/notempty}
+			</div>			   		
+		</form>
+    </div>	   			
+	<div class="row margintop">
+		<div class="col-xs-12">
+			<table  data-locale='zh-CN' data-toggle="table" class="table table-striped table-bordered table-condensed table-hover">
+				<thead>
+				<tr class="hidden-xs center">
+					<th class="hidden-xs center">
+						<label class="pos-rel">
+							<input type="checkbox" class="ace input-lg check-all" value="{:url('admin/Sys/delMenu')}"/>
+							<span class="lbl"></span>															
+						</label>											
+					</th>							
+					<th class="hidden-xs center">ID</th>
+					<th></th>
+					<th class="hidden-xs center">菜单标题</th>
+					<th class="hidden-xs hidden-sm center">图标</th>
+					<th class="hidden-xs hidden-sm center">方法名</th>
+					<th class="hidden-xs hidden-sm center">级数</th>						
+					<th class="center">开启状态</th>
+					<th class="center">显隐菜单</th>
+					<th class="center">排序</th>
+					<th class="center">操作</th>
+				</tr>
+				</thead>
+				<tbody>
+					{include file="sys/ajaxMenuList"/}		
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row margintop">
+		<div class="col-xs-1">
+		<a class="btn btn-white btn-yellow btn-sm btn-order" href="{:url('admin/Sys/menuOrder')}">排序</a>
+		</div>
+		<div class="col-xs-10 center"></div>
+		<div class="col-xs-1"></div>	
+	</div>		
+	<!-- 项目模态框 -->
+	<div class="modal fade" id="edit_data" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	    <div class="form-horizontal modal-dialog">
+	      <div class="modal-content">
+	
+	      </div>
+	      <!-- /.modal-content --> 
+	    </div>
+	    <!-- /.modal-dialog -->
+	</div>
+	<script type="text/javascript">
+	$.getScript("__PUBLIC_PC__/admin/js/sys/menuList.js")
+	</script>
+{/block}

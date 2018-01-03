@@ -1,0 +1,75 @@
+<form class="form-horizontal ajax-form-file" method="post" action="{:url('admin/FileUpload/handleFile')}">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+        {if condition="$Request.param.b=='audio'"}
+        	上传音频
+        {elseif condition="$Request.param.b=='video'" /}
+        	上传视频
+        {else /}
+        	上传文件
+        {/if}
+        </h4>
+    </div>
+	<div class="modal-body">
+		<div class="row">	
+			<div class="col-xs-12">
+				<input type="hidden" name="file_type" value="{$Request.param.b}"/>	
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"></label>
+					<div class="col-sm-6">
+					    <span class="btn btn-file btn-block btn-yellow"> 选择文件
+				           <span class="glyphicon glyphicon-open-file" aria-hidden="true"></span>
+				           <input type="file" name="file_name" value=""/>
+					    </span>																																																							
+					</div>
+				</div>	
+				<div class="progress" id="progress_bar" style="display:none">
+				    <div class="progress-bar progress-bar-success progress-bar-striped active" style="width:0.00%">
+				        <div class="progress-value" id="progress_value">0.00%</div>
+				    </div>
+				</div>															
+			</div>										
+		</div>
+	</div>					
+	<div class="modal-footer">
+	    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	    <button type="submit" id="handle_data" class="btn btn-primary">上传</button>
+	</div>
+</form>	
+<script type="text/javascript">
+var a = '{$Request.param.a}',
+d = '{$Request.param.d}';
+$("#ajax_content").delegate('#handle_data','click',function(){
+	var loading=layer.load(0,{shade: [0.2, '#cccc']});
+    $("#progress_bar").show();
+	$('.ajax-form-file').ajaxForm({
+		dataType: 'json',
+	    xhr:xhrOnProgress(function(e){
+	        var num=(e.loaded / e.total)*100,  //计算百分比
+	        percent=decimal(num,2);
+	        $("#progress_bar").children('.progress-bar').width(percent+'%');
+	        $("#progress_bar").children('.progress-bar').attr('aria-valuenow',percent);
+	        $('#progress_value').html(percent+"%");
+	    }),		
+	    success: function complete(data) {
+		    if (data.code == 1) {
+		    	if(!empty(d))$('#'+d).val(JSON.stringify(data.file_info));
+				$('#'+a).val(data.file_url);
+				$("#file_modal").modal('hide');
+		    } 
+		    else {
+		    	layer.alert(data.msg, {icon: 5});
+		    	layer.close(loading);
+		        return false;
+		    }
+		    layer.close(loading);
+	    } // 这是提交后的方法
+	});	
+})
+
+$("#file_modal").on("hidden.bs.modal", function() {  
+	$("#progress_bar").hide();
+	$("#file_modal").removeData("bs.modal");  
+});
+</script>

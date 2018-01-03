@@ -1,0 +1,81 @@
+{notempty name="menu_list"}
+{volist name="menu_list" id="menu_info"}
+<tr id="pid_{$menu_info.pid}_{$menu_info.id}">
+	<td class="center">
+		<i class="fa ace-icon blue fa-minus bigger-150 open-menu" data-pid='{$menu_info.id}' data-pid-id='pid_{$menu_info.id}' style='cursor: pointer'/></i>																								
+	</td>
+	<td class="hidden-sm hidden-xs">{$menu_info.id}</td>
+	<td class="hidden-sm hidden-xs col-xs-2 left">┣━━{$menu_info.title}</td>
+	<td>
+	{if condition="$menu_info['is_enabled'] eq 1"}
+		<a class="btn btn-minier btn-yellow status-btn" href="{:url('admin/Wechat/changeMenuState',['t'=>$menu_info.wechat_id])}" data-id="{$menu_info.id}" title="已启用">
+			启用
+		</a>
+		{else/}
+		<a class="btn btn-minier btn-danger status-btn" href="{:url('admin/Wechat/changeMenuState',['t'=>$menu_info.wechat_id])}" data-id="{$menu_info.id}" title="已禁用">
+			禁用
+		</a>
+	{/if}						
+	</td>
+	<td>{$menu_info.wechat_title}</td>
+	<td>
+		{volist name="Think.config.wechatExt.wechat_click_type" id="click_type_info"}
+			{if condition="$click_type_info['code']==$menu_info.even_type"}
+			<span class="label label-lg label-primary">{$click_type_info.title}</span>
+			{/if}
+		{/volist}						
+	</td>
+	<td class="hidden-sm hidden-xs col-xs-1">
+		<input class='form-control input-sm width-80 list-order' name="{$menu_info.id}" value='{$menu_info.sort}'>						
+	</td>
+	<td class="hidden-sm hidden-xs">{$menu_info.create_time|date='Y-m-d',###}</td>
+	<td style="border-right:#CCC solid 1px;">
+		<div class="hidden-sm hidden-xs btn-group action-buttons">
+			<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Wechat/editMenu',['id'=>$menu_info['id']])}" title="编辑">
+			<i class="ace-icon fa fa-pencil bigger-160"></i>
+			</a>	
+			{if condition="$menu_info.pid==0"}						
+			<a data-ajax-page='true' class="btn btn-xs  btn-primary" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Wechat/editMenu',['pid'=>$menu_info['id']])}" title="添加子菜单">
+			<i class="ace-icon fa fa-plus-circle bigger-160"></i>
+			</a>
+			{/if}
+			<a data-ajax-page='true' class="btn btn-xs btn-default" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/delMenu',['ids'=>$menu_info['id']])}" title="删除">
+			<i class="ace-icon fa fa-trash-o bigger-160"></i>
+			</a>
+		</div>		
+		<div class="hidden-md hidden-lg">
+			<div class="inline position-relative">
+				<button class="btn btn-minier btn-primary dropdown-toggle" data-toggle="dropdown" data-position="auto">
+					<i class="ace-icon fa fa-cog icon-only bigger-110"></i>
+				</button>
+				<ul class="dropdown-menu dropdown-only-icon dropdown-yellow dropdown-menu-right dropdown-caret dropdown-close">
+					<li>
+						<a data-ajax-page='true' class="btn btn-xs btn-success" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Wechat/editMenu',['id'=>$menu_info['id']])}" title="编辑">
+							<span class="green">
+								<i class="ace-icon fa fa-pencil bigger-120"></i>
+							</span>
+						</a>
+					</li>
+					{if condition="$menu_info.pid==0"}
+					<li>
+						<a data-ajax-page='true' class="btn btn-xs btn-primary" data-rel="tooltip" data-placement="bottom" href="{:new_url('admin/Wechat/editMenu',['pid'=>$menu_info['id']])}" title="添加子菜单">
+							<span class="green">
+								<i class="ace-icon fa fa-plus-circle bigger-120"></i>
+							</span>
+						</a>
+					</li>
+					{/if}
+					<li>
+						<a data-ajax-page='true' class="btn btn-xs btn-default" data-rel="tooltip" data-placement="bottom" href="{:url('admin/Wechat/delMenu',['ids'=>$menu_info['id']])}" title="删除">
+							<span class="green">
+								<i class="ace-icon fa fa-trash-o bigger-120"></i>
+							</span>
+						</a>
+					</li>																				
+				</ul>
+			</div>
+		</div>						
+	</td>
+</tr>
+{/volist}
+{/notempty}	

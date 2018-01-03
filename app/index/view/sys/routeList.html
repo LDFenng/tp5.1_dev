@@ -1,0 +1,90 @@
+{extend name="public/base" /}
+{block name="ajax-content"}
+	<div class="page-header">
+		<h1>
+			系统管理
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+				微信公众号列表
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+    <div class="row margintop">
+		<form class="form-search"  method="post" id="ajax_page_list" action="{:url('admin/Sys/routeList')}" autocomplete="off">
+			<div class="col-xs-4 col-lg-3">
+				{customTag:pageNum class_name='col-xs-12' select_num='$Request.param.page_num'/}							
+			</div>
+			<div class="col-xs-4 col-lg-4">
+				<div class="input-group col-xs-8"><span class="input-group-addon"><i class="ace-icon fa fa-check"></i> </span>
+					<input type="text" name="key_words" id="key_words" class="input-xs form-control" value="{$Request.param.key_words}" placeholder="名称" />
+				</div> 				
+			</div>			
+			<div class="col-xs-12 col-lg-4 input-group-btn"> 
+				<a class="btn btn-sm btm-input btn-purple ajax-search-form" data-rel="tooltip" data-placement="bottom" title="搜索"> <i class="ace-icon fa fa-search icon-on-right bigger-130"></i> 搜索 </a>
+			</div>					   		
+		</form>
+    </div>	
+	<div class="row">
+		<div class="col-xs-12 table-responsive">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+				<tr>
+					<th class="center">名称</th>
+					<th class="center">原型url</th>
+					<th class="center">美化url</th>
+				</tr>
+				</thead>
+				<tbody>
+					{foreach name="route_list" item="route_info"}
+						<tr class="center" id="data_{$route_info.id}">		
+							<td>{$route_info.title}</td>
+							<td>{$route_info.action_name}</td>
+							<td>
+							{if condition="$route_info.route_url==null"}
+							<input class='form-control input-sm list-route' name="{$route_info.id}" value='{$route_info.pid}{$route_info.id}'>
+							{else/}
+							<input class='form-control input-sm list-route' name="{$route_info.id}" value='{$route_info.route_url}'>
+							{/if}
+							</td>
+						</tr>
+					{/foreach}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row margintop">
+		<div class="col-xs-1"></div>
+		<div class="col-xs-10 center">{$page}</div>
+		<div class="col-xs-1">
+		<a class="btn btn-white btn-primary" id="save_route" href="{:new_url('admin/Sys/saveRoute')}">保存</a>		
+		</div>	
+	</div>		
+<script type="text/javascript">
+$(function(){
+	$("#ajax_content").unbind().delegate('#save_route','click',function(e){
+		e.preventDefault();
+		var url=this.href,
+		data=$("input.list-route").serializeArray(),
+		obj = {};
+		$.each(data,function(i,v){
+			obj[v.name] = v.value;
+		}) 
+		$.openload();
+        $.post(url,{'data':JSON.stringify(obj)}, function (data) {
+            if (data.code==1) {
+                layer.alert(data.msg, {icon: 6}, function (index) {
+                    layer.close(index);
+                    if(!empty(data.url))$.phpAjax(data.url);
+                });
+                $.closeload();
+            }else{
+                layer.alert(data.msg, {icon: 5}, function (index) {
+                    layer.close(index);
+                });
+                $.closeload();
+            }
+        }, "json");
+	})
+})
+</script>
+{/block}
