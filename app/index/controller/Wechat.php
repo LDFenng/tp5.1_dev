@@ -183,8 +183,9 @@ class Wechat extends Base{
         $validate = new\think\Validate($rule);
         $result = $validate->check($data);
         if ($result){
-            //print_r($wechat_info);die;
-            $options_list=config('wechatConfig');
+            
+            $options_list=config('index.wechatConfig');
+            print_r($options_list);die;
             $options=$options_list['wechat_option_'.$data['wechat_id']];
             $wechat_api = new wechatApi($options);
             $menu_api=$wechat_api->menu;
