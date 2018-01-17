@@ -1,6 +1,8 @@
 <?php
 $wechat_config=[];
-$wechat_list=db('wechat_info')->where([['admin_id','=',session('user_id')],['is_enabled','=',1]])->field(true)->cache(true,7200)->select();
+$condition[]=['admin_id','=',session('user_id')];
+$condition[]=['is_enabled','=',1];
+$wechat_list=db('wechat_info')->where($condition)->field(true)->cache(true,7200)->select();
 if ($wechat_list){
     foreach ($wechat_list as $wechat_val){
         /**
